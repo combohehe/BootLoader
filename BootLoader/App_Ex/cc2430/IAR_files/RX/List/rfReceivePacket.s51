@@ -1,0 +1,259 @@
+///////////////////////////////////////////////////////////////////////////////
+//                                                                            /
+// IAR 8051 C/C++ Compiler V7.30B/W32                   03/Jul/2015  20:20:05 /
+// Copyright 2004-2007 IAR Systems. All rights reserved.                      /
+//                                                                            /
+//    Core               =  plain                                             /
+//    Code model         =  near                                              /
+//    Data model         =  large                                             /
+//    Calling convention =  xdata reentrant                                   /
+//    Constant location  =  data                                              /
+//    Dptr setup         =  1,16                                              /
+//    Source file        =  C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä° /
+//                          æ7\Library\cc2430\HAL\source\rfReceivePacket.c    /
+//    Command line       =  "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\Library\cc2430\HAL\source\rfReceivePacket.c"  /
+//                          -D chip=2430 -D COMPLETE_APPLICATION -D RX -lB    /
+//                          "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\App_Ex\cc2430\IAR_files\RX\List\" -o          /
+//                          "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\App_Ex\cc2430\IAR_files\RX\Obj\" -e -z9       /
+//                          --debug --core=plain --dptr=16,1                  /
+//                          --data_model=large --code_model=near              /
+//                          --calling_convention=xdata_reentrant              /
+//                          --place_constants=data --nr_virtual_regs 8 -I     /
+//                          "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\App_Ex\cc2430\IAR_files\..\..\..\LIBRARY\CC24 /
+//                          30\CUL\INCLUDE\" -I "C:\Documents and             /
+//                          Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\App_Ex\cc2430\ /
+//                          IAR_files\..\..\..\LIBRARY\CC2430\HAL\INCLUDE\"   /
+//                          -I "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐ /
+//                          Þ¸Ä°æ7\App_Ex\cc2430\IAR_files\..\..\..\LIBRARY\C /
+//                          C2430\EB\INCLUDE\" -I "C:\Documents and           /
+//                          Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\App_Ex\cc2430\ /
+//                          IAR_files\..\INCLUDE\" -I "C:\IAR                 /
+//                          Systems\Embedded Workbench 4.0 Evaluation         /
+//                          version\8051\INC\" -I "C:\IAR Systems\Embedded    /
+//                          Workbench 4.0 Evaluation version\8051\INC\CLIB\"  /
+//    List file          =  C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä° /
+//                          æ7\App_Ex\cc2430\IAR_files\RX\List\rfReceivePacke /
+//                          t.s51                                             /
+//                                                                            /
+//                                                                            /
+///////////////////////////////////////////////////////////////////////////////
+
+        NAME rfReceivePacket
+
+        RSEG DOVERLAY:DATA:NOROOT(0)
+        RSEG IOVERLAY:IDATA:NOROOT(0)
+        RSEG ISTACK:IDATA:NOROOT(0)
+        RSEG PSTACK:XDATA:NOROOT(0)
+        RSEG XSTACK:XDATA:NOROOT(0)
+
+        EXTERN ?FUNC_ENTER_XDATA
+        EXTERN ?FUNC_LEAVE_XDATA
+        EXTERN ?V0
+        EXTERN ?XSTACK_DISP0_8
+        EXTERN __INIT_XDATA_Z
+
+        PUBWEAK RFD
+        PUBWEAK RFIF
+        PUBWEAK RFST
+        PUBLIC halRfReceivePacket
+        PUBLIC length
+
+        EXTERN halWait
+
+// C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\Library\cc2430\HAL\source\rfReceivePacket.c
+//    1 /******************************************************************************
+//    2 Filename:     rfReceivePacket.c
+//    3 Target:       cc2430
+//    4 Revised:      16/12-2005
+//    5 Revision:     1.0
+//    6 ******************************************************************************/
+//    7 #include "hal.h"
+
+        ASEGN SFR_AN:DATA:NOROOT,0d9H
+// unsigned char volatile __sfr RFD
+RFD:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0e1H
+// unsigned char volatile __sfr RFST
+RFST:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0e9H
+// unsigned char volatile __sfr RFIF
+RFIF:
+        DS 1
+//    8 
+
+        RSEG XDATA_Z:XDATA:NOROOT(0)
+//    9 BYTE volatile length;
+length:
+        DS 1
+        REQUIRE __INIT_XDATA_Z
+//   10 
+//   11 //-----------------------------------------------------------------------------
+//   12 // See hal.h for a description of this function.
+//   13 //-----------------------------------------------------------------------------
+
+        RSEG NEAR_CODE:CODE:NOROOT(0)
+//   14 BYTE halRfReceivePacket(BYTE* pData, BYTE* pRssi, BYTE* pLqi, BYTE timeOut){
+halRfReceivePacket:
+        MOV     A,#-0xc
+        LCALL   ?FUNC_ENTER_XDATA
+        ; Saved register size: 12
+        ; Auto size: 0
+        MOV     ?V0 + 2,R2
+        MOV     ?V0 + 3,R3
+        MOV     A,R4
+        MOV     R6,A
+        MOV     A,R5
+        MOV     R7,A
+        MOV     ?V0 + 4,R1
+        MOV     A,#0xc
+        LCALL   ?XSTACK_DISP0_8
+        MOVX    A,@DPTR
+        MOV     ?V0 + 0,A
+        INC     DPTR
+        MOVX    A,@DPTR
+        MOV     ?V0 + 1,A
+//   15    BYTE i = 0x00;
+//   16 
+//   17    ISFLUSHRX;   // Making sure that the rX FIFO is empty.
+        MOV     0xe1,#-0x1a
+//   18    ISFLUSHRX;   // Issuing the command twice to reset the SFD.
+        MOV     0xe1,#-0x1a
+//   19 
+//   20    RFIF &= ~IRQ_FIFOP;
+        ANL     0xe9,#0xdf
+//   21 
+//   22    // Turning on RX
+//   23    ISRXON;
+        MOV     0xe1,#-0x1e
+        SJMP    ??halRfReceivePacket_0
+//   24 
+//   25 
+//   26    while(!(RFIF & IRQ_FIFOP))
+//   27    {
+//   28       if(timeOut)
+//   29       {
+//   30          //temp_count= 4;
+//   31          halWait(1);
+??halRfReceivePacket_1:
+        ; Setup parameters for call to function halWait
+        MOV     R1,#0x1
+        LCALL   halWait
+//   32          //temp_count= 0;
+//   33          timeOut--;
+        DEC     ?V0 + 4
+//   34       }
+??halRfReceivePacket_0:
+        MOV     A,0xe9
+        MOV     C,0xE0 /* A   */.5
+        JC      ??halRfReceivePacket_2
+        MOV     A,?V0 + 4
+        JNZ     ??halRfReceivePacket_1
+//   35       else
+//   36       {
+//   37          return 0;
+??halRfReceivePacket_3:
+        MOV     R1,#0x0
+        SJMP    ??halRfReceivePacket_4
+//   38       }
+//   39    }
+//   40 
+//   41 
+//   42    length = (RFD & 0x7F);
+??halRfReceivePacket_2:
+        MOV     A,#0x7f
+        ANL     A,0xd9
+        MOV     DPTR,#length
+        MOVX    @DPTR,A
+//   43 
+//   44    // Storing packet
+//   45    for(i=0; i<(length-2); i++){
+        MOV     R1,#0x0
+        SJMP    ??halRfReceivePacket_5
+//   46       pData[i] = RFD;
+??halRfReceivePacket_6:
+        PUSH    A
+        MOV     A,?V0 + 2
+        ADD     A,R2
+        MOV     DPL,A
+        MOV     A,?V0 + 3
+        ADDC    A,#0x0
+        MOV     DPH,A
+        POP     A
+        MOVX    @DPTR,A
+//   47    }
+        INC     R1
+??halRfReceivePacket_5:
+        MOV     DPL,R1
+        MOV     R2,DPL
+        MOV     DPTR,#length
+        MOVX    A,@DPTR
+        MOV     R4,A
+        MOV     A,#-0x2
+        ADD     A,R4
+        DEC     R4
+        DEC     R4
+        MOV     A,#-0x1
+        ADDC    A,#0x0
+        MOV     R5,A
+        CLR     C
+        MOV     A,R2
+        SUBB    A,R4
+        CLR     A
+        SUBB    A,R5
+        MOV     C,0xD0 /* PSW */.2
+        XRL     A,PSW
+        RLC     A
+        MOV     A,0xd9
+        JC      ??halRfReceivePacket_6
+//   48 
+//   49     *pRssi = RFD;
+        MOV     DPL,R6
+        MOV     DPH,R7
+        MOVX    @DPTR,A
+//   50     *pLqi = RFD;
+        MOV     A,0xd9
+        MOV     DPL,?V0 + 0
+        MOV     DPH,?V0 + 1
+        MOVX    @DPTR,A
+//   51 
+//   52    // Last two bytes contain RSSI level and Correlation value in addition to CRC OK.
+//   53    // Checking that the CRC value is OK
+//   54    if(*pLqi & 0x80){
+        MOV     C,0xE0 /* A   */.7
+        JNC     ??halRfReceivePacket_3
+//   55       return i;
+??halRfReceivePacket_4:
+        MOV     R7,#0x5
+        LJMP    ?FUNC_LEAVE_XDATA
+        REQUIRE RFD
+        REQUIRE RFST
+        REQUIRE RFIF
+//   56    }
+//   57    else {
+//   58       return 0;
+//   59    }
+//   60 }
+
+        END
+//   61 
+//   62 
+//   63 
+// 
+// 147 bytes in segment NEAR_CODE
+//   3 bytes in segment SFR_AN
+//   1 byte  in segment XDATA_Z
+// 
+// 147 bytes of CODE  memory
+//   0 bytes of DATA  memory (+ 3 bytes shared)
+//   1 byte  of XDATA memory
+//
+//Errors: none
+//Warnings: none

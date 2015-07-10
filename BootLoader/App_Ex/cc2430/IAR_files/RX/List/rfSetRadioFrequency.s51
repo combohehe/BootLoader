@@ -1,0 +1,157 @@
+///////////////////////////////////////////////////////////////////////////////
+//                                                                            /
+// IAR 8051 C/C++ Compiler V7.30B/W32                   03/Jul/2015  20:20:03 /
+// Copyright 2004-2007 IAR Systems. All rights reserved.                      /
+//                                                                            /
+//    Core               =  plain                                             /
+//    Code model         =  near                                              /
+//    Data model         =  large                                             /
+//    Calling convention =  xdata reentrant                                   /
+//    Constant location  =  data                                              /
+//    Dptr setup         =  1,16                                              /
+//    Source file        =  C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä° /
+//                          æ7\Library\cc2430\HAL\source\rfSetRadioFrequency. /
+//                          c                                                 /
+//    Command line       =  "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\Library\cc2430\HAL\source\rfSetRadioFrequency /
+//                          .c" -D chip=2430 -D COMPLETE_APPLICATION -D RX    /
+//                          -lB "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BT /
+//                          ÐÞ¸Ä°æ7\App_Ex\cc2430\IAR_files\RX\List\" -o      /
+//                          "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\App_Ex\cc2430\IAR_files\RX\Obj\" -e -z9       /
+//                          --debug --core=plain --dptr=16,1                  /
+//                          --data_model=large --code_model=near              /
+//                          --calling_convention=xdata_reentrant              /
+//                          --place_constants=data --nr_virtual_regs 8 -I     /
+//                          "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\App_Ex\cc2430\IAR_files\..\..\..\LIBRARY\CC24 /
+//                          30\CUL\INCLUDE\" -I "C:\Documents and             /
+//                          Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\App_Ex\cc2430\ /
+//                          IAR_files\..\..\..\LIBRARY\CC2430\HAL\INCLUDE\"   /
+//                          -I "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐ /
+//                          Þ¸Ä°æ7\App_Ex\cc2430\IAR_files\..\..\..\LIBRARY\C /
+//                          C2430\EB\INCLUDE\" -I "C:\Documents and           /
+//                          Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\App_Ex\cc2430\ /
+//                          IAR_files\..\INCLUDE\" -I "C:\IAR                 /
+//                          Systems\Embedded Workbench 4.0 Evaluation         /
+//                          version\8051\INC\" -I "C:\IAR Systems\Embedded    /
+//                          Workbench 4.0 Evaluation version\8051\INC\CLIB\"  /
+//    List file          =  C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä° /
+//                          æ7\App_Ex\cc2430\IAR_files\RX\List\rfSetRadioFreq /
+//                          uency.s51                                         /
+//                                                                            /
+//                                                                            /
+///////////////////////////////////////////////////////////////////////////////
+
+        NAME rfSetRadioFrequency
+
+        RSEG DOVERLAY:DATA:NOROOT(0)
+        RSEG IOVERLAY:IDATA:NOROOT(0)
+        RSEG ISTACK:IDATA:NOROOT(0)
+        RSEG PSTACK:XDATA:NOROOT(0)
+        RSEG XSTACK:XDATA:NOROOT(0)
+
+        EXTERN ?FUNC_ENTER_XDATA
+        EXTERN ?FUNC_LEAVE_XDATA
+        EXTERN ?L_ADD_X
+        EXTERN ?L_MOV_X
+        EXTERN ?UL_DIV_MOD
+        EXTERN ?V0
+        EXTERN __INIT_XDATA_I
+
+        PUBWEAK __Constant_3e8
+        PUBWEAK __Constant_fffff800
+        PUBLIC halRfSetRadioFrequency
+
+// C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\Library\cc2430\HAL\source\rfSetRadioFrequency.c
+//    1 /******************************************************************************
+//    2 Filename:     rfSetRadioFrequency.c
+//    3 Target:       cc2430
+//    4 Revised:      16/12-2005
+//    5 Revision:     1.0
+//    6 ******************************************************************************/
+//    7 #include "hal.h"
+//    8 
+//    9 //-----------------------------------------------------------------------------
+//   10 // See hal.h for a description of this function.
+//   11 //-----------------------------------------------------------------------------
+
+        RSEG NEAR_CODE:CODE:NOROOT(0)
+//   12 void halRfSetRadioFrequency(UINT32 frequency)
+halRfSetRadioFrequency:
+//   13 {
+        MOV     A,#-0xf
+        LCALL   ?FUNC_ENTER_XDATA
+        ; Saved register size: 15
+        ; Auto size: 0
+        MOV     ?V0 + 0,R2
+        MOV     ?V0 + 1,R3
+        MOV     ?V0 + 2,R4
+        MOV     ?V0 + 3,R5
+//   14 
+//   15    frequency /= 1000;
+//   16    frequency -= 2048;
+        MOV     DPTR,#__Constant_3e8
+        MOV     R0,#?V0 + 4
+        LCALL   ?L_MOV_X
+        MOV     R0,#?V0 + 0
+        MOV     R1,#?V0 + 4
+        LCALL   ?UL_DIV_MOD
+        MOV     DPTR,#__Constant_fffff800
+        MOV     R0,#?V0 + 0
+        LCALL   ?L_ADD_X
+//   17    FSCTRLL = (BYTE) frequency;
+        MOV     A,?V0 + 0
+        MOV     DPTR,#-0x20ef
+        MOVX    @DPTR,A
+//   18    FSCTRLH = ((FSCTRLH & ~0x03) | (BYTE)((frequency >> 8) & 0x03));
+        MOV     A,?V0 + 1
+        ANL     A,#0x3
+        PUSH    A
+        MOV     DPTR,#-0x20f0
+        MOVX    A,@DPTR
+        ANL     A,#0xfc
+        MOV     R2,A
+        POP     A
+        ORL     A,R2
+        MOVX    @DPTR,A
+//   19    return;
+        MOV     R7,#0x8
+        LJMP    ?FUNC_LEAVE_XDATA
+//   20 }
+
+        RSEG XDATA_I:XDATA:NOROOT(0)
+        DATA
+__Constant_3e8:
+        DS 4
+        REQUIRE `?<Initializer for __Constant_3e8>`
+        REQUIRE __INIT_XDATA_I
+
+        RSEG XDATA_ID:CODE:NOROOT(0)
+        DATA
+`?<Initializer for __Constant_3e8>`:
+        DD 1000
+
+        RSEG XDATA_I:XDATA:NOROOT(0)
+        DATA
+__Constant_fffff800:
+        DS 4
+        REQUIRE `?<Initializer for __Constant_fffff800>`
+        REQUIRE __INIT_XDATA_I
+
+        RSEG XDATA_ID:CODE:NOROOT(0)
+        DATA
+`?<Initializer for __Constant_fffff800>`:
+        DD 4294965248
+
+        END
+// 
+// 64 bytes in segment NEAR_CODE
+//  8 bytes in segment XDATA_I
+//  8 bytes in segment XDATA_ID
+// 
+// 64 bytes of CODE  memory (+ 8 bytes shared)
+//  0 bytes of XDATA memory (+ 8 bytes shared)
+//
+//Errors: none
+//Warnings: none

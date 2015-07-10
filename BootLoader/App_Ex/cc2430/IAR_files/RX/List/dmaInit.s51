@@ -1,0 +1,407 @@
+///////////////////////////////////////////////////////////////////////////////
+//                                                                            /
+// IAR 8051 C/C++ Compiler V7.30B/W32                   03/Jul/2015  20:20:03 /
+// Copyright 2004-2007 IAR Systems. All rights reserved.                      /
+//                                                                            /
+//    Core               =  plain                                             /
+//    Code model         =  near                                              /
+//    Data model         =  large                                             /
+//    Calling convention =  xdata reentrant                                   /
+//    Constant location  =  data                                              /
+//    Dptr setup         =  1,16                                              /
+//    Source file        =  C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä° /
+//                          æ7\Library\cc2430\CUL\source\dmaInit.c            /
+//    Command line       =  "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\Library\cc2430\CUL\source\dmaInit.c" -D       /
+//                          chip=2430 -D COMPLETE_APPLICATION -D RX -lB       /
+//                          "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\App_Ex\cc2430\IAR_files\RX\List\" -o          /
+//                          "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\App_Ex\cc2430\IAR_files\RX\Obj\" -e -z9       /
+//                          --debug --core=plain --dptr=16,1                  /
+//                          --data_model=large --code_model=near              /
+//                          --calling_convention=xdata_reentrant              /
+//                          --place_constants=data --nr_virtual_regs 8 -I     /
+//                          "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\App_Ex\cc2430\IAR_files\..\..\..\LIBRARY\CC24 /
+//                          30\CUL\INCLUDE\" -I "C:\Documents and             /
+//                          Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\App_Ex\cc2430\ /
+//                          IAR_files\..\..\..\LIBRARY\CC2430\HAL\INCLUDE\"   /
+//                          -I "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐ /
+//                          Þ¸Ä°æ7\App_Ex\cc2430\IAR_files\..\..\..\LIBRARY\C /
+//                          C2430\EB\INCLUDE\" -I "C:\Documents and           /
+//                          Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\App_Ex\cc2430\ /
+//                          IAR_files\..\INCLUDE\" -I "C:\IAR                 /
+//                          Systems\Embedded Workbench 4.0 Evaluation         /
+//                          version\8051\INC\" -I "C:\IAR Systems\Embedded    /
+//                          Workbench 4.0 Evaluation version\8051\INC\CLIB\"  /
+//    List file          =  C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä° /
+//                          æ7\App_Ex\cc2430\IAR_files\RX\List\dmaInit.s51    /
+//                                                                            /
+//                                                                            /
+///////////////////////////////////////////////////////////////////////////////
+
+        NAME dmaInit
+
+        RSEG DOVERLAY:DATA:NOROOT(0)
+        RSEG IOVERLAY:IDATA:NOROOT(0)
+        RSEG ISTACK:IDATA:NOROOT(0)
+        RSEG PSTACK:XDATA:NOROOT(0)
+        RSEG XSTACK:XDATA:NOROOT(0)
+
+        EXTERN ?DEALLOC_XSTACK8
+        EXTERN ?FUNC_ENTER_XDATA
+        EXTERN ?FUNC_LEAVE_XDATA
+        EXTERN ?PUSH_XSTACK_I_TWO
+        EXTERN ?V0
+        EXTERN __INIT_XDATA_Z
+
+        PUBWEAK DMA1CFGH
+        PUBWEAK DMA1CFGL
+        PUBWEAK DMAARM
+        PUBWEAK DMAIRQ
+        PUBWEAK DMAREQ
+        PUBWEAK IEN2
+        PUBWEAK S1CON
+        PUBWEAK _A_IEN0
+        PUBWEAK _A_IEN1
+        PUBWEAK _A_IRCON
+        PUBWEAK _A_IRCON2
+        PUBWEAK _A_S0CON
+        PUBWEAK _A_TCON
+        PUBLIC culClearDmaChannel0CallBack
+        PUBLIC culDmaInit
+        PUBLIC culSetDmaChannel0CallBack
+        PUBLIC dmaChannel1to4
+        PUBLIC dmaTable
+
+        EXTERN memset
+
+// C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\Library\cc2430\CUL\source\dmaInit.c
+//    1 /******************************************************************************
+//    2 Filename:     dmaInit.c
+//    3 Target:       cc2430
+//    4 Revised:      16/12-2005
+//    5 Revision:     1.0
+//    6 ******************************************************************************/
+//    7 
+//    8 #include <string.h>
+//    9 #include "cul.h"
+
+        ASEGN SFR_AN:DATA:NOROOT,088H
+// union <unnamed> volatile __sfr _A_TCON
+_A_TCON:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,098H
+// union <unnamed> volatile __sfr _A_S0CON
+_A_S0CON:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,09aH
+// unsigned char volatile __sfr IEN2
+IEN2:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,09bH
+// unsigned char volatile __sfr S1CON
+S1CON:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0a8H
+// union <unnamed> volatile __sfr _A_IEN0
+_A_IEN0:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0b8H
+// union <unnamed> volatile __sfr _A_IEN1
+_A_IEN1:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0c0H
+// union <unnamed> volatile __sfr _A_IRCON
+_A_IRCON:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0d1H
+// unsigned char volatile __sfr DMAIRQ
+DMAIRQ:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0d2H
+// unsigned char volatile __sfr DMA1CFGL
+DMA1CFGL:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0d3H
+// unsigned char volatile __sfr DMA1CFGH
+DMA1CFGH:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0d6H
+// unsigned char volatile __sfr DMAARM
+DMAARM:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0d7H
+// unsigned char volatile __sfr DMAREQ
+DMAREQ:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0e8H
+// union <unnamed> volatile __sfr _A_IRCON2
+_A_IRCON2:
+        DS 1
+//   10 
+//   11 // Reserving space for a global DMA channel descriptor list
+
+        RSEG XDATA_Z:XDATA:NOROOT(0)
+//   12 DMA_DESC dmaChannel1to4[4];
+dmaChannel1to4:
+        DS 32
+        REQUIRE __INIT_XDATA_Z
+//   13 
+//   14 // Table for assigning DMA channels.
+
+        RSEG XDATA_Z:XDATA:NOROOT(0)
+//   15 DMA_TABLE_ENTRY dmaTable[DMA_ADM_NUMBER_OF_CHANNELS];
+dmaTable:
+        DS 15
+        REQUIRE __INIT_XDATA_Z
+//   16 
+//   17 
+//   18 //-----------------------------------------------------------------------------
+//   19 // See cul.h for a description of this function.
+//   20 //-----------------------------------------------------------------------------
+
+        RSEG NEAR_CODE:CODE:NOROOT(0)
+//   21 void culDmaInit(void){
+culDmaInit:
+        MOV     A,#-0x9
+        LCALL   ?FUNC_ENTER_XDATA
+        ; Saved register size: 9
+        ; Auto size: 0
+//   22 
+//   23    // Clearing all channels
+//   24    memset((void*)dmaChannel1to4, 0, sizeof(dmaChannel1to4));
+        ; Setup parameters for call to function memset
+        MOV     ?V0 + 0,#0x20
+        MOV     ?V0 + 1,#0x0
+        MOV     R0,#?V0 + 0
+        LCALL   ?PUSH_XSTACK_I_TWO
+        MOV     R4,#0x0
+        MOV     R5,#0x0
+        MOV     R2,#(dmaChannel1to4 & 0xff)
+        MOV     R3,#((dmaChannel1to4 >> 8) & 0xff)
+        LCALL   memset
+        MOV     A,#0x2
+        LCALL   ?DEALLOC_XSTACK8
+//   25 
+//   26    // Clearing the DMA table,¼ÍÂ¼dmaÍ¨µÀÊÇ·ñ±»·ÖÅä
+//   27    memset((void*)dmaTable, 0, sizeof(dmaTable));
+        ; Setup parameters for call to function memset
+        MOV     ?V0 + 0,#0xf
+        MOV     R0,#?V0 + 0
+        LCALL   ?PUSH_XSTACK_I_TWO
+        MOV     R4,#0x0
+        MOV     R5,#0x0
+        MOV     R2,#(dmaTable & 0xff)
+        MOV     R3,#((dmaTable >> 8) & 0xff)
+        LCALL   memset
+        MOV     A,#0x2
+        LCALL   ?DEALLOC_XSTACK8
+//   28 
+//   29    // Clearing any arming of channels 1 to 4, but leaving staus of channel 0.
+//   30    DMAARM &= DMA_CHANNEL_0;
+        MOV     A,0xd6
+        MOV     C,0xE0 /* A   */.0
+        CLR     A
+        MOV     0xE0 /* A   */.0,C
+        MOV     0xd6,A
+//   31 
+//   32    // Clearing all starting of DMA channels 1 to 4, but leaving status of channel 0.
+//   33    DMAREQ &= DMA_CHANNEL_0;
+        MOV     A,0xd7
+        MOV     C,0xE0 /* A   */.0
+        CLR     A
+        MOV     0xE0 /* A   */.0,C
+        MOV     0xd7,A
+//   34 
+//   35    // Clearing all DMA interrupt flags of channels 1 to 4, but leaving status of channel 0.
+//   36    DMAIRQ &= DMA_CHANNEL_0;
+        MOV     A,0xd1
+        MOV     C,0xE0 /* A   */.0
+        CLR     A
+        MOV     0xE0 /* A   */.0,C
+        MOV     0xd1,A
+//   37 
+//   38    // Clearing the interrupt flag of the DMA and enabling DMA interrupt.
+//   39    INT_SETFLAG(INUM_DMA, INT_CLR);
+        CLR     0xc0.0
+//   40    INT_ENABLE(INUM_DMA, INT_ON);
+        SETB    0xb8.0
+//   41 
+//   42    // Setting the address of the DMA descriptors
+//   43    DMA_SET_ADDR_DESC1234(dmaChannel1to4);
+        MOV     A,#((dmaChannel1to4 >> 8) & 0xff)
+        MOV     0xd3,A
+        MOV     0xd2,#(dmaChannel1to4 & 0xff)
+//   44 
+//   45 } // ends culDmaInit()
+        MOV     R7,#0x2
+        LJMP    ?FUNC_LEAVE_XDATA
+        REQUIRE _A_TCON
+        REQUIRE _A_S0CON
+        REQUIRE IEN2
+        REQUIRE S1CON
+        REQUIRE _A_IEN0
+        REQUIRE _A_IEN1
+        REQUIRE _A_IRCON
+        REQUIRE DMAIRQ
+        REQUIRE DMA1CFGL
+        REQUIRE DMA1CFGH
+        REQUIRE DMAARM
+        REQUIRE DMAREQ
+        REQUIRE _A_IRCON2
+//   46 
+//   47 
+//   48 //-----------------------------------------------------------------------------
+//   49 // See cul.h for a description of this function.
+//   50 //-----------------------------------------------------------------------------
+
+        RSEG NEAR_CODE:CODE:NOROOT(0)
+//   51 void culSetDmaChannel0CallBack(FUNCTION* pCallBackFunction)
+culSetDmaChannel0CallBack:
+//   52 {
+        PUSH    DPL
+        PUSH    DPH
+        ; Saved register size: 2
+        ; Auto size: 0
+//   53    dmaTable[0].assigned = TRUE;
+        MOV     A,#0x1
+        MOV     DPTR,#dmaTable
+        MOVX    @DPTR,A
+//   54    dmaTable[0].callBackFunction = pCallBackFunction;
+        MOV     DPTR,#(dmaTable + 1)
+        MOV     A,R2
+        MOVX    @DPTR,A
+        INC     DPTR
+        MOV     A,R3
+        REQUIRE ?Subroutine0
+        ; // Fall through to label ?Subroutine0
+//   55 
+//   56    return;
+//   57 }
+
+        RSEG NEAR_CODE:CODE:NOROOT(0)
+?Subroutine0:
+        MOVX    @DPTR,A
+        POP     DPH
+        POP     DPL
+        RET
+//   58 
+//   59 
+//   60 //-----------------------------------------------------------------------------
+//   61 // See cul.h for a description of this function.
+//   62 //-----------------------------------------------------------------------------
+
+        RSEG NEAR_CODE:CODE:NOROOT(0)
+//   63 void culClearDmaChannel0CallBack(void)
+culClearDmaChannel0CallBack:
+//   64 {
+        PUSH    DPL
+        PUSH    DPH
+        ; Saved register size: 2
+        ; Auto size: 0
+//   65    dmaTable[0].assigned = FALSE;
+        CLR     A
+        MOV     DPTR,#dmaTable
+        MOVX    @DPTR,A
+//   66    dmaTable[0].callBackFunction = NULL;
+        MOV     DPTR,#(dmaTable + 1)
+        MOVX    @DPTR,A
+        INC     DPTR
+        SJMP    ?Subroutine0
+//   67 
+//   68    return;
+//   69 }
+
+        END
+//   70 
+//   71 
+//   72 /*
+//   73 //-----------------------------------------------------------------------------
+//   74 // dma_IRQ
+//   75 //
+//   76 //  Description:
+//   77 //      This interrupt routine is run each time the DMA generates an interrupt.
+//   78 //      According to the interrupt flag of the DMA channel, the corresponding
+//   79 //      callBackFunction is called. The interrupt flags are cleared.
+//   80 //-----------------------------------------------------------------------------
+//   81 #pragma vector=DMA_VECTOR
+//   82 __interrupt void dma_IRQ (void){
+//   83 
+//   84    INT_GLOBAL_ENABLE(INT_OFF);
+//   85    // Clearing the interrupt flag.
+//   86    DMAIF = 0;
+//   87 
+//   88    if(DMAIRQ & DMA_CHANNEL_0){
+//   89       // Clearing interrupt flag
+//   90       DMAIRQ &= ~DMA_CHANNEL_0;
+//   91 
+//   92       // Calling the callback function.
+//   93       if(dmaTable[0].callBackFunction){
+//   94          dmaTable[0].callBackFunction();
+//   95       }
+//   96    }
+//   97    if(DMAIRQ & DMA_CHANNEL_1){
+//   98       // Clearing interrupt flag
+//   99       DMAIRQ &= ~DMA_CHANNEL_1;
+//  100 
+//  101       // Calling the callback function.
+//  102       if(dmaTable[1].callBackFunction){
+//  103          dmaTable[1].callBackFunction();
+//  104       }
+//  105    }
+//  106    if(DMAIRQ & DMA_CHANNEL_2){
+//  107       // Clearing interrupt flag
+//  108       DMAIRQ &= ~DMA_CHANNEL_2;
+//  109 
+//  110       // Calling the callback function.
+//  111       if(dmaTable[2].callBackFunction){
+//  112          dmaTable[2].callBackFunction();
+//  113       }
+//  114    }
+//  115    if(DMAIRQ & DMA_CHANNEL_3){
+//  116       // Clearing interrupt flag
+//  117       DMAIRQ &= ~DMA_CHANNEL_3;
+//  118 
+//  119       // Calling the callback function.
+//  120       if(dmaTable[3].callBackFunction){
+//  121          dmaTable[3].callBackFunction();
+//  122       }
+//  123    }
+//  124    if(DMAIRQ & DMA_CHANNEL_4){
+//  125       // Clearing interrupt flag
+//  126       DMAIRQ &= ~DMA_CHANNEL_4;
+//  127 
+//  128       // Calling the callback function.
+//  129       if(dmaTable[4].callBackFunction){
+//  130          dmaTable[4].callBackFunction();
+//  131       }
+//  132    }
+//  133 
+//  134    INT_GLOBAL_ENABLE(INT_ON);
+//  135 }
+//  136 */
+// 
+// 138 bytes in segment NEAR_CODE
+//  13 bytes in segment SFR_AN
+//  47 bytes in segment XDATA_Z
+// 
+// 138 bytes of CODE  memory
+//   0 bytes of DATA  memory (+ 13 bytes shared)
+//  47 bytes of XDATA memory
+//
+//Errors: none
+//Warnings: none

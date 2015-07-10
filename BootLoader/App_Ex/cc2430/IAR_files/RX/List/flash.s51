@@ -1,0 +1,1969 @@
+///////////////////////////////////////////////////////////////////////////////
+//                                                                            /
+// IAR 8051 C/C++ Compiler V7.30B/W32                   03/Jul/2015  20:20:03 /
+// Copyright 2004-2007 IAR Systems. All rights reserved.                      /
+//                                                                            /
+//    Core               =  plain                                             /
+//    Code model         =  near                                              /
+//    Data model         =  large                                             /
+//    Calling convention =  xdata reentrant                                   /
+//    Constant location  =  data                                              /
+//    Dptr setup         =  1,16                                              /
+//    Source file        =  C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä° /
+//                          æ7\App_Ex\cc2430\source\flash.c                   /
+//    Command line       =  "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\App_Ex\cc2430\source\flash.c" -D chip=2430    /
+//                          -D COMPLETE_APPLICATION -D RX -lB "C:\Documents   /
+//                          and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\App_Ex\cc2 /
+//                          430\IAR_files\RX\List\" -o "C:\Documents and      /
+//                          Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\App_Ex\cc2430\ /
+//                          IAR_files\RX\Obj\" -e -z9 --debug --core=plain    /
+//                          --dptr=16,1 --data_model=large --code_model=near  /
+//                          --calling_convention=xdata_reentrant              /
+//                          --place_constants=data --nr_virtual_regs 8 -I     /
+//                          "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\App_Ex\cc2430\IAR_files\..\..\..\LIBRARY\CC24 /
+//                          30\CUL\INCLUDE\" -I "C:\Documents and             /
+//                          Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\App_Ex\cc2430\ /
+//                          IAR_files\..\..\..\LIBRARY\CC2430\HAL\INCLUDE\"   /
+//                          -I "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐ /
+//                          Þ¸Ä°æ7\App_Ex\cc2430\IAR_files\..\..\..\LIBRARY\C /
+//                          C2430\EB\INCLUDE\" -I "C:\Documents and           /
+//                          Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\App_Ex\cc2430\ /
+//                          IAR_files\..\INCLUDE\" -I "C:\IAR                 /
+//                          Systems\Embedded Workbench 4.0 Evaluation         /
+//                          version\8051\INC\" -I "C:\IAR Systems\Embedded    /
+//                          Workbench 4.0 Evaluation version\8051\INC\CLIB\"  /
+//    List file          =  C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä° /
+//                          æ7\App_Ex\cc2430\IAR_files\RX\List\flash.s51      /
+//                                                                            /
+//                                                                            /
+///////////////////////////////////////////////////////////////////////////////
+
+        NAME flash
+
+        RSEG DOVERLAY:DATA:NOROOT(0)
+        RSEG IOVERLAY:IDATA:NOROOT(0)
+        RSEG ISTACK:IDATA:NOROOT(0)
+        RSEG PSTACK:XDATA:NOROOT(0)
+        RSEG XSTACK:XDATA:NOROOT(0)
+
+        EXTERN ?ALLOC_XSTACK8
+        EXTERN ?DEALLOC_XSTACK8
+        EXTERN ?FUNC_ENTER_XDATA
+        EXTERN ?FUNC_LEAVE_XDATA
+        EXTERN ?L_ADD_TO_X
+        EXTERN ?L_ADD_X
+        EXTERN ?L_DIV_MOD
+        EXTERN ?L_MOV_TO_X
+        EXTERN ?L_MOV_X
+        EXTERN ?L_SHL
+        EXTERN ?PUSH_XSTACK8_X_TWO
+        EXTERN ?PUSH_XSTACK_I_TWO
+        EXTERN ?SL_GT
+        EXTERN ?SL_GT_X
+        EXTERN ?S_SHL
+        EXTERN ?US_SWITCH_DENSE
+        EXTERN ?V0
+        EXTERN ?XSP
+        EXTERN ?XSTACK_DISP0_8
+        EXTERN __INIT_XDATA_I
+        EXTERN __INIT_XDATA_Z
+
+        PUBWEAK CLKCON
+        PUBWEAK DMA0CFGH
+        PUBWEAK DMA0CFGL
+        PUBWEAK DMAARM
+        PUBWEAK DMAIRQ
+        PUBWEAK FADDRH
+        PUBWEAK FADDRL
+        PUBWEAK FCTL
+        PUBWEAK FMAP
+        PUBWEAK FWT
+        PUBLIC FlashErase
+        PUBLIC FlashRead
+        PUBLIC FlashWrite
+        PUBLIC PageData
+        PUBWEAK _A_IEN0
+        PUBWEAK __Constant_0
+        PUBWEAK __Constant_1
+        PUBWEAK __Constant_100
+        PUBWEAK __Constant_20000
+        PUBWEAK __Constant_4
+        PUBWEAK __Constant_800
+        PUBWEAK __Constant_8000
+        PUBLIC dmaChannel
+
+        EXTERN halWait
+
+// C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\App_Ex\cc2430\source\flash.c
+//    1 #include "flash.h"
+
+        ASEGN SFR_AN:DATA:NOROOT,09fH
+// unsigned char volatile __sfr FMAP
+FMAP:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0a8H
+// union <unnamed> volatile __sfr _A_IEN0
+_A_IEN0:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0abH
+// unsigned char volatile __sfr FWT
+FWT:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0acH
+// unsigned char volatile __sfr FADDRL
+FADDRL:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0adH
+// unsigned char volatile __sfr FADDRH
+FADDRH:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0aeH
+// unsigned char volatile __sfr FCTL
+FCTL:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0c6H
+// unsigned char volatile __sfr CLKCON
+CLKCON:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0d1H
+// unsigned char volatile __sfr DMAIRQ
+DMAIRQ:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0d4H
+// unsigned char volatile __sfr DMA0CFGL
+DMA0CFGL:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0d5H
+// unsigned char volatile __sfr DMA0CFGH
+DMA0CFGH:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0d6H
+// unsigned char volatile __sfr DMAARM
+DMAARM:
+        DS 1
+//    2 
+//    3 // º¯ÊýÉùÃ÷
+//    4 WORD PageJudge( INT32 flashAddress , INT16 length ) ;
+//    5 WORD WriteAddrConvert( INT32 flashAddress );
+//    6 WORD ReadAddrConvert( INT32 flashAddress );
+//    7 void writeFlashUsingDMA(BYTE* pSrcAddr, INT16 length, WORD flashAddress, BOOL erase);
+//    8 
+//    9 
+
+        RSEG XDATA_Z:XDATA:NOROOT(0)
+//   10 volatile DMA_DESC dmaChannel;  //DMAµÄ½á¹¹Ìå±äÁ¿
+dmaChannel:
+        DS 8
+        REQUIRE __INIT_XDATA_Z
+
+        RSEG XDATA_Z:XDATA:NOROOT(0)
+//   11 BYTE PageData[2048];           //»º´æÇø£¬ÓÃÀ´´æ´¢1Ò³µÄflashÊý¾Ý,ÐèÒªÊÍ·Å£¬·ñÔòRAMÂú£¬¿¨ËÀ
+PageData:
+        DS 2048
+        REQUIRE __INIT_XDATA_Z
+//   12 
+//   13 //flash´æ´¢Æ÷¿Õ¼äµØÖ·:0x00000~0x1FFFF£¬¹²128KB
+//   14 //½¨ÒéÔÚ0x01000~0x1FFFF·¶Î§ÄÚÐ´Êý¾Ý
+//   15 
+//   16 
+//   17 /**********************************************************************
+//   18 º¯ÊýÔ­ÐÍ£ºvoid FlashWrite( BYTE *pSrcAddr , INT32 flashAddress , INT16 length )
+//   19 
+//   20 ¹¦ÄÜÃèÊö£º½«¸ø¶¨µÄÊý¾ÝÐ´ÈëflashÖÐ¡£ÏÈ½«flashAddressµØÖ·ËùÔÚµÄflashÒ³¶ÁÈë»º´æÇø£¬
+//   21           È»ºóÔÚ»º´æÇøÐ´ÈëÊý¾Ý£¬×îºó½«Ô­flashÒ³ÖÐµÄÄÚÈÝÈ«²¿²Á³ý£¬°Ñ»º´æÇøµÄÄÚÈÝ
+//   22           ÖØÐÂÐ´Èë¡£¿¼ÂÇµ½ÓÐ¿ÉÄÜÉæ¼°Á½Ò³ÒÔÉÏµÄflashÐ´Èë£¬ÐèÒª·ÖÇé¿öÌÖÂÛ¡£
+//   23 
+//   24 ²Î    Êý£ºBYTE *pSrcAddr
+//   25           Ö¸ÏòÐèÒªÐ´ÈëflashÖÐÊý¾ÝµÄÖ¸Õë
+//   26 
+//   27           INT32 flashAddress
+//   28           ÐèÒªÐ´ÈëµÄflashµØÖ·
+//   29 
+//   30           INT16 length
+//   31           ÐèÒªÐ´ÈëÊý¾ÝµÄ³¤¶È
+//   32 ***********************************************************************/
+
+        RSEG FLASH:CODE:NOROOT(0)
+//   33 void FlashWrite( BYTE *pSrcAddr , INT32 flashAddress , INT16 length ) @ "FLASH"
+FlashWrite:
+//   34 {
+        MOV     A,#-0xf
+        LCALL   ?FUNC_ENTER_XDATA
+        ; Saved register size: 15
+        ; Auto size: 10
+        MOV     A,#-0xa
+        LCALL   ?ALLOC_XSTACK8
+        MOV     A,#0x2
+        LCALL   ?XSTACK_DISP0_8
+        MOV     A,R2
+        MOVX    @DPTR,A
+        INC     DPTR
+        MOV     A,R3
+        MOVX    @DPTR,A
+        MOV     A,#0x4
+        LCALL   ?XSTACK_DISP0_8
+        MOV     A,R4
+        MOVX    @DPTR,A
+        INC     DPTR
+        MOV     A,R5
+        MOVX    @DPTR,A
+//   35   //BYTE PageData[2048];
+//   36   
+//   37   if( flashAddress < 0x00000 || flashAddress >= 0x20000 )
+        MOV     A,#0x19
+        LCALL   ?XSTACK_DISP0_8
+        PUSH    DPL
+        PUSH    DPH
+        MOV     DPTR,#__Constant_0
+        MOV     R0,#?V0 + 0
+        LCALL   ?L_MOV_X
+        POP     DPH
+        POP     DPL
+        MOV     R0,#?V0 + 0
+        LCALL   ?SL_GT_X
+        JNC     $+5
+        LJMP    ??FlashWrite_0
+        MOV     A,#0x19
+        LCALL   ?XSTACK_DISP0_8
+        PUSH    DPL
+        PUSH    DPH
+        MOV     DPTR,#__Constant_20000
+        MOV     R0,#?V0 + 0
+        LCALL   ?L_MOV_X
+        POP     DPH
+        POP     DPL
+        MOV     R0,#?V0 + 0
+        LCALL   ?SL_GT_X
+        JC      $+5
+        LJMP    ??FlashWrite_0
+        MOV     A,#0x19
+        LCALL   ?XSTACK_DISP0_8
+        MOV     R0,#?V0 + 0
+        LCALL   ?L_MOV_X
+        MOV     DPTR,#__Constant_800
+        MOV     R0,#?V0 + 4
+        LCALL   ?L_MOV_X
+        MOV     R0,#?V0 + 0
+        MOV     R1,#?V0 + 4
+        LCALL   ?L_DIV_MOD
+        MOV     R2,?V0 + 0
+        MOV     R3,?V0 + 1
+        MOV     A,#0x19
+        LCALL   ?XSTACK_DISP0_8
+        PUSH    DPL
+        PUSH    DPH
+        MOV     A,#0x4
+        LCALL   ?XSTACK_DISP0_8
+        MOVX    A,@DPTR
+        MOV     ?V0 + 4,A
+        INC     DPTR
+        MOVX    A,@DPTR
+        MOV     ?V0 + 5,A
+        RLC     A
+        SUBB    A,0xE0 /* A   */
+        MOV     ?V0 + 6,A
+        MOV     ?V0 + 7,A
+        POP     DPH
+        POP     DPL
+        MOV     R0,#?V0 + 4
+        LCALL   ?L_ADD_X
+        MOV     DPTR,#__Constant_800
+        MOV     R0,#?V0 + 0
+        LCALL   ?L_MOV_X
+        MOV     R0,#?V0 + 4
+        MOV     R1,#?V0 + 0
+        LCALL   ?L_DIV_MOD
+        MOV     A,?V0 + 4
+        CLR     C
+        SUBB    A,R2
+        MOV     R0,A
+        MOV     A,?V0 + 5
+        SUBB    A,R3
+        MOV     R1,A
+        MOV     A,#0x1
+        ADD     A,R0
+        MOV     R6,A
+        CLR     A
+        ADDC    A,R1
+        MOV     R7,A
+//   38     return;//flashµØÖ·²»ºÏ·¨£¬·µ»Ø
+//   39   
+//   40   WORD c = PageJudge( flashAddress , length );         //c±íÊ¾ÐèÒª¸Ä¶¯µÄflashÒ³¸öÊý
+//   41   
+//   42   if( c == 1 )//Ö»ÐèÒªÐ´Ò»Ò³flash
+        MOV     A,#0x1
+        XRL     A,R6
+        JNZ     ??FlashWrite_1
+        MOV     A,R7
+??FlashWrite_1:
+        JZ      $+5
+        LJMP    ??FlashWrite_2
+//   43   {
+//   44     WORD PageNumber = ( flashAddress / 0x800);        //ÅÐ¶ÏËù¸øµØÖ·ÊôÓÚÄÄ¸öflashÒ³
+//   45     INT32 PageStart = (INT32)PageNumber * 2048;       //¼ÆËãflashÒ³µÄÊ×µØÖ·
+        MOV     ?V0 + 0,R2
+        MOV     ?V0 + 1,R3
+        MOV     ?V0 + 2,#0x0
+        MOV     ?V0 + 3,#0x0
+        MOV     A,#0xb
+        MOV     R0,#?V0 + 0
+        LCALL   ?L_SHL
+//   46     WORD WriteAddress = WriteAddrConvert( PageStart );//flashÐ´ÈëµØÖ·×ª»»
+        ; Setup parameters for call to function WriteAddrConvert
+        MOV     R2,A
+        MOV     R3,?V0 + 1
+        MOV     R4,?V0 + 2
+        MOV     R5,?V0 + 3
+        LCALL   WriteAddrConvert
+        MOV     ?V0 + 4,R2
+        MOV     ?V0 + 5,R3
+        MOV     R6,?V0 + 4
+        MOV     R7,?V0 + 5
+//   47     BYTE *p = pSrcAddr;                               //Ö¸ÕëpÖ¸ÏòÐèÒªÐ´ÈëµÄÊý¾Ý
+        MOV     A,#0x2
+        LCALL   ?XSTACK_DISP0_8
+        MOVX    A,@DPTR
+        MOV     R0,A
+        INC     DPTR
+        MOVX    A,@DPTR
+        MOV     R1,A
+        MOV     A,#0x6
+        LCALL   ?XSTACK_DISP0_8
+        MOV     A,R0
+        MOVX    @DPTR,A
+        INC     DPTR
+        MOV     A,R1
+        LCALL   ?Subroutine2
+//   48     INT16 i;
+//   49     //error?flashAddress?==>PageStart?
+//   50     FlashRead( PageStart , PageData , 2048 );    //½«Õû¸öflashÒ³µÄÄÚÈÝ¶ÁÈë»º³åÇø
+??CrossCallReturnLabel_4:
+        LCALL   ?PUSH_XSTACK_I_TWO
+        MOV     ?V0 + 4,#(PageData & 0xff)
+        MOV     ?V0 + 5,#((PageData >> 8) & 0xff)
+        MOV     R0,#?V0 + 4
+        LCALL   ?PUSH_XSTACK_I_TWO
+        MOV     R2,#0x0
+        MOV     R3,?V0 + 1
+        MOV     R4,?V0 + 2
+        MOV     R5,?V0 + 3
+        LCALL   FlashRead
+        MOV     A,#0x4
+        LCALL   ?DEALLOC_XSTACK8
+//   51     WORD AddrOffset = ( flashAddress % 0x800 );     //¼ÆËãflashAddressµØÖ·ÔÚÆäflashÒ³ÖÐÆ«ÒÆÁ¿
+        MOV     A,#0x19
+        LCALL   ?XSTACK_DISP0_8
+        MOV     R0,#?V0 + 4
+        LCALL   ?L_MOV_X
+        MOV     DPTR,#__Constant_800
+        MOV     R0,#?V0 + 0
+        LCALL   ?L_MOV_X
+        MOV     R0,#?V0 + 4
+        MOV     R1,#?V0 + 0
+        LCALL   ?L_DIV_MOD
+        MOV     R4,?V0 + 0
+        MOV     R5,?V0 + 1
+//   52     
+//   53     for( i=0 ; i<length ; i++ )                     //ÔÚ»º´æÇøÖÐ½«Êý¾ÝÐ´Èëµ½Ö¸¶¨Î»ÖÃ
+        MOV     R0,#0x0
+        MOV     R1,#0x0
+        SJMP    ??CrossCallReturnLabel_6
+//   54     {
+//   55       PageData[ AddrOffset+i ] = *p;
+??FlashWrite_3:
+        MOV     A,#0x6
+        LCALL   ?XSTACK_DISP0_8
+        LCALL   ??Subroutine4_0
+??CrossCallReturnLabel_8:
+        PUSH    A
+        MOV     A,R0
+        ADD     A,R4
+        MOV     R2,A
+        MOV     A,R1
+        ADDC    A,R5
+        MOV     R3,A
+        MOV     A,R2
+        ADD     A,#(PageData & 0xff)
+        MOV     DPL,A
+        MOV     A,R3
+        ADDC    A,#((PageData >> 8) & 0xff)
+        MOV     DPH,A
+        POP     A
+        MOVX    @DPTR,A
+//   56       p++;
+        MOV     A,#0x6
+        LCALL   ?XSTACK_DISP0_8
+        MOVX    A,@DPTR
+        ADD     A,#0x1
+        MOV     R2,A
+        INC     DPTR
+        MOVX    A,@DPTR
+        ADDC    A,#0x0
+        MOV     R3,A
+        MOV     A,#0x6
+        LCALL   ?XSTACK_DISP0_8
+        MOV     A,R2
+        MOVX    @DPTR,A
+        INC     DPTR
+        MOV     A,R3
+        LCALL   ?Subroutine3
+//   57     }//end for
+??CrossCallReturnLabel_6:
+        MOV     A,#0x4
+        LCALL   ?XSTACK_DISP0_8
+        MOVX    A,@DPTR
+        MOV     R2,A
+        INC     DPTR
+        MOVX    A,@DPTR
+        MOV     R3,A
+        CLR     C
+        MOV     A,R0
+        SUBB    A,R2
+        MOV     A,R1
+        SUBB    A,R3
+        MOV     C,0xD0 /* PSW */.2
+        XRL     A,PSW
+        RLC     A
+        JC      ??FlashWrite_3
+//   58     
+//   59     //½«»º´æÇøÖÐÊý¾ÝÖØÐÂÐ´ÈëflashÒ³£¬Ð´ÈëÇ°ÏÈ½«flashÒ³²Á³ý
+//   60     while( FCTL&0x40 );
+??FlashWrite_4:
+        MOV     A,0xae
+        MOV     C,0xE0 /* A   */.6
+        JC      ??FlashWrite_4
+//   61     writeFlashUsingDMA( PageData , 2048 , WriteAddress , TRUE );
+        ; Setup parameters for call to function writeFlashUsingDMA
+        MOV     ?V0 + 0,R6
+        MOV     ?V0 + 1,R7
+        MOV     R0,#?V0 + 0
+        LCALL   ?PUSH_XSTACK_I_TWO
+        MOV     R1,#0x1
+        MOV     R4,#0x0
+        MOV     R5,#0x8
+        MOV     R2,#(PageData & 0xff)
+        MOV     R3,#((PageData >> 8) & 0xff)
+        LCALL   writeFlashUsingDMA
+        MOV     A,#0x2
+        LCALL   ?DEALLOC_XSTACK8
+??FlashWrite_0:
+        MOV     A,#0xa
+        LJMP    ?Subroutine12
+//   62   }//end if
+//   63   
+//   64   else//ÐèÒªÐ´Á½Ò³ÒÔÉÏµÄflash
+//   65   {
+//   66     WORD StartPageNumber = ( flashAddress / 0x800 ); //ÅÐ¶ÏËù¸øµØÖ·ÊôÓÚÄÄ¸öflashÒ³
+??FlashWrite_2:
+        MOV     A,#0x6
+        LCALL   ?XSTACK_DISP0_8
+        MOV     A,R2
+        MOVX    @DPTR,A
+        INC     DPTR
+        MOV     A,R3
+        MOVX    @DPTR,A
+//   67     WORD NowPageNumber;                              //µ±Ç°flashÒ³
+//   68     INT32 PageStart;                                 //flashÒ³µÄÊ×µØÖ·
+//   69     WORD WriteAddress;                               //flashÐ´ÈëµØÖ·×ª»»
+//   70     BYTE *p = pSrcAddr;                              //Ö¸ÕëpÖ¸ÏòÐèÒªÐ´ÈëµÄÊý¾Ý
+        MOV     A,#0x2
+        LCALL   ?XSTACK_DISP0_8
+        MOVX    A,@DPTR
+        MOV     R0,A
+        INC     DPTR
+        MOVX    A,@DPTR
+        MOV     R1,A
+        MOV     DPL,?XSP + 0
+        MOV     DPH,?XSP + 1
+        MOV     A,R0
+        MOVX    @DPTR,A
+        INC     DPTR
+        MOV     A,R1
+        MOVX    @DPTR,A
+//   71     INT16 i,j;
+//   72     
+//   73     for( j=0 ; j<c ; j++ )                           //·ÖÒ³Ð´ÈëflashÊý¾Ý
+        MOV     A,#0x2
+        LCALL   ?XSTACK_DISP0_8
+        CLR     A
+        MOVX    @DPTR,A
+        INC     DPTR
+        SJMP    ??FlashWrite_5
+//   74     {
+//   75       NowPageNumber = StartPageNumber + j;
+//   76       PageStart = (INT32)NowPageNumber * 2048;
+//   77       WriteAddress = WriteAddrConvert( PageStart );
+//   78       FlashRead( PageStart , PageData , 2048 );      //½«Õû¸öflashÒ³µÄÄÚÈÝ¶ÁÈë»º³åÇø
+//   79       
+//   80       if( j==0 )//ÐèÒª¸Ä¶¯µÄÊÇµÚÒ»Ò³flash
+//   81       {
+//   82         WORD AddrOffset = ( flashAddress % 0x800 ); //¼ÆËãflashAddressµØÖ·ÔÚµÚÒ»Ò³ÖÐÆ«ÒÆÁ¿
+//   83         for( i=0 ; (AddrOffset+i)<=2047 ; i++ )     //ÔÚ»º´æÇøÖÐ½«Êý¾Ý´Óoffsetµ½Ä©Î²Ð´Âú
+//   84         {
+//   85           PageData[ AddrOffset+i ] = *p;
+??FlashWrite_6:
+        MOV     DPL,?XSP + 0
+        MOV     DPH,?XSP + 1
+        MOVX    A,@DPTR
+        MOV     R4,A
+        INC     DPTR
+        MOVX    A,@DPTR
+        MOV     DPH,A
+        MOV     DPL,R4
+        MOVX    A,@DPTR
+        PUSH    A
+        MOV     A,R0
+        ADD     A,R2
+        ADD     A,#(PageData & 0xff)
+        MOV     DPL,A
+        MOV     A,R5
+        ADDC    A,#((PageData >> 8) & 0xff)
+        MOV     DPH,A
+        POP     A
+        LCALL   ?Subroutine10
+//   86           p++;
+??CrossCallReturnLabel_21:
+        MOV     R4,A
+        INC     DPTR
+        MOVX    A,@DPTR
+        ADDC    A,#0x0
+        MOV     R5,A
+        MOV     DPL,?XSP + 0
+        MOV     DPH,?XSP + 1
+        MOV     A,R4
+        MOVX    @DPTR,A
+        INC     DPTR
+        MOV     A,R5
+        MOVX    @DPTR,A
+//   87           length--;
+        MOV     A,#0x4
+        LCALL   ?XSTACK_DISP0_8
+        LCALL   ?Subroutine8
+??CrossCallReturnLabel_17:
+        LCALL   ?Subroutine3
+//   88         }//end for
+??CrossCallReturnLabel_7:
+        MOV     A,R0
+        ADD     A,R2
+        MOV     A,R1
+        ADDC    A,R3
+        MOV     R5,A
+        CLR     C
+        SUBB    A,#0x8
+        JC      ??FlashWrite_6
+//   89         while( FCTL&0x40 );
+??FlashWrite_7:
+        MOV     A,0xae
+        MOV     C,0xE0 /* A   */.6
+        JC      ??FlashWrite_7
+//   90         writeFlashUsingDMA( PageData , 2048 , WriteAddress , TRUE );
+??FlashWrite_8:
+        ; Setup parameters for call to function writeFlashUsingDMA
+        MOV     A,#0x8
+        LCALL   ?XSTACK_DISP0_8
+        LCALL   ?PUSH_XSTACK8_X_TWO
+        MOV     R1,#0x1
+        MOV     R4,#0x0
+        MOV     R5,#0x8
+        MOV     R2,#(PageData & 0xff)
+        MOV     R3,#((PageData >> 8) & 0xff)
+        LCALL   writeFlashUsingDMA
+        MOV     A,#0x2
+        LCALL   ?DEALLOC_XSTACK8
+        MOV     A,#0x2
+        LCALL   ?XSTACK_DISP0_8
+        MOVX    A,@DPTR
+        ADD     A,#0x1
+        MOVX    @DPTR,A
+        INC     DPTR
+        MOVX    A,@DPTR
+        ADDC    A,#0x0
+??FlashWrite_5:
+        MOVX    @DPTR,A
+        MOV     A,#0x2
+        LCALL   ?XSTACK_DISP0_8
+        CLR     C
+        MOVX    A,@DPTR
+        SUBB    A,R6
+        INC     DPTR
+        MOVX    A,@DPTR
+        SUBB    A,R7
+        JC      $+5
+        LJMP    ??FlashWrite_0
+        MOV     A,#0x6
+        LCALL   ?XSTACK_DISP0_8
+        PUSH    DPL
+        PUSH    DPH
+        MOV     A,#0x2
+        LCALL   ?XSTACK_DISP0_8
+        MOVX    A,@DPTR
+        MOV     R0,A
+        INC     DPTR
+        MOVX    A,@DPTR
+        MOV     R1,A
+        POP     DPH
+        POP     DPL
+        MOVX    A,@DPTR
+        ADD     A,R0
+        MOV     ?V0 + 0,A
+        INC     DPTR
+        MOVX    A,@DPTR
+        ADDC    A,R1
+        MOV     ?V0 + 1,A
+        MOV     ?V0 + 2,#0x0
+        MOV     ?V0 + 3,#0x0
+        MOV     A,#0xb
+        MOV     R0,#?V0 + 0
+        LCALL   ?L_SHL
+        ; Setup parameters for call to function WriteAddrConvert
+        MOV     R2,A
+        MOV     R3,?V0 + 1
+        MOV     R4,?V0 + 2
+        MOV     R5,?V0 + 3
+        LCALL   WriteAddrConvert
+        MOV     A,#0x8
+        LCALL   ?XSTACK_DISP0_8
+        MOV     A,R2
+        MOVX    @DPTR,A
+        INC     DPTR
+        MOV     A,R3
+        LCALL   ?Subroutine2
+??CrossCallReturnLabel_5:
+        LCALL   ?PUSH_XSTACK_I_TWO
+        MOV     ?V0 + 4,#(PageData & 0xff)
+        MOV     ?V0 + 5,#((PageData >> 8) & 0xff)
+        MOV     R0,#?V0 + 4
+        LCALL   ?PUSH_XSTACK_I_TWO
+        MOV     R2,#0x0
+        MOV     R3,?V0 + 1
+        MOV     R4,?V0 + 2
+        MOV     R5,?V0 + 3
+        LCALL   FlashRead
+        MOV     A,#0x4
+        LCALL   ?DEALLOC_XSTACK8
+        MOV     A,#0x2
+        LCALL   ?XSTACK_DISP0_8
+        MOVX    A,@DPTR
+        JNZ     ??FlashWrite_9
+        INC     DPTR
+        MOVX    A,@DPTR
+??FlashWrite_9:
+        JNZ     ??FlashWrite_10
+        MOV     A,#0x19
+        LCALL   ?XSTACK_DISP0_8
+        MOV     R0,#?V0 + 4
+        LCALL   ?L_MOV_X
+        MOV     DPTR,#__Constant_800
+        MOV     R0,#?V0 + 0
+        LCALL   ?L_MOV_X
+        MOV     R0,#?V0 + 4
+        MOV     R1,#?V0 + 0
+        LCALL   ?L_DIV_MOD
+        MOV     R2,?V0 + 0
+        MOV     R3,?V0 + 1
+        MOV     R0,#0x0
+        MOV     R1,#0x0
+        LJMP    ??CrossCallReturnLabel_7
+//   91       }//end if
+//   92       
+//   93       else if( j == c-1 )//ÐèÒª¸Ä¶¯µÄÊÇ×îºóÒ»Ò³flash
+??FlashWrite_10:
+        MOV     A,#0x2
+        LCALL   ?XSTACK_DISP0_8
+        MOV     A,#-0x1
+        ADD     A,R6
+        MOV     R0,A
+        MOV     A,#-0x1
+        ADDC    A,R7
+        MOV     R1,A
+        MOVX    A,@DPTR
+        XRL     A,R0
+        JNZ     ??FlashWrite_11
+        INC     DPTR
+        MOVX    A,@DPTR
+        XRL     A,R1
+??FlashWrite_11:
+        MOV     R0,#0x0
+        MOV     R1,#0x0
+        JNZ     ??FlashWrite_12
+//   94       {
+//   95         for( i=0 ; length>0 ; length-- )            //ÔÚ»º³åÇøÖÐ´ÓµÚ0¸öÔªËØ¿ªÊ¼Ð´£¬Ö±µ½Êý¾ÝÐ´Íê
+        SJMP    ??FlashWrite_13
+//   96         {
+//   97           PageData[ i ] = *p;
+??FlashWrite_14:
+        LCALL   ?Subroutine4
+??CrossCallReturnLabel_9:
+        PUSH    A
+        LCALL   ?Subroutine6
+??CrossCallReturnLabel_13:
+        POP     A
+        LCALL   ?Subroutine0
+//   98           p++;
+//   99           i++;
+//  100         }//end for
+??CrossCallReturnLabel_0:
+        MOV     A,#0x4
+        LCALL   ?XSTACK_DISP0_8
+        LCALL   ?Subroutine8
+??CrossCallReturnLabel_18:
+        MOVX    @DPTR,A
+??FlashWrite_13:
+        MOV     A,#0x4
+        LCALL   ?XSTACK_DISP0_8
+        CLR     C
+        MOVX    A,@DPTR
+        SUBB    A,#0x1
+        INC     DPTR
+        MOVX    A,@DPTR
+        SUBB    A,#0x0
+        MOV     C,0xD0 /* PSW */.2
+        XRL     A,PSW
+        RLC     A
+        JNC     ??FlashWrite_14
+//  101         while( FCTL&0x40 );
+??FlashWrite_15:
+        MOV     A,0xae
+        MOV     C,0xE0 /* A   */.6
+        JC      ??FlashWrite_15
+        LJMP    ??FlashWrite_8
+//  102         writeFlashUsingDMA( PageData , 2048 , WriteAddress , TRUE );
+//  103       }//end else if
+//  104       
+//  105       else//ÐèÒª¸Ä¶¯µÄÊÇÖÐ¼äflashÒ³
+//  106       {
+//  107         for( i=0 ; i<=2047 ; i++ )                  //ÔÚ»º³åÇøÖÐÈ«²¿Ð´ÂúÊý¾Ý
+??FlashWrite_12:
+        MOV     A,#0x4
+        LCALL   ?XSTACK_DISP0_8
+        MOVX    A,@DPTR
+        ADD     A,#0x0
+        MOVX    @DPTR,A
+        INC     DPTR
+        MOVX    A,@DPTR
+        ADDC    A,#-0x8
+        MOVX    @DPTR,A
+//  108         {
+//  109           PageData[ i ] = *p;
+??FlashWrite_16:
+        LCALL   ?Subroutine4
+??CrossCallReturnLabel_10:
+        PUSH    A
+        LCALL   ?Subroutine6
+??CrossCallReturnLabel_14:
+        POP     A
+        LCALL   ?Subroutine0
+//  110           p++;
+//  111           length--;
+//  112         }//end for
+??CrossCallReturnLabel_1:
+        CLR     C
+        SUBB    A,#0x8
+        MOV     C,0xD0 /* PSW */.2
+        XRL     A,PSW
+        RLC     A
+        JC      ??FlashWrite_16
+//  113         while( FCTL&0x40 );
+??FlashWrite_17:
+        MOV     A,0xae
+        MOV     C,0xE0 /* A   */.6
+        JC      ??FlashWrite_17
+        LJMP    ??FlashWrite_8
+        REQUIRE FCTL
+//  114         writeFlashUsingDMA( PageData , 2048 , WriteAddress , TRUE );
+//  115       }//end else
+//  116     }//end for
+//  117   }//end if's else
+//  118 }//end FlashWrite
+
+        RSEG FLASH:CODE:NOROOT(0)
+?Subroutine8:
+        MOVX    A,@DPTR
+        ADD     A,#-0x1
+        MOVX    @DPTR,A
+        INC     DPTR
+        MOVX    A,@DPTR
+        ADDC    A,#-0x1
+        RET
+
+        RSEG FLASH:CODE:NOROOT(0)
+?Subroutine6:
+        MOV     A,R0
+        ADD     A,#(PageData & 0xff)
+        MOV     DPL,A
+        MOV     A,R1
+        ADDC    A,#((PageData >> 8) & 0xff)
+        MOV     DPH,A
+        RET
+
+        RSEG FLASH:CODE:NOROOT(0)
+?Subroutine4:
+        MOV     DPL,?XSP + 0
+        MOV     DPH,?XSP + 1
+??Subroutine4_0:
+        MOVX    A,@DPTR
+        MOV     R2,A
+        INC     DPTR
+        MOVX    A,@DPTR
+        MOV     DPH,A
+        MOV     DPL,R2
+        MOVX    A,@DPTR
+        RET
+
+        RSEG FLASH:CODE:NOROOT(0)
+?Subroutine3:
+        LCALL   ?Subroutine11
+??CrossCallReturnLabel_23:
+        RET
+
+        RSEG FLASH:CODE:NOROOT(0)
+?Subroutine2:
+        MOVX    @DPTR,A
+        ; Setup parameters for call to function FlashRead
+        ; Setup parameters for call to function FlashRead
+        MOV     ?V0 + 4,#0x0
+        MOV     ?V0 + 5,#0x8
+        MOV     R0,#?V0 + 4
+        RET
+
+        RSEG FLASH:CODE:NOROOT(0)
+?Subroutine0:
+        LCALL   ?Subroutine10
+??CrossCallReturnLabel_22:
+        MOV     R2,A
+        INC     DPTR
+        MOVX    A,@DPTR
+        ADDC    A,#0x0
+        MOV     R3,A
+        MOV     DPL,?XSP + 0
+        MOV     DPH,?XSP + 1
+        MOV     A,R2
+        MOVX    @DPTR,A
+        INC     DPTR
+        MOV     A,R3
+        LCALL   ?Subroutine11
+??CrossCallReturnLabel_24:
+        RET
+
+        RSEG FLASH:CODE:NOROOT(0)
+?Subroutine11:
+        MOVX    @DPTR,A
+        MOV     A,R0
+        ADD     A,#0x1
+        INC     R0
+        MOV     A,R1
+        ADDC    A,#0x0
+        MOV     R1,A
+        RET
+
+        RSEG FLASH:CODE:NOROOT(0)
+?Subroutine10:
+        MOVX    @DPTR,A
+        MOV     DPL,?XSP + 0
+        MOV     DPH,?XSP + 1
+        MOVX    A,@DPTR
+        ADD     A,#0x1
+        RET
+//  119 
+//  120 
+//  121 /**********************************************************************
+//  122 º¯ÊýÔ­ÐÍ£ºvoid FlashRead( INT32 flashAddress , BYTE *Dataout , INT16 length )
+//  123 
+//  124 ¹¦ÄÜÃèÊö£º´Ó¸ø¶¨flashµØÖ·¿ªÊ¼¶ÁÈ¡Ö¸¶¨³¤¶ÈµÄÊý¾Ý¡£flash¶ÁÈ¡¹ý³ÌÖÐÏÈÒª½«flashÖÐ
+//  125           µÄÊý¾ÝÓ³Éäµ½code¶Î£¬ÔÙ´Ócode¶ÎÖÐ¶Á³öÊý¾Ý¡£ÓÉÓÚÃ¿´ÎÖ»ÄÜÓ³Éä1¸öbank¼´
+//  126           32KBµÄÊý¾Ý£¬Òò´ËÒª¿¼ÂÇ¿çbank¶ÁÈ¡Êý¾ÝµÄÇé¿ö¡£
+//  127 
+//  128 ²Î    Êý£ºINT32 flashAddress
+//  129           ¶ÁÈ¡flashµÄÆðÊ¼µØÖ·
+//  130 
+//  131           BYTE *Dataout
+//  132           ´ÓflashÖÐ¶Á³öÊý¾ÝµÄ´æ·ÅµØÖ·
+//  133 
+//  134           INT16 length
+//  135           ÐèÒª¶ÁÈ¡Êý¾ÝµÄ³¤¶È
+//  136 ***********************************************************************/
+
+        RSEG FLASH:CODE:NOROOT(0)
+//  137 void FlashRead( INT32 flashAddress , BYTE *Dataout , INT16 length ) @ "FLASH"
+FlashRead:
+//  138 {
+        MOV     A,#-0xf
+        LCALL   ?FUNC_ENTER_XDATA
+        ; Saved register size: 15
+        ; Auto size: 5
+        MOV     A,#-0x5
+        LCALL   ?ALLOC_XSTACK8
+        LCALL   ?Subroutine9
+??CrossCallReturnLabel_19:
+        MOV     A,#0x16
+        LCALL   ?XSTACK_DISP0_8
+        MOVX    A,@DPTR
+        MOV     R6,A
+        INC     DPTR
+        MOVX    A,@DPTR
+        MOV     R7,A
+//  139   if( flashAddress < 0x00000 || flashAddress >= 0x20000)
+        MOV     DPL,?XSP + 0
+        MOV     DPH,?XSP + 1
+        PUSH    DPL
+        PUSH    DPH
+        MOV     DPTR,#__Constant_0
+        MOV     R0,#?V0 + 0
+        LCALL   ?L_MOV_X
+        POP     DPH
+        POP     DPL
+        MOV     R0,#?V0 + 0
+        LCALL   ?SL_GT_X
+        JNC     $+5
+        LJMP    ??FlashRead_0
+        MOV     DPL,?XSP + 0
+        MOV     DPH,?XSP + 1
+        PUSH    DPL
+        PUSH    DPH
+        MOV     DPTR,#__Constant_20000
+        MOV     R0,#?V0 + 0
+        LCALL   ?L_MOV_X
+        POP     DPH
+        POP     DPL
+        MOV     R0,#?V0 + 0
+        LCALL   ?SL_GT_X
+        JC      $+5
+        LJMP    ??FlashRead_0
+//  140     return;//flashµØÖ·²»ºÏ·¨£¬·µ»Ø
+//  141   
+//  142   WORD StartBank =  flashAddress / 0x8000;                //ÆðÊ¼flashµØÖ·ËùÔÚµÄbank
+        MOV     DPL,?XSP + 0
+        MOV     DPH,?XSP + 1
+        MOV     R0,#?V0 + 4
+        LCALL   ?L_MOV_X
+        MOV     DPTR,#__Constant_8000
+        MOV     R0,#?V0 + 0
+        LCALL   ?L_MOV_X
+        MOV     R0,#?V0 + 4
+        MOV     R1,#?V0 + 0
+        LCALL   ?L_DIV_MOD
+        MOV     R2,?V0 + 4
+        MOV     R3,?V0 + 5
+//  143   WORD EndBank = ( flashAddress+length ) / 0x8000;        //Ð´ÍêÊý¾ÝºóflashÄ©µØÖ·ËùÔÚbank
+        MOV     DPL,?XSP + 0
+        MOV     DPH,?XSP + 1
+        MOV     ?V0 + 4,R6
+        MOV     A,R7
+        MOV     ?V0 + 5,A
+        RLC     A
+        SUBB    A,0xE0 /* A   */
+        MOV     ?V0 + 6,A
+        MOV     ?V0 + 7,A
+        MOV     R0,#?V0 + 4
+        LCALL   ?L_ADD_X
+        MOV     DPTR,#__Constant_8000
+        MOV     R0,#?V0 + 0
+        LCALL   ?L_MOV_X
+        MOV     R0,#?V0 + 4
+        MOV     R1,#?V0 + 0
+        LCALL   ?L_DIV_MOD
+        MOV     R0,?V0 + 4
+        MOV     R1,?V0 + 5
+//  144   BYTE __code *ReadAddress;                               //Ö¸ÏòflashÔÚcode¶ÎÓ³ÉäµØÖ·µÄÖ¸Õë
+//  145   
+//  146   if( EndBank==0 || EndBank==1 || (EndBank-StartBank==0))//µÚ0¡¢1¸öbankºÍÏàÍ¬bankÊ±²»ÐèÒª¿¼ÂÇFMAPÖµ,Ö±½Ó¶ÁÊý¾Ý¼´¿É
+        MOV     A,R0
+        JNZ     ??FlashRead_1
+        MOV     A,R1
+??FlashRead_1:
+        JZ      ??FlashRead_2
+        MOV     A,#0x1
+        XRL     A,R0
+        JNZ     ??FlashRead_3
+        MOV     A,R1
+??FlashRead_3:
+        JZ      ??FlashRead_2
+        MOV     A,R0
+        CLR     C
+        SUBB    A,R2
+        MOV     R0,A
+        MOV     A,R1
+        SUBB    A,R3
+        MOV     R1,A
+        MOV     A,R0
+        JNZ     ??FlashRead_4
+        MOV     A,R1
+??FlashRead_4:
+        JNZ     ??FlashRead_5
+//  147   {
+//  148     ReadAddress = ( BYTE __code *)ReadAddrConvert( flashAddress );
+??FlashRead_2:
+        ; Setup parameters for call to function ReadAddrConvert
+        MOV     DPL,?XSP + 0
+        MOV     DPH,?XSP + 1
+        MOV     R0,#?V0 + 0
+        LCALL   ?L_MOV_X
+        MOV     R2,?V0 + 0
+        MOV     R3,?V0 + 1
+        MOV     R4,?V0 + 2
+        MOV     R5,?V0 + 3
+        LCALL   ReadAddrConvert
+//  149     while(length--)
+??FlashRead_6:
+        MOV     A,R6
+        MOV     R0,A
+        MOV     A,R7
+        MOV     R1,A
+        MOV     A,#-0x1
+        ADD     A,R0
+        DEC     R6
+        MOV     A,#-0x1
+        ADDC    A,R1
+        MOV     R7,A
+        MOV     A,R0
+        JNZ     ??FlashRead_7
+        MOV     A,R1
+??FlashRead_7:
+        JNZ     $+5
+        LJMP    ??FlashRead_0
+//  150     {
+//  151       *Dataout = *ReadAddress;
+        MOV     DPL,R2
+        MOV     DPH,R3
+        CLR     A
+        MOVC    A,@A+DPTR
+        PUSH    A
+        MOV     A,#0x14
+        LCALL   ?XSTACK_DISP0_8
+        LCALL   ?Subroutine7
+??CrossCallReturnLabel_15:
+        POP     A
+        MOVX    @DPTR,A
+//  152       Dataout++;
+        MOV     A,#0x14
+        LCALL   ?XSTACK_DISP0_8
+        LCALL   ?Subroutine5
+??CrossCallReturnLabel_11:
+        LCALL   ?XSTACK_DISP0_8
+        MOV     A,R0
+        MOVX    @DPTR,A
+        INC     DPTR
+        MOV     A,R1
+        MOVX    @DPTR,A
+//  153       ReadAddress++;
+        MOV     DPL,R2
+        MOV     DPH,R3
+        INC     DPTR
+        MOV     R2,DPL
+        MOV     R3,DPH
+        SJMP    ??FlashRead_6
+//  154     }//end while
+//  155   }
+//  156   
+//  157   else//¿çbank¶ÁflashÊý¾Ý(Ö»ÓÐbank1¿çbank2¡¢bank2¿çbank3Á½ÖÖÇé¿ö)£¬ÐèÒª¸Ä±äFMAPµÄÖµÒÔÑ°Ö·²»Í¬bank£¬È»ºó¶ÁÈ¡Êý¾Ý
+//  158   {
+//  159     WORD NowBank;   //µ±Ç°µØÖ·ËùÔÚµÄbank
+//  160     BYTE tmp = FMAP;//±£»¤ÏÖ³¡
+??FlashRead_5:
+        MOV     A,0x9f
+        PUSH    A
+        MOV     A,#0x4
+        LCALL   ?XSTACK_DISP0_8
+        POP     A
+        MOVX    @DPTR,A
+        SJMP    ??FlashRead_8
+//  161     
+//  162     while(length--)
+//  163     {
+//  164       NowBank = flashAddress / 0x8000;
+//  165       FMAP = NowBank;
+??FlashRead_9:
+        MOV     DPL,?XSP + 0
+        MOV     DPH,?XSP + 1
+        MOV     R0,#?V0 + 4
+        LCALL   ?L_MOV_X
+        MOV     DPTR,#__Constant_8000
+        MOV     R0,#?V0 + 0
+        LCALL   ?L_MOV_X
+        MOV     R0,#?V0 + 4
+        MOV     R1,#?V0 + 0
+        LCALL   ?L_DIV_MOD
+        MOV     A,?V0 + 4
+        MOV     0x9f,A
+//  166       ReadAddress = ( BYTE __code *)ReadAddrConvert( flashAddress );
+        ; Setup parameters for call to function ReadAddrConvert
+        MOV     DPL,?XSP + 0
+        MOV     DPH,?XSP + 1
+        MOV     R0,#?V0 + 0
+        LCALL   ?L_MOV_X
+        MOV     R2,?V0 + 0
+        MOV     R3,?V0 + 1
+        MOV     R4,?V0 + 2
+        MOV     R5,?V0 + 3
+        LCALL   ReadAddrConvert
+//  167       *Dataout = *ReadAddress;
+        MOV     DPL,R2
+        MOV     DPH,R3
+        CLR     A
+        MOVC    A,@A+DPTR
+        PUSH    A
+        MOV     A,#0x14
+        LCALL   ?XSTACK_DISP0_8
+        LCALL   ?Subroutine7
+??CrossCallReturnLabel_16:
+        POP     A
+        MOVX    @DPTR,A
+//  168       Dataout++;
+        MOV     A,#0x14
+        LCALL   ?XSTACK_DISP0_8
+        LCALL   ?Subroutine5
+??CrossCallReturnLabel_12:
+        LCALL   ?XSTACK_DISP0_8
+        MOV     A,R0
+        MOVX    @DPTR,A
+        INC     DPTR
+        MOV     A,R1
+        MOVX    @DPTR,A
+//  169       flashAddress++;
+        MOV     DPTR,#__Constant_1
+        MOV     R0,#?V0 + 0
+        LCALL   ?L_MOV_X
+        MOV     DPL,?XSP + 0
+        MOV     DPH,?XSP + 1
+        MOV     R0,#?V0 + 0
+        LCALL   ?L_ADD_TO_X
+//  170     }//end while
+??FlashRead_8:
+        MOV     A,R6
+        MOV     R0,A
+        MOV     A,R7
+        MOV     R1,A
+        MOV     A,#-0x1
+        ADD     A,R0
+        DEC     R6
+        MOV     A,#-0x1
+        ADDC    A,R1
+        MOV     R7,A
+        MOV     A,R0
+        JNZ     ??FlashRead_10
+        MOV     A,R1
+??FlashRead_10:
+        JNZ     ??FlashRead_9
+//  171     
+//  172     FMAP = tmp;//»Ö¸´ÏÖ³¡
+        MOV     A,#0x4
+        LCALL   ?XSTACK_DISP0_8
+        MOVX    A,@DPTR
+        MOV     0x9f,A
+??FlashRead_0:
+        MOV     A,#0x5
+        LJMP    ?Subroutine12
+        REQUIRE FMAP
+//  173   }//end if
+//  174 }//end FlashRead
+
+        RSEG FLASH:CODE:NOROOT(0)
+?Subroutine7:
+        MOVX    A,@DPTR
+        MOV     R0,A
+        INC     DPTR
+        MOVX    A,@DPTR
+        MOV     DPH,A
+        MOV     DPL,R0
+        RET
+
+        RSEG FLASH:CODE:NOROOT(0)
+?Subroutine5:
+        MOVX    A,@DPTR
+        ADD     A,#0x1
+        MOV     R0,A
+        INC     DPTR
+        MOVX    A,@DPTR
+        ADDC    A,#0x0
+        MOV     R1,A
+        MOV     A,#0x14
+        RET
+//  175 
+//  176 
+//  177 /**********************************************************************
+//  178 º¯ÊýÔ­ÐÍ£ºvoid FlashErase( INT32 flashAddress )
+//  179 
+//  180 ¹¦ÄÜÃèÊö£º½«¸ø¶¨µÄflashµØÖ·ËùÔÚµÄflashÒ³²Á³ý¡£²Á³ýflashÒ³Ê±Í¬ÑùÊÇÒÔFADDRHºÍ
+//  181           FADDRLÀ´Ñ°Ö·£¬Òò´ËÐèÒª17Î»µ½16Î»µÄflashµØÖ·×ª»»¡£
+//  182 
+//  183 ²Î    Êý£ºWORD flashAddress
+//  184           ÐèÒª²Á³ýµÄflashµØÖ·
+//  185 ***********************************************************************/
+
+        RSEG FLASH:CODE:NOROOT(0)
+//  186 void FlashErase( INT32 flashAddress ) @ "FLASH"
+FlashErase:
+//  187 {
+        MOV     A,#-0xf
+        LCALL   ?FUNC_ENTER_XDATA
+        ; Saved register size: 15
+        ; Auto size: 0
+        MOV     ?V0 + 0,R2
+        MOV     ?V0 + 1,R3
+        MOV     ?V0 + 2,R4
+        MOV     ?V0 + 3,R5
+//  188   if( flashAddress < 0x00000 || flashAddress >= 0x20000 )
+        MOV     DPTR,#__Constant_0
+        MOV     R0,#?V0 + 4
+        LCALL   ?L_MOV_X
+        MOV     R0,#?V0 + 4
+        MOV     R1,#?V0 + 0
+        LCALL   ?SL_GT
+        JC      ??FlashErase_0
+        MOV     DPTR,#__Constant_20000
+        MOV     R0,#?V0 + 4
+        LCALL   ?L_MOV_X
+        MOV     R0,#?V0 + 4
+        MOV     R1,#?V0 + 0
+        LCALL   ?SL_GT
+        JNC     ??FlashErase_0
+//  189     return;//flashµØÖ·²»ºÏ·¨£¬·µ»Ø
+//  190   
+//  191   WORD EraseAddress = WriteAddrConvert( flashAddress );
+//  192   FLASH_ERASE_PAGE( EraseAddress >> 9 );
+        ; Setup parameters for call to function WriteAddrConvert
+        LCALL   WriteAddrConvert
+        MOV     A,R3
+        ANL     A,#0xfe
+        MOV     0xad,A
+        MOV     0xac,#0x0
+        MOV     A,#0x7
+        ANL     A,0xc6
+        MOV     R0,A
+        MOV     A,#0x2a
+        CJNE    R0,#0x0,??FlashErase_1
+        SJMP    ??FlashErase_2
+??FlashErase_1:
+        MOV     C,0xE0 /* A   */.7
+        RRC     A
+        DJNZ    R0,??FlashErase_1
+??FlashErase_2:
+        MOV     0xab,A
+        MOV     0xae,#0x1
+//  193   FADDRH = 0x00;
+        MOV     0xad,#0x0
+//  194   FADDRL = 0x00;
+        MOV     0xac,#0x0
+//  195 }//end FlashErase
+??FlashErase_0:
+        LJMP    ??Subroutine12_0
+        REQUIRE FWT
+        REQUIRE FADDRL
+        REQUIRE FADDRH
+        REQUIRE FCTL
+        REQUIRE CLKCON
+//  196 
+//  197 
+//  198 /**********************************************************************
+//  199 º¯ÊýÔ­ÐÍ£ºWORD PageJudge( INT32 flashAddress , INT16 length )
+//  200 
+//  201 ¹¦ÄÜÃèÊö£º½«length³¤µÄÊý¾ÝÐ´ÈëÒÔflashAddressÎªÆðÊ¼µØÖ·µÄ´æ´¢Æ÷ÖÐ£¬ÓÉÓÚflashÊÇ
+//  202           °´Ò³·Ö¿é£¬ÓÐ¿ÉÄÜlength³¤µÄÊý¾Ý´¦¿ç¹ýÁ½¸öflashÒ³£¬Ò²ÓÐ¿ÉÄÜlength³¤¶È
+//  203           ³¬¹ýÁË2048£¬´Ëº¯ÊýÓÃÀ´ÅÐ¶ÏÐèÒª¸Ä¶¯¶àÉÙ¸öflashÒ³À´Ð´ÈëÊý¾Ý¡£
+//  204 
+//  205 ²Î    Êý£ºINT32 flashAddress
+//  206           ÐèÒªÐ´ÈëµÄflashµØÖ·
+//  207 
+//  208           INT16 length
+//  209           ÐèÒªÐ´ÈëµÄÊý¾Ý³¤¶È
+//  210 
+//  211 ·µ    »Ø: flashÐ´²Ù×÷Ê±Éæ¼°ÐÞ¸ÄµÄflashÒ³¸öÊý
+//  212 ***********************************************************************/
+//  213 static WORD PageJudge( INT32 flashAddress , INT16 length ) @ "FLASH"
+//  214 {
+//  215   if( flashAddress < 0x00000 || flashAddress >= 0x20000 )
+//  216     return (0);//flashµØÖ·²»ºÏ·¨£¬·µ»Ø
+//  217   
+//  218   WORD StartPageNum = ( flashAddress / 0x800 );        //ÅÐ¶ÏËù¸øµØÖ·ÊôÓÚÄÄ¸öflashÒ³
+//  219   WORD EndPageNum = ( (flashAddress+length) / 0x800 ); //ÅÐ¶ÏÐ´ÍêÈ«²¿Êý¾ÝºóÎ»ÓÚÄÄ¸öflashÒ³
+//  220   return( EndPageNum - StartPageNum + 1 );
+//  221 }//end PageJudge
+//  222 
+//  223 
+//  224 /**********************************************************************
+//  225 º¯ÊýÔ­ÐÍ£ºWORD WriteAddrConvert( INT32 flashAddress )
+//  226 
+//  227 ¹¦ÄÜÃèÊö£ºÓÉÓÚflash´æ´¢Æ÷ÊÇ128KB£¬ÐèÒª17Î»µØÖ·À´±íÊ¾£¬¶øÐ´²Ù×÷Ê±½öÍ¨¹ý
+//  228           FADDRH:FADDRL¼´16Î»Ñ°Ö·£¬Òò´ËÁ½Õß¼äÐèÒªÒ»¸ö×ª»»¡£±¾º¯Êý½«17Î»
+//  229           µÄflashµØÖ·×ª»»Îª16Î»µØÖ·£¬¿ÉÓÃÓÚflashÐ´ÈëºÍ²Á³ý¹ý³ÌÖÐÑ°Ö·¡£
+//  230 
+//  231 ²Î    Êý£ºINT32 flashAddress
+//  232           ÐèÒªÐ´ÈëµÄ17Î»flashµØÖ·
+//  233 
+//  234 ·µ    »Ø: 16Î»µÄflashµØÖ·=FAADRH:FADDRL
+//  235 ***********************************************************************/
+
+        RSEG FLASH:CODE:NOROOT(0)
+//  236 static WORD WriteAddrConvert( INT32 flashAddress ) @ "FLASH"
+WriteAddrConvert:
+//  237 {
+        MOV     A,#-0xf
+        LCALL   ?FUNC_ENTER_XDATA
+        ; Saved register size: 15
+        ; Auto size: 8
+        MOV     A,#-0x8
+        LCALL   ?ALLOC_XSTACK8
+        LCALL   ?Subroutine1
+//  238   if( flashAddress < 0x00000 || flashAddress >= 0x20000 )
+??CrossCallReturnLabel_2:
+        PUSH    DPL
+        PUSH    DPH
+        MOV     DPTR,#__Constant_0
+        MOV     R0,#?V0 + 0
+        LCALL   ?L_MOV_X
+        POP     DPH
+        POP     DPL
+        MOV     R0,#?V0 + 0
+        LCALL   ?SL_GT_X
+        JC      ??WriteAddrConvert_0
+        MOV     DPL,?XSP + 0
+        MOV     DPH,?XSP + 1
+        PUSH    DPL
+        PUSH    DPH
+        MOV     DPTR,#__Constant_20000
+        MOV     R0,#?V0 + 0
+        LCALL   ?L_MOV_X
+        POP     DPH
+        POP     DPL
+        MOV     R0,#?V0 + 0
+        LCALL   ?SL_GT_X
+        JC      ??WriteAddrConvert_1
+//  239     return (0);//flashµØÖ·²»ºÏ·¨£¬·µ»Ø
+??WriteAddrConvert_0:
+        MOV     R2,#0x0
+        MOV     R3,#0x0
+        LJMP    ??WriteAddrConvert_2
+//  240   
+//  241   WORD WriteAddr = 0x00;
+//  242   WORD PageNum = flashAddress / 0x800;                  //flashÒ³¶¨Î»£¬1Ò³=2048×Ö½Ú
+//  243   WORD LineNum = ( flashAddress % 0x800 ) / 256;        //Ò³ÄÚÐÐ¶¨Î»£¬1ÐÐ=256×Ö½Ú
+//  244   WORD BlockNum = (( flashAddress % 0x800 ) % 256) / 4; //ÐÐÄÚ¿é¶¨Î»£¬1¿é=4×Ö½Ú
+//  245   WriteAddr |= ( PageNum << 9 );
+//  246   WriteAddr |= ( LineNum << 6 );
+//  247   WriteAddr |= BlockNum;
+//  248   return ( WriteAddr );
+??WriteAddrConvert_1:
+        MOV     DPL,?XSP + 0
+        MOV     DPH,?XSP + 1
+        MOV     R0,#?V0 + 0
+        LCALL   ?L_MOV_X
+        MOV     DPTR,#__Constant_800
+        MOV     R0,#?V0 + 4
+        LCALL   ?L_MOV_X
+        MOV     R0,#?V0 + 0
+        MOV     R1,#?V0 + 4
+        LCALL   ?L_DIV_MOD
+        MOV     A,#0x4
+        LCALL   ?XSTACK_DISP0_8
+        MOV     R0,#?V0 + 4
+        LCALL   ?L_MOV_TO_X
+        MOV     DPL,?XSP + 0
+        MOV     DPH,?XSP + 1
+        MOV     R0,#?V0 + 0
+        LCALL   ?L_MOV_X
+        MOV     DPTR,#__Constant_800
+        MOV     R0,#?V0 + 4
+        LCALL   ?L_MOV_X
+        MOV     R0,#?V0 + 0
+        MOV     R1,#?V0 + 4
+        LCALL   ?L_DIV_MOD
+        MOV     A,#0x9
+        MOV     R0,#?V0 + 0
+        LCALL   ?S_SHL
+        PUSH    ?V0 + 0
+        PUSH    ?V0 + 1
+        MOV     A,#0x4
+        LCALL   ?XSTACK_DISP0_8
+        MOV     R0,#?V0 + 4
+        LCALL   ?L_MOV_X
+        MOV     DPTR,#__Constant_100
+        MOV     R0,#?V0 + 0
+        LCALL   ?L_MOV_X
+        MOV     R0,#?V0 + 4
+        MOV     R1,#?V0 + 0
+        LCALL   ?L_DIV_MOD
+        MOV     A,#0x6
+        MOV     R0,#?V0 + 4
+        LCALL   ?S_SHL
+        POP     ?V0 + 1
+        POP     ?V0 + 0
+        MOV     R2,?V0 + 4
+        MOV     A,?V0 + 5
+        ORL     A,?V0 + 1
+        MOV     R3,A
+        MOV     A,#0x4
+        LCALL   ?XSTACK_DISP0_8
+        MOV     R0,#?V0 + 4
+        LCALL   ?L_MOV_X
+        MOV     DPTR,#__Constant_100
+        MOV     R0,#?V0 + 0
+        LCALL   ?L_MOV_X
+        MOV     R0,#?V0 + 4
+        MOV     R1,#?V0 + 0
+        LCALL   ?L_DIV_MOD
+        MOV     DPTR,#__Constant_4
+        MOV     R0,#?V0 + 4
+        LCALL   ?L_MOV_X
+        MOV     R0,#?V0 + 0
+        MOV     R1,#?V0 + 4
+        LCALL   ?L_DIV_MOD
+        MOV     A,?V0 + 0
+        ORL     A,R2
+        MOV     R2,A
+        MOV     A,?V0 + 1
+        ORL     A,R3
+        MOV     R3,A
+??WriteAddrConvert_2:
+        MOV     A,#0x8
+        REQUIRE ?Subroutine12
+        ; // Fall through to label ?Subroutine12
+//  249 }//end WriteAddrConvert
+
+        RSEG FLASH:CODE:NOROOT(0)
+?Subroutine12:
+        LCALL   ?DEALLOC_XSTACK8
+??Subroutine12_0:
+        MOV     R7,#0x8
+        LJMP    ?FUNC_LEAVE_XDATA
+//  250 
+//  251 
+//  252 /**********************************************************************
+//  253 º¯ÊýÔ­ÐÍ£ºWORD ReadAddrConvert( INT32 flashAddress )
+//  254 
+//  255 ¹¦ÄÜÃèÊö£ºÓÉÓÚflash´æ´¢Æ÷ÊÇ128KB£¬¶øcode¶ÎÖ»ÄÜÏÔÊ¾64KBµÄÄÚÈÝ£¬flashÊý¾ÝÎÞ·¨
+//  256           È«²¿ÏÔÊ¾ÔÚcode¶ÎÖÐ£¬Òò´ËÁ½Õß¼äÐèÒªÒ»¸öÓ³Éä¡£½«flashµØÖ··Ö³É4¸öbank£¬
+//  257           Ã¿¸öbank32KB£¬ÒÔ¼Ä´æÆ÷FMAPÀ´Ñ°Ö·bank£¬ÏÈ½«ÐèÒª¶ÁÈ¡µÄÊý¾ÝËùÔÚµÄbank
+//  258           Ó³Éäµ½code¶ÎÖÐ£¬ÔÙ´Ócode¶ÎÖÐ¶Á³öÊý¾Ý¡£±¾º¯Êý½«17Î»flashµØÖ·×ª»»Îª
+//  259           code¶ÎÖÐµÄ16Î»µØÖ·£¬¿ÉÓÃÓÚflash¶ÁÈ¡¹ý³ÌÖÐÑ°Ö·¡£
+//  260 
+//  261 ²Î    Êý£ºINT32 flashAddress
+//  262           ÐèÒª¶ÁÈ¡µÄflashµØÖ·
+//  263 
+//  264 ·µ    »Ø: Ó³Éäµ½code¶ÎµÄµØÖ·
+//  265 ***********************************************************************/
+
+        RSEG FLASH:CODE:NOROOT(0)
+//  266 static WORD ReadAddrConvert( INT32 flashAddress ) @ "FLASH"
+ReadAddrConvert:
+//  267 {
+        MOV     A,#-0xf
+        LCALL   ?FUNC_ENTER_XDATA
+        ; Saved register size: 15
+        ; Auto size: 4
+        MOV     A,#-0x4
+        LCALL   ?ALLOC_XSTACK8
+        LCALL   ?Subroutine1
+//  268   if( flashAddress < 0x00000 || flashAddress >= 0x20000 )
+??CrossCallReturnLabel_3:
+        PUSH    DPL
+        PUSH    DPH
+        MOV     DPTR,#__Constant_0
+        MOV     R0,#?V0 + 0
+        LCALL   ?L_MOV_X
+        POP     DPH
+        POP     DPL
+        MOV     R0,#?V0 + 0
+        LCALL   ?SL_GT_X
+        JC      ??ReadAddrConvert_0
+        MOV     DPL,?XSP + 0
+        MOV     DPH,?XSP + 1
+        PUSH    DPL
+        PUSH    DPH
+        MOV     DPTR,#__Constant_20000
+        MOV     R0,#?V0 + 0
+        LCALL   ?L_MOV_X
+        POP     DPH
+        POP     DPL
+        MOV     R0,#?V0 + 0
+        LCALL   ?SL_GT_X
+        JC      ??ReadAddrConvert_1
+//  269     return (0);//flashµØÖ·²»ºÏ·¨£¬·µ»Ø
+??ReadAddrConvert_0:
+        MOV     R2,#0x0
+        MOV     R3,#0x0
+??ReadAddrConvert_2:
+        MOV     A,#0x4
+        SJMP    ?Subroutine12
+//  270   
+//  271   WORD BankNum = flashAddress / 0x8000;
+//  272   switch( BankNum )
+??ReadAddrConvert_1:
+        MOV     DPL,?XSP + 0
+        MOV     DPH,?XSP + 1
+        MOV     R0,#?V0 + 0
+        LCALL   ?L_MOV_X
+        MOV     DPTR,#__Constant_8000
+        MOV     R0,#?V0 + 4
+        LCALL   ?L_MOV_X
+        MOV     R0,#?V0 + 0
+        MOV     R1,#?V0 + 4
+        LCALL   ?L_DIV_MOD
+        MOV     R0,#?V0 + 0
+        LCALL   ?US_SWITCH_DENSE
+`?<Jumptable for ReadAddrConvert>_0`:
+        DATA
+        DW        0
+        DB        3
+        DW        ??ReadAddrConvert_0
+        DW        ??ReadAddrConvert_3
+        DW        ??ReadAddrConvert_4
+        DW        ??ReadAddrConvert_5
+        DW        ??ReadAddrConvert_6
+        CODE
+//  273   {
+//  274     case 0:                                    //bank0Ñ°Ö··¶Î§£º0x00000~0x07FFF
+//  275       return( (WORD)flashAddress );            //Ó³ÉäÎªcode¶Î0x0000~0x7FFF
+??ReadAddrConvert_3:
+        MOV     DPL,?XSP + 0
+        MOV     DPH,?XSP + 1
+        MOV     R0,#?V0 + 0
+        LCALL   ?L_MOV_X
+        MOV     R2,?V0 + 0
+        MOV     R3,?V0 + 1
+        SJMP    ??ReadAddrConvert_2
+//  276     case 1:                                    //bank1Ñ°Ö··¶Î§£º0x08000~0x0FFFF
+//  277       FMAP = 0x1;
+??ReadAddrConvert_4:
+        MOV     0x9f,#0x1
+        SJMP    ??ReadAddrConvert_3
+//  278       return( (WORD)flashAddress );            //Ó³ÉäÎªcode¶Î0x8000~0xFFFF
+//  279     case 2:                                    //bank2Ñ°Ö··¶Î§£º0x10000~0x17FFF
+//  280       FMAP = 0x2;
+??ReadAddrConvert_5:
+        MOV     0x9f,#0x2
+//  281       return( (WORD)(flashAddress-0x8000) );   //Ó³ÉäÎªcode¶Î0x8000~0xFFFF
+        MOV     DPL,?XSP + 0
+        MOV     DPH,?XSP + 1
+        MOV     R0,#?V0 + 0
+        LCALL   ?L_MOV_X
+        CLR     A
+        ADD     A,?V0 + 0
+        MOV     R2,A
+        MOV     A,#-0x80
+        ADDC    A,?V0 + 1
+        MOV     R3,A
+        SJMP    ??ReadAddrConvert_2
+//  282     case 3:                                    //bank3Ñ°Ö··¶Î§£º0x18000~0x1FFFF
+//  283       FMAP = 0x3;
+??ReadAddrConvert_6:
+        MOV     0x9f,#0x3
+        SJMP    ??ReadAddrConvert_3
+        REQUIRE FMAP
+//  284       return( (WORD)(flashAddress-0x10000) );  //Ó³ÉäÎªcode¶Î0x8000~0xFFFF
+//  285     default:
+//  286       return (0);                              //flashµØÖ·²»ºÏ·¨
+//  287   }//end switch
+//  288 }//end ReadAddrConvert
+
+        RSEG FLASH:CODE:NOROOT(0)
+?Subroutine1:
+        LCALL   ?Subroutine9
+??CrossCallReturnLabel_20:
+        MOV     DPL,?XSP + 0
+        MOV     DPH,?XSP + 1
+        RET
+
+        RSEG FLASH:CODE:NOROOT(0)
+?Subroutine9:
+        MOV     DPL,?XSP + 0
+        MOV     DPH,?XSP + 1
+        MOV     A,R2
+        MOVX    @DPTR,A
+        INC     DPTR
+        MOV     A,R3
+        MOVX    @DPTR,A
+        INC     DPTR
+        MOV     A,R4
+        MOVX    @DPTR,A
+        INC     DPTR
+        MOV     A,R5
+        MOVX    @DPTR,A
+        RET
+//  289 
+//  290 /******************************************************************************
+//  291 * @fn  writeFlashUsingDMA
+//  292 *
+//  293 * @brief
+//  294 *      Writes data to flash using DMA. Erases the page in advance if told to.
+//  295 *      Ê¹ÓÃDMAÐ´flash £¬Èç¹ûÐèÒªµÄ»°¿ÉÒÔ²Á³ýÒ³Ãæ
+//  296 
+//  297 * Parameters:
+//  298 *
+//  299 * @param  BYTE* pSrcAddr
+//  300 *         The start of the data to be written to flash.
+//  301 *         Ð´ÈëflashµÄÊý¾ÝÆðµã
+//  302 
+//  303 *         INT16 length
+//  304 *         The number of bytes to be written to flash.
+//  305 *         Ð´ÈëflashµÄÊý¾Ý³¤¶È
+//  306 
+//  307 *         WORD flashAddress
+//  308 *         The address in flash the data is to be written to.
+//  309 *         flashÐ´ÈëµÄµØÖ·
+//  310 
+//  311 *         BOOL erase
+//  312 *         Indicating whether the flash is to be erased or not.
+//  313 *         ÊÇ·ñ²Á³ýflashÒ³
+//  314 * @return void
+//  315 *
+//  316 ******************************************************************************/
+
+        RSEG FLASH:CODE:NOROOT(0)
+//  317 static void writeFlashUsingDMA( BYTE* pSrcAddr , INT16 length , WORD WriteAddress , BOOL erase ) @ "FLASH"
+writeFlashUsingDMA:
+//  318 {
+        MOV     A,#-0xb
+        LCALL   ?FUNC_ENTER_XDATA
+        ; Saved register size: 11
+        ; Auto size: 0
+        MOV     A,R1
+        MOV     R7,A
+        MOV     A,#0xb
+        LCALL   ?XSTACK_DISP0_8
+        MOVX    A,@DPTR
+        MOV     ?V0 + 2,A
+        INC     DPTR
+        MOVX    A,@DPTR
+        MOV     ?V0 + 3,A
+//  319    BYTE oldPointerH = 0;
+//  320    BYTE oldPointerL = 0;
+//  321    BYTE status;
+//  322 
+//  323    status = IEN0;
+        MOV     A,0xa8
+        MOV     R6,A
+//  324    INT_GLOBAL_ENABLE( INT_OFF );
+        CLR     0xa8.7
+        MOV     A,?V0 + 3
+        MOV     ?V0 + 0,A
+        MOV     0xad,?V0 + 0
+//  325 
+//  326    // ÉèÖÃflashµØÖ·
+//  327    SET_WORD( FADDRH , FADDRL , WriteAddress );
+        MOV     A,?V0 + 2
+        MOV     0xac,A
+        SJMP    ??writeFlashUsingDMA_0
+//  328 
+//  329    // ±£Ö¤´«Êä4×Ö½ÚµÄÕûÊý±¶
+//  330    while(length & 0x0003){
+//  331       length++;
+??writeFlashUsingDMA_1:
+        MOV     A,R4
+        ADD     A,#0x1
+        INC     R4
+        MOV     A,R5
+        ADDC    A,#0x0
+        MOV     R5,A
+//  332    }//end while
+??writeFlashUsingDMA_0:
+        MOV     A,R4
+        ANL     A,#0x3
+        JNZ     ??writeFlashUsingDMA_1
+//  333 
+//  334    SET_WORD( dmaChannel.SRCADDRH , dmaChannel.SRCADDRL ,   pSrcAddr );   // The start address of the segment
+        MOV     A,R3
+        MOV     DPTR,#dmaChannel
+        MOVX    @DPTR,A
+        MOV     A,R2
+        MOV     DPTR,#(dmaChannel + 1)
+        MOVX    @DPTR,A
+//  335    SET_WORD( dmaChannel.DESTADDRH , dmaChannel.DESTADDRL , &X_FWDATA );  // Input of the AES module
+        MOV     A,#-0x21
+        MOV     DPTR,#(dmaChannel + 2)
+        MOVX    @DPTR,A
+        MOV     A,#-0x51
+        MOV     DPTR,#(dmaChannel + 3)
+        MOVX    @DPTR,A
+//  336    SET_WORD( dmaChannel.LENH , dmaChannel.LENL , length );               // Setting the length of the transfer (bytes)
+        MOV     A,R5
+        ANL     A,#0x1f
+        PUSH    A
+        MOV     DPTR,#(dmaChannel + 4)
+        MOVX    A,@DPTR
+        ANL     A,#0xe0
+        MOV     R2,A
+        POP     A
+        ORL     A,R2
+        MOVX    @DPTR,A
+        MOV     DPTR,#(dmaChannel + 5)
+        MOVX    A,@DPTR
+        MOV     A,R4
+        MOVX    @DPTR,A
+//  337    dmaChannel.VLEN      = VLEN_USE_LEN;      // Ñ¡ÔñLEN×÷Îª´«ËÍ³¤¶È
+        MOV     DPTR,#(dmaChannel + 4)
+        MOVX    A,@DPTR
+        ANL     A,#0x1f
+        MOVX    @DPTR,A
+//  338    dmaChannel.PRIORITY  = PRI_HIGH;          // ´«ÊäÓÅÏÈ¼¶Îª¸ß
+        MOV     DPTR,#(dmaChannel + 7)
+        MOVX    A,@DPTR
+        ANL     A,#0xfc
+        ORL     A,#0x2
+        MOVX    @DPTR,A
+//  339    dmaChannel.M8        = M8_USE_8_BITS;     // Ñ¡Ôñ8Î»³¤µÄ×Ö½ÚÀ´´«ËÍÊý¾Ý
+        MOVX    A,@DPTR
+        CLR     0xE0 /* A   */.2
+        MOVX    @DPTR,A
+//  340    dmaChannel.IRQMASK   = FALSE;             // DMAÍê³ÉÖÐ¶Ï±êÖ¾
+        MOVX    A,@DPTR
+        CLR     0xE0 /* A   */.3
+        MOVX    @DPTR,A
+//  341    dmaChannel.DESTINC   = DESTINC_0;         // ¹Ì¶¨µÄÄ¿µÄµØÖ·
+        MOVX    A,@DPTR
+        ANL     A,#0xcf
+        MOVX    @DPTR,A
+//  342    dmaChannel.SRCINC    = SRCINC_1;          // Ô´µØÖ·ÔöÁ¿Îª1×Ö½Ú
+        MOVX    A,@DPTR
+        ANL     A,#0x3f
+        ORL     A,#0x40
+        MOVX    @DPTR,A
+//  343    dmaChannel.TRIG      = DMATRIG_FLASH;     // ÉèÖÃFLASHÄ£¿é´¥·¢DMA
+        MOV     DPTR,#(dmaChannel + 6)
+        MOVX    A,@DPTR
+        ANL     A,#0xe0
+        ORL     A,#0x12
+        MOVX    @DPTR,A
+//  344    dmaChannel.TMODE     = TMODE_SINGLE;      // Ã¿´Î´«ÊäÒ»¸ö×Ö½Ú
+        MOVX    A,@DPTR
+        ANL     A,#0x9f
+        MOVX    @DPTR,A
+//  345    dmaChannel.WORDSIZE  = WORDSIZE_BYTE;     // Set to count bytes.
+        MOVX    A,@DPTR
+        CLR     0xE0 /* A   */.7
+        MOVX    @DPTR,A
+//  346 
+//  347    // ´¢´æ¾ÉÉèÖÃ£¬²¢ÉèÖÃDMA
+//  348    // Çå³ýDMAÍê³É±êÖ¾
+//  349    oldPointerH = DMA0CFGH;
+        MOV     A,0xd5
+        MOV     ?V0 + 1,A
+//  350    oldPointerL = DMA0CFGL;
+        MOV     A,0xd4
+        MOV     ?V0 + 2,A
+//  351    DMA_SET_ADDR_DESC0( &dmaChannel );
+        MOV     A,#((dmaChannel >> 8) & 0xff)
+        MOV     0xd5,A
+        MOV     0xd4,#(dmaChannel & 0xff)
+//  352    DMA_ABORT_CHANNEL(0);
+        MOV     0xd6,#-0x7f
+//  353    DMAIRQ &= ~DMA_CHANNEL_0;
+        ANL     0xd1,#0xfe
+//  354    DMA_ARM_CHANNEL(0);
+        MOV     0xd6,#0x1
+//  355 
+//  356    // ¿ªÊ¼Ð´flash
+//  357    if( erase == TRUE )
+        MOV     A,#0x1
+        XRL     A,R7
+        JNZ     ??writeFlashUsingDMA_2
+//  358       FLASH_ERASE_PAGE( WriteAddress >> 9 );//Ð´Ö®Ç°ÏÈ½«flashÒ³²Á³ý
+        MOV     A,#-0x2
+        ANL     A,?V0 + 0
+        MOV     0xad,A
+        MOV     0xac,#0x0
+        MOV     A,#0x7
+        ANL     A,0xc6
+        MOV     R0,A
+        MOV     A,#0x2a
+        CJNE    R0,#0x0,??writeFlashUsingDMA_3
+        SJMP    ??writeFlashUsingDMA_4
+??writeFlashUsingDMA_3:
+        MOV     C,0xE0 /* A   */.7
+        RRC     A
+        DJNZ    R0,??writeFlashUsingDMA_3
+??writeFlashUsingDMA_4:
+        MOV     0xab,A
+        MOV     0xae,#0x1
+//  359    halWait( 0x8F );
+??writeFlashUsingDMA_2:
+        ; Setup parameters for call to function halWait
+        MOV     R1,#-0x71
+        LCALL   halWait
+//  360    FLASH_CONFIG( WRITE );
+        MOV     A,#0x7
+        ANL     A,0xc6
+        MOV     R0,A
+        MOV     A,#0x2a
+        CJNE    R0,#0x0,??writeFlashUsingDMA_5
+        SJMP    ??writeFlashUsingDMA_6
+??writeFlashUsingDMA_5:
+        MOV     C,0xE0 /* A   */.7
+        RRC     A
+        DJNZ    R0,??writeFlashUsingDMA_5
+??writeFlashUsingDMA_6:
+        MOV     0xab,A
+        MOV     0xae,#0x2
+//  361 
+//  362    // µÈ´ýDMAÍê³É
+//  363    while( !(DMAIRQ & DMA_CHANNEL_0) );//µÈ´ýFLASH¸ø³öDMAÖÐ¶Ï±êÖ¾DMAIF0=1
+??writeFlashUsingDMA_7:
+        MOV     A,0xd1
+        MOV     C,0xE0 /* A   */.0
+        JNC     ??writeFlashUsingDMA_7
+//  364    DMAIRQ &= ~DMA_CHANNEL_0;        //ÖØÖÃDMAÖÐ¶Ï±êÖ¾£¬DMAIF0=0
+        ANL     0xd1,#0xfe
+//  365 
+//  366    // ±£´æÔ­À´µÄÉèÖÃ
+//  367    DMA0CFGH = oldPointerH;
+        MOV     0xd5,?V0 + 1
+//  368    DMA0CFGL = oldPointerL;
+        MOV     0xd4,?V0 + 2
+//  369    IEN0 = status;
+        MOV     0xa8,R6
+//  370   
+//  371    //*PageData=NULL;//release the PageData memory---not useful
+//  372    
+//  373    return;
+        MOV     R7,#0x4
+        LJMP    ?FUNC_LEAVE_XDATA
+        REQUIRE _A_IEN0
+        REQUIRE FWT
+        REQUIRE FADDRL
+        REQUIRE FADDRH
+        REQUIRE FCTL
+        REQUIRE CLKCON
+        REQUIRE DMAIRQ
+        REQUIRE DMA0CFGL
+        REQUIRE DMA0CFGH
+        REQUIRE DMAARM
+//  374 }//end writeFlashUsingDMA
+
+        RSEG XDATA_I:XDATA:NOROOT(0)
+        DATA
+__Constant_0:
+        DS 4
+        REQUIRE `?<Initializer for __Constant_0>`
+        REQUIRE __INIT_XDATA_I
+
+        RSEG XDATA_ID:CODE:NOROOT(0)
+        DATA
+`?<Initializer for __Constant_0>`:
+        DD 0
+
+        RSEG XDATA_I:XDATA:NOROOT(0)
+        DATA
+__Constant_20000:
+        DS 4
+        REQUIRE `?<Initializer for __Constant_20000>`
+        REQUIRE __INIT_XDATA_I
+
+        RSEG XDATA_ID:CODE:NOROOT(0)
+        DATA
+`?<Initializer for __Constant_20000>`:
+        DD 131072
+
+        RSEG XDATA_I:XDATA:NOROOT(0)
+        DATA
+__Constant_800:
+        DS 4
+        REQUIRE `?<Initializer for __Constant_800>`
+        REQUIRE __INIT_XDATA_I
+
+        RSEG XDATA_ID:CODE:NOROOT(0)
+        DATA
+`?<Initializer for __Constant_800>`:
+        DD 2048
+
+        RSEG XDATA_I:XDATA:NOROOT(0)
+        DATA
+__Constant_8000:
+        DS 4
+        REQUIRE `?<Initializer for __Constant_8000>`
+        REQUIRE __INIT_XDATA_I
+
+        RSEG XDATA_ID:CODE:NOROOT(0)
+        DATA
+`?<Initializer for __Constant_8000>`:
+        DD 32768
+
+        RSEG XDATA_I:XDATA:NOROOT(0)
+        DATA
+__Constant_1:
+        DS 4
+        REQUIRE `?<Initializer for __Constant_1>`
+        REQUIRE __INIT_XDATA_I
+
+        RSEG XDATA_ID:CODE:NOROOT(0)
+        DATA
+`?<Initializer for __Constant_1>`:
+        DD 1
+
+        RSEG XDATA_I:XDATA:NOROOT(0)
+        DATA
+__Constant_100:
+        DS 4
+        REQUIRE `?<Initializer for __Constant_100>`
+        REQUIRE __INIT_XDATA_I
+
+        RSEG XDATA_ID:CODE:NOROOT(0)
+        DATA
+`?<Initializer for __Constant_100>`:
+        DD 256
+
+        RSEG XDATA_I:XDATA:NOROOT(0)
+        DATA
+__Constant_4:
+        DS 4
+        REQUIRE `?<Initializer for __Constant_4>`
+        REQUIRE __INIT_XDATA_I
+
+        RSEG XDATA_ID:CODE:NOROOT(0)
+        DATA
+`?<Initializer for __Constant_4>`:
+        DD 4
+
+        END
+//  375 
+//  376 
+//  377 /******************************************************************************
+//  378 * @fn  halWait
+//  379 *
+//  380 * @brief
+//  381 *      This function waits approximately a given number of m-seconds
+//  382 *      regardless of main clock speed.
+//  383 *
+//  384 * Parameters:
+//  385 *
+//  386 * @param  BYTE	 wait
+//  387 *         The number of m-seconds to wait.
+//  388 *
+//  389 * @return void
+//  390 *
+//  391 ****************************************************************************
+//  392 void halWait( BYTE wait )
+//  393 {
+//  394    UINT32 largeWait;
+//  395 
+//  396    if( wait == 0 )
+//  397    {return;}
+//  398    largeWait = ( (UINT16)(wait << 7) );
+//  399    largeWait += 114 * wait;
+//  400    largeWait = ( largeWait >> CLKSPD );
+//  401    while( largeWait-- );
+//  402    return;
+//  403 }//end halWait*/
+// 
+// 2 208 bytes in segment FLASH
+//    11 bytes in segment SFR_AN
+//    28 bytes in segment XDATA_I
+//    28 bytes in segment XDATA_ID
+// 2 056 bytes in segment XDATA_Z
+// 
+// 2 208 bytes of CODE  memory (+ 28 bytes shared)
+//     0 bytes of DATA  memory (+ 11 bytes shared)
+// 2 056 bytes of XDATA memory (+ 28 bytes shared)
+//
+//Errors: none
+//Warnings: none

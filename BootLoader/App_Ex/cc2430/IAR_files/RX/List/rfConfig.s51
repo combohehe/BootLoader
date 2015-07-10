@@ -1,0 +1,186 @@
+///////////////////////////////////////////////////////////////////////////////
+//                                                                            /
+// IAR 8051 C/C++ Compiler V7.30B/W32                   03/Jul/2015  20:20:04 /
+// Copyright 2004-2007 IAR Systems. All rights reserved.                      /
+//                                                                            /
+//    Core               =  plain                                             /
+//    Code model         =  near                                              /
+//    Data model         =  large                                             /
+//    Calling convention =  xdata reentrant                                   /
+//    Constant location  =  data                                              /
+//    Dptr setup         =  1,16                                              /
+//    Source file        =  C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä° /
+//                          æ7\Library\cc2430\HAL\source\rfConfig.c           /
+//    Command line       =  "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\Library\cc2430\HAL\source\rfConfig.c" -D      /
+//                          chip=2430 -D COMPLETE_APPLICATION -D RX -lB       /
+//                          "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\App_Ex\cc2430\IAR_files\RX\List\" -o          /
+//                          "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\App_Ex\cc2430\IAR_files\RX\Obj\" -e -z9       /
+//                          --debug --core=plain --dptr=16,1                  /
+//                          --data_model=large --code_model=near              /
+//                          --calling_convention=xdata_reentrant              /
+//                          --place_constants=data --nr_virtual_regs 8 -I     /
+//                          "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\App_Ex\cc2430\IAR_files\..\..\..\LIBRARY\CC24 /
+//                          30\CUL\INCLUDE\" -I "C:\Documents and             /
+//                          Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\App_Ex\cc2430\ /
+//                          IAR_files\..\..\..\LIBRARY\CC2430\HAL\INCLUDE\"   /
+//                          -I "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐ /
+//                          Þ¸Ä°æ7\App_Ex\cc2430\IAR_files\..\..\..\LIBRARY\C /
+//                          C2430\EB\INCLUDE\" -I "C:\Documents and           /
+//                          Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\App_Ex\cc2430\ /
+//                          IAR_files\..\INCLUDE\" -I "C:\IAR                 /
+//                          Systems\Embedded Workbench 4.0 Evaluation         /
+//                          version\8051\INC\" -I "C:\IAR Systems\Embedded    /
+//                          Workbench 4.0 Evaluation version\8051\INC\CLIB\"  /
+//    List file          =  C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä° /
+//                          æ7\App_Ex\cc2430\IAR_files\RX\List\rfConfig.s51   /
+//                                                                            /
+//                                                                            /
+///////////////////////////////////////////////////////////////////////////////
+
+        NAME rfConfig
+
+        RSEG DOVERLAY:DATA:NOROOT(0)
+        RSEG IOVERLAY:IDATA:NOROOT(0)
+        RSEG ISTACK:IDATA:NOROOT(0)
+        RSEG PSTACK:XDATA:NOROOT(0)
+        RSEG XSTACK:XDATA:NOROOT(0)
+
+        EXTERN ?FUNC_ENTER_XDATA
+        EXTERN ?FUNC_LEAVE_XDATA
+        EXTERN ?L_MOV_X
+        EXTERN ?UL_GT
+        EXTERN ?V0
+        EXTERN __INIT_XDATA_I
+
+        PUBWEAK __Constant_1f3c19
+        PUBLIC halRfConfig
+
+        EXTERN halRfSetRadioFrequency
+
+// C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\Library\cc2430\HAL\source\rfConfig.c
+//    1 /******************************************************************************
+//    2 Filename:     rfConfig.c
+//    3 Target:       cc2430
+//    4 Revised:      16/12-2005
+//    5 Revision:     1.0
+//    6 ******************************************************************************/
+//    7 #include "hal.h"
+//    8 
+//    9 
+//   10 //-----------------------------------------------------------------------------
+//   11 // See hal.h for a description of this function.
+//   12 //-----------------------------------------------------------------------------
+
+        RSEG NEAR_CODE:CODE:NOROOT(0)
+//   13 BOOL halRfConfig(UINT32 frequency)
+halRfConfig:
+//   14 {
+        MOV     A,#-0xf
+        LCALL   ?FUNC_ENTER_XDATA
+        ; Saved register size: 15
+        ; Auto size: 0
+        MOV     ?V0 + 0,R2
+        MOV     ?V0 + 1,R3
+        MOV     ?V0 + 2,R4
+        MOV     ?V0 + 3,R5
+//   15    BOOL status;
+//   16 
+//   17    //Turning on crystal oscillator
+//   18    //SET_MAIN_CLOCK_SOURCE(CRYSTAL);
+//   19 
+//   20    // Setting the frequency
+//   21    halRfSetRadioFrequency(frequency);
+        ; Setup parameters for call to function halRfSetRadioFrequency
+        LCALL   halRfSetRadioFrequency
+//   22 
+//   23    // Checking that the entered frequency is valid
+//   24    if (frequency > 2047000)
+        MOV     DPTR,#__Constant_1f3c19
+        MOV     R0,#?V0 + 4
+        LCALL   ?L_MOV_X
+        MOV     R0,#?V0 + 4
+        MOV     R1,#?V0 + 0
+        LCALL   ?UL_GT
+        JC      ??halRfConfig_0
+//   25    {
+//   26       //turning on power to analog part of radio and waiting for voltage regulator.
+//   27       RFPWR = 0x04;
+        MOV     A,#0x4
+        MOV     DPTR,#-0x20e9
+        MOVX    @DPTR,A
+//   28       while((RFPWR & 0x10)){}
+??halRfConfig_1:
+        MOVX    A,@DPTR
+        MOV     C,0xE0 /* A   */.4
+        JC      ??halRfConfig_1
+//   29       // Turning off Address Decoding
+//   30       MDMCTRL0H &= ~ADR_DECODE;
+        MOV     DPTR,#-0x20fe
+        MOVX    A,@DPTR
+        CLR     0xE0 /* A   */.3
+        MOVX    @DPTR,A
+//   31 
+//   32       // Setting for AUTO CRC
+//   33       MDMCTRL0L |= AUTO_CRC;
+        MOV     DPTR,#-0x20fd
+        MOVX    A,@DPTR
+        SETB    0xE0 /* A   */.5
+        MOVX    @DPTR,A
+//   34 
+//   35       // Turning on AUTO_TX2RX
+//   36       FSMTC1 = ((FSMTC1 & (~AUTO_TX2RX_OFF & ~RX2RX_TIME_OFF))  | ACCEPT_ACKPKT);
+        MOV     DPTR,#-0x20ac
+        MOVX    A,@DPTR
+        ANL     A,#0xf3
+        ORL     A,#0x1
+        MOVX    @DPTR,A
+//   37 
+//   38       // Turning off abortRxOnSrxon.
+//   39       FSMTC1 &= ~0x20;
+        MOVX    A,@DPTR
+        CLR     0xE0 /* A   */.5
+        MOVX    @DPTR,A
+//   40 
+//   41       status = TRUE;
+        MOV     R1,#0x1
+        SJMP    ??halRfConfig_2
+//   42    }
+//   43    else {
+//   44       status = FALSE;
+??halRfConfig_0:
+        MOV     R1,#0x0
+//   45    }
+//   46 
+//   47    return status;
+??halRfConfig_2:
+        MOV     R7,#0x8
+        LJMP    ?FUNC_LEAVE_XDATA
+//   48 }
+
+        RSEG XDATA_I:XDATA:NOROOT(0)
+        DATA
+__Constant_1f3c19:
+        DS 4
+        REQUIRE `?<Initializer for __Constant_1f3c19>`
+        REQUIRE __INIT_XDATA_I
+
+        RSEG XDATA_ID:CODE:NOROOT(0)
+        DATA
+`?<Initializer for __Constant_1f3c19>`:
+        DD 2047001
+
+        END
+// 
+// 82 bytes in segment NEAR_CODE
+//  4 bytes in segment XDATA_I
+//  4 bytes in segment XDATA_ID
+// 
+// 82 bytes of CODE  memory (+ 4 bytes shared)
+//  0 bytes of XDATA memory (+ 4 bytes shared)
+//
+//Errors: none
+//Warnings: none

@@ -1,0 +1,156 @@
+///////////////////////////////////////////////////////////////////////////////
+//                                                                            /
+// IAR 8051 C/C++ Compiler V7.30B/W32                   03/Jul/2015  20:20:04 /
+// Copyright 2004-2007 IAR Systems. All rights reserved.                      /
+//                                                                            /
+//    Core               =  plain                                             /
+//    Code model         =  near                                              /
+//    Data model         =  large                                             /
+//    Calling convention =  xdata reentrant                                   /
+//    Constant location  =  data                                              /
+//    Dptr setup         =  1,16                                              /
+//    Source file        =  C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä° /
+//                          æ7\Library\cc2430\CUL\source\dmaFreeChannel.c     /
+//    Command line       =  "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\Library\cc2430\CUL\source\dmaFreeChannel.c"   /
+//                          -D chip=2430 -D COMPLETE_APPLICATION -D RX -lB    /
+//                          "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\App_Ex\cc2430\IAR_files\RX\List\" -o          /
+//                          "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\App_Ex\cc2430\IAR_files\RX\Obj\" -e -z9       /
+//                          --debug --core=plain --dptr=16,1                  /
+//                          --data_model=large --code_model=near              /
+//                          --calling_convention=xdata_reentrant              /
+//                          --place_constants=data --nr_virtual_regs 8 -I     /
+//                          "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\App_Ex\cc2430\IAR_files\..\..\..\LIBRARY\CC24 /
+//                          30\CUL\INCLUDE\" -I "C:\Documents and             /
+//                          Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\App_Ex\cc2430\ /
+//                          IAR_files\..\..\..\LIBRARY\CC2430\HAL\INCLUDE\"   /
+//                          -I "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐ /
+//                          Þ¸Ä°æ7\App_Ex\cc2430\IAR_files\..\..\..\LIBRARY\C /
+//                          C2430\EB\INCLUDE\" -I "C:\Documents and           /
+//                          Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\App_Ex\cc2430\ /
+//                          IAR_files\..\INCLUDE\" -I "C:\IAR                 /
+//                          Systems\Embedded Workbench 4.0 Evaluation         /
+//                          version\8051\INC\" -I "C:\IAR Systems\Embedded    /
+//                          Workbench 4.0 Evaluation version\8051\INC\CLIB\"  /
+//    List file          =  C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä° /
+//                          æ7\App_Ex\cc2430\IAR_files\RX\List\dmaFreeChannel /
+//                          .s51                                              /
+//                                                                            /
+//                                                                            /
+///////////////////////////////////////////////////////////////////////////////
+
+        NAME dmaFreeChannel
+
+        RSEG DOVERLAY:DATA:NOROOT(0)
+        RSEG IOVERLAY:IDATA:NOROOT(0)
+        RSEG ISTACK:IDATA:NOROOT(0)
+        RSEG PSTACK:XDATA:NOROOT(0)
+        RSEG XSTACK:XDATA:NOROOT(0)
+
+        EXTERN ?FUNC_ENTER_XDATA
+        EXTERN ?FUNC_LEAVE_XDATA
+        EXTERN ?S_SHL
+        EXTERN ?V0
+
+        PUBWEAK DMAARM
+        PUBWEAK _A_IEN0
+        PUBLIC culDmaFreeChannel
+
+        EXTERN dmaTable
+
+// C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\Library\cc2430\CUL\source\dmaFreeChannel.c
+//    1 /******************************************************************************
+//    2 Filename:     dmaFreeChannel.c
+//    3 Target:       cc2430
+//    4 Revised:      16/12-2005
+//    5 Revision:     1.0
+//    6 ******************************************************************************/
+//    7 
+//    8 #include <string.h>
+//    9 #include "cul.h"
+
+        ASEGN SFR_AN:DATA:NOROOT,0a8H
+// union <unnamed> volatile __sfr _A_IEN0
+_A_IEN0:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0d6H
+// unsigned char volatile __sfr DMAARM
+DMAARM:
+        DS 1
+//   10 
+//   11 extern DMA_DESC __xdata dmaChannel1to4[4];
+//   12 extern DMA_TABLE_ENTRY dmaTable[DMA_ADM_NUMBER_OF_CHANNELS];
+//   13 
+//   14 //-----------------------------------------------------------------------------
+//   15 // See cul.h for a description of this function.
+//   16 //-----------------------------------------------------------------------------
+
+        RSEG NEAR_CODE:CODE:NOROOT(0)
+//   17 void culDmaFreeChannel(BYTE dmaChannelNumber){
+culDmaFreeChannel:
+        MOV     A,#-0x9
+        LCALL   ?FUNC_ENTER_XDATA
+        ; Saved register size: 9
+        ; Auto size: 0
+//   18    // Saving the old interrupt enable status and turning off global interrupt.
+//   19    BYTE savedIntEnable = IEN0;
+        MOV     A,0xa8
+        MOV     R3,A
+//   20    INT_GLOBAL_ENABLE(INT_OFF);
+        CLR     0xa8.7
+//   21 
+//   22    // Turning off the DMA channel
+//   23    DMA_ABORT_CHANNEL(dmaChannelNumber);
+        MOV     ?V0 + 0,#0x1
+        MOV     ?V0 + 1,#0x0
+        MOV     A,R1
+        MOV     R0,#?V0 + 0
+        LCALL   ?S_SHL
+        MOV     A,?V0 + 0
+        ANL     A,#0x1f
+        ORL     A,#0x80
+        MOV     0xd6,A
+//   24 
+//   25    // Clearing the channel occupied flag in the table
+//   26    dmaTable[dmaChannelNumber].assigned = FALSE;
+        MOV     A,R1
+        MOV     B,#0x3
+        MUL     AB
+        ADD     A,#(dmaTable & 0xff)
+        MOV     DPL,A
+        MOV     A,B
+        ADDC    A,#((dmaTable >> 8) & 0xff)
+        MOV     DPH,A
+        CLR     A
+        MOVX    @DPTR,A
+//   27    dmaTable[dmaChannelNumber].callBackFunction = NULL;
+        INC     DPTR
+        MOVX    @DPTR,A
+        INC     DPTR
+        MOVX    @DPTR,A
+//   28 
+//   29    // Restoring the interrupt enable status
+//   30    IEN0 = savedIntEnable;
+        MOV     0xa8,R3
+//   31 
+//   32    return;
+        MOV     R7,#0x2
+        LJMP    ?FUNC_LEAVE_XDATA
+        REQUIRE _A_IEN0
+        REQUIRE DMAARM
+//   33 } // ends culDmaFreeChannel()
+
+        END
+// 
+// 58 bytes in segment NEAR_CODE
+//  2 bytes in segment SFR_AN
+// 
+// 58 bytes of CODE memory
+//  0 bytes of DATA memory (+ 2 bytes shared)
+//
+//Errors: none
+//Warnings: none

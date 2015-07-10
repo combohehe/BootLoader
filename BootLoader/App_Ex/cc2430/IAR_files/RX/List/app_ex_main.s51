@@ -1,0 +1,247 @@
+///////////////////////////////////////////////////////////////////////////////
+//                                                                            /
+// IAR 8051 C/C++ Compiler V7.30B/W32                   13/Oct/2014  10:07:19 /
+// Copyright 2004-2007 IAR Systems. All rights reserved.                      /
+//                                                                            /
+//    Core               =  plain                                             /
+//    Code model         =  near                                              /
+//    Data model         =  large                                             /
+//    Calling convention =  xdata reentrant                                   /
+//    Constant location  =  data                                              /
+//    Dptr setup         =  1,16                                              /
+//    Source file        =  C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä° /
+//                          æ7\App_Ex\cc2430\source\app_ex_main.c             /
+//    Command line       =  "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\App_Ex\cc2430\source\app_ex_main.c" -D        /
+//                          chip=2430 -D COMPLETE_APPLICATION -D RX -lB       /
+//                          "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\App_Ex\cc2430\IAR_files\RX\List\" -o          /
+//                          "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\App_Ex\cc2430\IAR_files\RX\Obj\" -e -z9       /
+//                          --debug --core=plain --dptr=16,1                  /
+//                          --data_model=large --code_model=near              /
+//                          --calling_convention=xdata_reentrant              /
+//                          --place_constants=data --nr_virtual_regs 8 -I     /
+//                          "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\App_Ex\cc2430\IAR_files\..\..\..\LIBRARY\CC24 /
+//                          30\CUL\INCLUDE\" -I "C:\Documents and             /
+//                          Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\App_Ex\cc2430\ /
+//                          IAR_files\..\..\..\LIBRARY\CC2430\HAL\INCLUDE\"   /
+//                          -I "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐ /
+//                          Þ¸Ä°æ7\App_Ex\cc2430\IAR_files\..\..\..\LIBRARY\C /
+//                          C2430\EB\INCLUDE\" -I "C:\Documents and           /
+//                          Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\App_Ex\cc2430\ /
+//                          IAR_files\..\INCLUDE\" -I "C:\IAR                 /
+//                          Systems\Embedded Workbench 4.0 Evaluation         /
+//                          version\8051\INC\" -I "C:\IAR Systems\Embedded    /
+//                          Workbench 4.0 Evaluation version\8051\INC\CLIB\"  /
+//    List file          =  C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä° /
+//                          æ7\App_Ex\cc2430\IAR_files\RX\List\app_ex_main.s5 /
+//                          1                                                 /
+//                                                                            /
+//                                                                            /
+///////////////////////////////////////////////////////////////////////////////
+
+        NAME app_ex_main
+
+        RSEG DOVERLAY:DATA:NOROOT(0)
+        RSEG IOVERLAY:IDATA:NOROOT(0)
+        RSEG ISTACK:IDATA:NOROOT(0)
+        RSEG PSTACK:XDATA:NOROOT(0)
+        RSEG XSTACK:XDATA:NOROOT(0)
+
+        PUBWEAK CLKCON
+        PUBWEAK P0SEL
+        PUBWEAK P1SEL
+        PUBWEAK PERCFG
+        PUBWEAK SLEEP
+        PUBWEAK U0BAUD
+        PUBWEAK U0CSR
+        PUBWEAK U0GCR
+        PUBWEAK U0UCR
+        PUBWEAK _A_IRCON2
+        PUBLIC initUART
+        PUBLIC main
+
+        EXTERN rf_test_main
+
+// C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\App_Ex\cc2430\source\app_ex_main.c
+//    1 /******************************************************************************
+//    2 Filename:     app_ex_main.c
+//    3 Target:       cc2430
+//    4 Revised:      16/12-2005  cdwxl
+//    5 Revision:     1.0
+//    6 
+//    7 Description:
+//    8     Application example
+//    9 ******************************************************************************/
+//   10 
+//   11 #include "app_ex_main.h"
+
+        ASEGN SFR_AN:DATA:NOROOT,086H
+// unsigned char volatile __sfr U0CSR
+U0CSR:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0beH
+// unsigned char volatile __sfr SLEEP
+SLEEP:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0c2H
+// unsigned char volatile __sfr U0BAUD
+U0BAUD:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0c4H
+// unsigned char volatile __sfr U0UCR
+U0UCR:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0c5H
+// unsigned char volatile __sfr U0GCR
+U0GCR:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0c6H
+// unsigned char volatile __sfr CLKCON
+CLKCON:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0e8H
+// union <unnamed> volatile __sfr _A_IRCON2
+_A_IRCON2:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0f1H
+// unsigned char volatile __sfr PERCFG
+PERCFG:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0f3H
+// unsigned char volatile __sfr P0SEL
+P0SEL:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0f4H
+// unsigned char volatile __sfr P1SEL
+P1SEL:
+        DS 1
+//   12 #include "app_ex_util.h"
+//   13 
+//   14 /******************************************************************************
+//   15 * @fn  initUART
+//   16 *
+//   17 * @brief
+//   18 *      Initializes components for the UART application example.
+//   19 *
+//   20 * Parameters:
+//   21 *
+//   22 * @param  void
+//   23 *
+//   24 * @return void
+//   25 *
+//   26 ******************************************************************************/
+
+        RSEG NEAR_CODE:CODE:NOROOT(0)
+//   27 void initUART(void)
+initUART:
+//   28 {
+        ; Saved register size: 0
+        ; Auto size: 0
+//   29    // Setup for UART0
+//   30    IO_PER_LOC_UART0_AT_PORT0_PIN2345();
+        ANL     0xf1,#0xfe
+//   31 
+//   32    SET_MAIN_CLOCK_SOURCE(CRYSTAL);
+        ANL     0xbe,#0xfb
+??initUART_0:
+        MOV     A,0xbe
+        MOV     C,0xE0 /* A   */.6
+        JNC     ??initUART_0
+        NOP
+        ANL     0xc6,#0xb8
+        MOV     A,0xc6
+        ORL     0xbe,#0x4
+//   33 
+//   34    UART_SETUP(0, 57600, HIGH_STOP);
+        MOV     A,0xf1
+        MOV     C,0xE0 /* A   */.0
+        JNC     ??initUART_1
+        ORL     0xf4,#0x30
+        MOV     A,0xf4
+        SJMP    ??initUART_2
+??initUART_1:
+        ORL     0xf3,#0xc
+        MOV     A,0xf3
+??initUART_2:
+        MOV     A,#0x7
+        ANL     A,0xc6
+        ADD     A,#0xa
+        MOV     0xc5,A
+        MOV     0xc2,#-0x28
+        ORL     0x86,#0x80
+        ORL     0xc4,#0x82
+        MOV     A,0xc4
+//   35 
+//   36    UTX0IF = 1;
+        SETB    0xe8.1
+//   37 
+//   38 }
+        RET
+        REQUIRE U0CSR
+        REQUIRE SLEEP
+        REQUIRE U0BAUD
+        REQUIRE U0UCR
+        REQUIRE U0GCR
+        REQUIRE CLKCON
+        REQUIRE _A_IRCON2
+        REQUIRE PERCFG
+        REQUIRE P0SEL
+        REQUIRE P1SEL
+//   39 
+//   40 /******************************************************************************
+//   41 * @fn  main
+//   42 *
+//   43 * @brief
+//   44 *      Main function of application example.
+//   45 *
+//   46 * Parameters:
+//   47 *
+//   48 * @param  void
+//   49 *
+//   50 * @return void
+//   51 *
+//   52 ******************************************************************************/
+
+        RSEG NEAR_CODE:CODE:NOROOT(0)
+//   53 void main(void)
+main:
+//   54 {
+        ; Auto size: 0
+//   55    //SET_MAIN_CLOCK_SOURCE(CRYSTAL);
+//   56    //SET_32KHZ_CLOCK_SOURCE(CRYSTAL);
+//   57    //RFPWR = 0x04;
+//   58    //while(RFPWR & 0x10);
+//   59    //initUART();
+//   60    //IO_DIR_PORT_PIN(0,5,IO_OUT);
+//   61    //IO_DIR_PORT_PIN(1,3,IO_OUT);
+//   62    //IO_DIR_PORT_PIN(1,2,IO_IN);
+//   63    //P0_5 = 1;
+//   64    //P1_3 = 0;
+//   65    rf_test_main();
+        ; Setup parameters for call to function rf_test_main
+        LCALL   rf_test_main
+//   66 }
+        RET
+
+        END
+// 
+// 65 bytes in segment NEAR_CODE
+// 10 bytes in segment SFR_AN
+// 
+// 65 bytes of CODE memory
+//  0 bytes of DATA memory (+ 10 bytes shared)
+//
+//Errors: none
+//Warnings: none

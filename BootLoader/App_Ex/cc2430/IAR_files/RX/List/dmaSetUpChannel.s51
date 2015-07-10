@@ -1,0 +1,208 @@
+///////////////////////////////////////////////////////////////////////////////
+//                                                                            /
+// IAR 8051 C/C++ Compiler V7.30B/W32                   03/Jul/2015  20:20:02 /
+// Copyright 2004-2007 IAR Systems. All rights reserved.                      /
+//                                                                            /
+//    Core               =  plain                                             /
+//    Code model         =  near                                              /
+//    Data model         =  large                                             /
+//    Calling convention =  xdata reentrant                                   /
+//    Constant location  =  data                                              /
+//    Dptr setup         =  1,16                                              /
+//    Source file        =  C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä° /
+//                          æ7\Library\cc2430\CUL\source\dmaSetUpChannel.c    /
+//    Command line       =  "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\Library\cc2430\CUL\source\dmaSetUpChannel.c"  /
+//                          -D chip=2430 -D COMPLETE_APPLICATION -D RX -lB    /
+//                          "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\App_Ex\cc2430\IAR_files\RX\List\" -o          /
+//                          "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\App_Ex\cc2430\IAR_files\RX\Obj\" -e -z9       /
+//                          --debug --core=plain --dptr=16,1                  /
+//                          --data_model=large --code_model=near              /
+//                          --calling_convention=xdata_reentrant              /
+//                          --place_constants=data --nr_virtual_regs 8 -I     /
+//                          "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\App_Ex\cc2430\IAR_files\..\..\..\LIBRARY\CC24 /
+//                          30\CUL\INCLUDE\" -I "C:\Documents and             /
+//                          Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\App_Ex\cc2430\ /
+//                          IAR_files\..\..\..\LIBRARY\CC2430\HAL\INCLUDE\"   /
+//                          -I "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐ /
+//                          Þ¸Ä°æ7\App_Ex\cc2430\IAR_files\..\..\..\LIBRARY\C /
+//                          C2430\EB\INCLUDE\" -I "C:\Documents and           /
+//                          Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\App_Ex\cc2430\ /
+//                          IAR_files\..\INCLUDE\" -I "C:\IAR                 /
+//                          Systems\Embedded Workbench 4.0 Evaluation         /
+//                          version\8051\INC\" -I "C:\IAR Systems\Embedded    /
+//                          Workbench 4.0 Evaluation version\8051\INC\CLIB\"  /
+//    List file          =  C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä° /
+//                          æ7\App_Ex\cc2430\IAR_files\RX\List\dmaSetUpChanne /
+//                          l.s51                                             /
+//                                                                            /
+//                                                                            /
+///////////////////////////////////////////////////////////////////////////////
+
+        NAME dmaSetUpChannel
+
+        RSEG DOVERLAY:DATA:NOROOT(0)
+        RSEG IOVERLAY:IDATA:NOROOT(0)
+        RSEG ISTACK:IDATA:NOROOT(0)
+        RSEG PSTACK:XDATA:NOROOT(0)
+        RSEG XSTACK:XDATA:NOROOT(0)
+
+        EXTERN ?ALLOC_XSTACK8
+        EXTERN ?DEALLOC_XSTACK8
+        EXTERN ?FUNC_ENTER_XDATA
+        EXTERN ?FUNC_LEAVE_XDATA
+        EXTERN ?PUSH_XSTACK_I_TWO
+        EXTERN ?S_SHL
+        EXTERN ?V0
+        EXTERN ?XSP
+
+        PUBWEAK DMAARM
+        PUBWEAK DMAREQ
+        PUBLIC culDmaSetUpChannel
+
+        EXTERN culDmaAllocChannel
+        EXTERN memmove
+
+// C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\Library\cc2430\CUL\source\dmaSetUpChannel.c
+//    1 /******************************************************************************
+//    2 Filename:     dmaSetUpChannel.c
+//    3 Target:       cc2430
+//    4 Revised:      16/12-2005
+//    5 Revision:     1.0
+//    6 ******************************************************************************/
+//    7 
+//    8 #include <string.h>
+//    9 #include "cul.h"
+
+        ASEGN SFR_AN:DATA:NOROOT,0d6H
+// unsigned char volatile __sfr DMAARM
+DMAARM:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0d7H
+// unsigned char volatile __sfr DMAREQ
+DMAREQ:
+        DS 1
+//   10 
+//   11 
+//   12 extern DMA_DESC /*__xdata*/ dmaChannel1to4[4];
+//   13 extern DMA_TABLE_ENTRY /*__xdata*/ dmaTable[4];
+//   14 
+//   15 //-----------------------------------------------------------------------------
+//   16 // See cul.h for a description of this function.
+//   17 //-----------------------------------------------------------------------------
+
+        RSEG NEAR_CODE:CODE:NOROOT(0)
+//   18 BYTE culDmaSetUpChannel(DMA_DESC* pDmaDescriptor, BOOL immediately, FUNCTION* callBackFunction){
+culDmaSetUpChannel:
+        MOV     A,#-0xb
+        LCALL   ?FUNC_ENTER_XDATA
+        ; Saved register size: 11
+        ; Auto size: 1
+        MOV     A,#-0x1
+        LCALL   ?ALLOC_XSTACK8
+        MOV     A,R2
+        MOV     R6,A
+        MOV     A,R3
+        MOV     R7,A
+        MOV     ?V0 + 0,R1
+//   19    DMA_DESC* assignedDmaDescriptor = NULL;
+//   20    UINT8 dmaChannelNumber = 0x00;
+        CLR     A
+        MOV     DPL,?XSP + 0
+        MOV     DPH,?XSP + 1
+        MOVX    @DPTR,A
+//   21 
+//   22    // Requesting an available DMA descriptor
+//   23    assignedDmaDescriptor = culDmaAllocChannel(&dmaChannelNumber, callBackFunction);
+        ; Setup parameters for call to function culDmaAllocChannel
+        MOV     R2,DPL
+        MOV     R3,DPH
+        LCALL   culDmaAllocChannel
+//   24 
+//   25    // If all DMA channels are in use or an illegal channel number is assigned,the function returns.
+//   26    if((assignedDmaDescriptor == NULL) || (dmaChannelNumber == 0x00)){
+        MOV     A,R2
+        JNZ     ??culDmaSetUpChannel_0
+        MOV     A,R3
+??culDmaSetUpChannel_0:
+        JZ      ??culDmaSetUpChannel_1
+        MOVX    A,@DPTR
+        JNZ     ??culDmaSetUpChannel_2
+//   27       dmaChannelNumber = 0x00;
+??culDmaSetUpChannel_1:
+        CLR     A
+        MOVX    @DPTR,A
+        SJMP    ??culDmaSetUpChannel_3
+//   28    } else if(dmaChannelNumber > 0x04){
+??culDmaSetUpChannel_2:
+        CLR     C
+        SUBB    A,#0x5
+        JNC     ??culDmaSetUpChannel_1
+//   29       dmaChannelNumber = 0x00;
+//   30    } else {
+//   31 
+//   32       // Copying the DMA descriptor to the list of DMA descriptors.
+//   33       memmove(assignedDmaDescriptor, pDmaDescriptor, 8);
+        ; Setup parameters for call to function memmove
+        MOV     ?V0 + 2,#0x8
+        MOV     ?V0 + 3,#0x0
+        MOV     R0,#?V0 + 2
+        LCALL   ?PUSH_XSTACK_I_TWO
+        MOV     A,R6
+        MOV     R4,A
+        MOV     A,R7
+        MOV     R5,A
+        LCALL   memmove
+        MOV     A,#0x2
+        LCALL   ?DEALLOC_XSTACK8
+        MOV     ?V0 + 2,#0x1
+        MOV     DPL,?XSP + 0
+        MOV     DPH,?XSP + 1
+        MOVX    A,@DPTR
+        MOV     R0,#?V0 + 2
+        LCALL   ?S_SHL
+        MOV     R2,?V0 + 2
+        MOV     A,#0x1f
+        ANL     A,R2
+        MOV     0xd6,A
+//   34 
+//   35       // Arming the DMA channel in question
+//   36       DMA_ARM_CHANNEL(dmaChannelNumber);
+//   37 
+//   38       // If the transfer is to be performed ASAP, the channel is initiated.
+//   39       if(immediately){
+        MOV     A,?V0 + 0
+        JZ      ??culDmaSetUpChannel_3
+//   40          DMA_START_CHANNEL(dmaChannelNumber);
+        MOV     0xd7,R2
+//   41       }
+//   42    }
+//   43 
+//   44    // Returning the number of the channel in use
+//   45    return dmaChannelNumber;
+??culDmaSetUpChannel_3:
+        MOVX    A,@DPTR
+        MOV     R1,A
+        MOV     A,#0x1
+        LCALL   ?DEALLOC_XSTACK8
+        MOV     R7,#0x4
+        LJMP    ?FUNC_LEAVE_XDATA
+        REQUIRE DMAARM
+        REQUIRE DMAREQ
+//   46 }
+
+        END
+//   47 
+// 
+// 112 bytes in segment NEAR_CODE
+//   2 bytes in segment SFR_AN
+// 
+// 112 bytes of CODE memory
+//   0 bytes of DATA memory (+ 2 bytes shared)
+//
+//Errors: none
+//Warnings: none

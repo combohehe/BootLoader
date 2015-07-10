@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<Workspace>
+  <ConfigDictionary>
+    
+  <CurrentConfigs><Project>appEx_cc2430/RX</Project></CurrentConfigs></ConfigDictionary>
+  <Desktop>
+    <Static>
+      <Workspace>
+        <ColumnWidths>
+          
+          
+          
+          
+        <Column0>184</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
+      </Workspace>
+      <Find-in-Files>
+        
+        
+        
+      <ColumnWidth0>690</ColumnWidth0><ColumnWidth1>67</ColumnWidth1><ColumnWidth2>806</ColumnWidth2></Find-in-Files>
+      <Build>
+        
+        
+        
+        
+      <ColumnWidth0>20</ColumnWidth0><ColumnWidth1>977</ColumnWidth1><ColumnWidth2>260</ColumnWidth2><ColumnWidth3>65</ColumnWidth3></Build>
+      <TerminalIO/>
+      <Debug-Log/>
+    </Static>
+    <Windows>
+      
+      
+    <Wnd0>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-28743-277</Identity>
+            <TabName>Workspace</TabName>
+            <Factory>Workspace</Factory>
+            <Session>
+              
+            <NodeDict><ExpandedNode>appEx_cc2430</ExpandedNode><ExpandedNode>appEx_cc2430/Output</ExpandedNode><ExpandedNode>appEx_cc2430/appEx</ExpandedNode></NodeDict></Session>
+          </Tab>
+        </Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd0><Wnd1>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-24393-972</Identity>
+            <TabName>Find in Files</TabName>
+            <Factory>Find-in-Files</Factory>
+            <Session/>
+          </Tab>
+          <Tab>
+            <Identity>TabID-30269-1681</Identity>
+            <TabName>Build</TabName>
+            <Factory>Build</Factory>
+            <Session/>
+          </Tab>
+          <Tab>
+            <Identity>TabID-14796-10158</Identity>
+            <TabName>Debug Log</TabName>
+            <Factory>Debug-Log</Factory>
+            <Session/>
+          </Tab>
+        </Tabs>
+        
+      <SelectedTab>1</SelectedTab></Wnd1></Windows>
+    <Editor>
+      
+      
+      
+      
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>C:\IAR Systems\Embedded Workbench 4.0 Evaluation version\8051\INC\ioCC2430.h</Filename><XPos>0</XPos><YPos>461</YPos><SelStart>33375</SelStart><SelEnd>33383</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\SPP-BT001.xcl</Filename><XPos>0</XPos><YPos>270</YPos><SelStart>8780</SelStart><SelEnd>8780</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\Documents and Settings\haoyan\&#x684C;&#x9762;\SPP-BT&#x4Fee;&#x6539;&#x7248;7\Library\cc2430\HAL\source\rfReceivePacket.c</Filename><XPos>0</XPos><YPos>21</YPos><SelStart>900</SelStart><SelEnd>900</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\Documents and Settings\haoyan\&#x684C;&#x9762;\SPP-BT&#x4Fee;&#x6539;&#x7248;7\Library\cc2430\CUL\source\spp.c</Filename><XPos>0</XPos><YPos>369</YPos><SelStart>11629</SelStart><SelEnd>11629</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\Documents and Settings\haoyan\&#x684C;&#x9762;\SPP-BT&#x4Fee;&#x6539;&#x7248;7\Library\cc2430\CUL\include\cul.h</Filename><XPos>0</XPos><YPos>524</YPos><SelStart>19961</SelStart><SelEnd>19961</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\Documents and Settings\haoyan\&#x684C;&#x9762;\SPP-BT&#x4Fee;&#x6539;&#x7248;7\Library\cc2430\HAL\source\wait.c</Filename><XPos>0</XPos><YPos>11</YPos><SelStart>660</SelStart><SelEnd>660</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\Documents and Settings\haoyan\&#x684C;&#x9762;\SPP-BT&#x4Fee;&#x6539;&#x7248;7\LIBRARY\CC2430\HAL\INCLUDE\hal.h</Filename><XPos>0</XPos><YPos>1521</YPos><SelStart>59643</SelStart><SelEnd>59651</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\Documents and Settings\haoyan\&#x684C;&#x9762;\SPP-BT&#x4Fee;&#x6539;&#x7248;7\App_Ex\cc2430\source\rf_test.c</Filename><XPos>0</XPos><YPos>142</YPos><SelStart>3901</SelStart><SelEnd>3901</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\Documents and Settings\haoyan\&#x684C;&#x9762;\SPP-BT&#x4Fee;&#x6539;&#x7248;7\App_Ex\cc2430\source\app_ex_main.c</Filename><XPos>0</XPos><YPos>53</YPos><SelStart>1287</SelStart><SelEnd>1287</SelEnd></Tab><ActiveTab>8</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>C:\Documents and Settings\haoyan\&#x684C;&#x9762;\SPP-BT&#x4Fee;&#x6539;&#x7248;7\Library\cc2430\CUL\source\radio.c</Filename><XPos>0</XPos><YPos>76</YPos><SelStart>2238</SelStart><SelEnd>2238</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\Documents and Settings\haoyan\&#x684C;&#x9762;\SPP-BT&#x4Fee;&#x6539;&#x7248;7\App_Ex\cc2430\IAR_files\RX\List\appEx_cc2430.map</Filename><XPos>0</XPos><YPos>4247</YPos><SelStart>212848</SelStart><SelEnd>212848</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\Documents and Settings\haoyan\&#x684C;&#x9762;\SPP-BT&#x4Fee;&#x6539;&#x7248;7\App_Ex\cc2430\IAR_files\RX\Exe\appEx_cc2430.hex</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>269</SelStart><SelEnd>269</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\Documents and Settings\haoyan\&#x684C;&#x9762;\SPP-BT&#x4Fee;&#x6539;&#x7248;7\App_Ex\cc2430\source\flash.c</Filename><XPos>0</XPos><YPos>379</YPos><SelStart>12349</SelStart><SelEnd>12349</SelEnd></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Positions>
+      
+      
+      
+      
+      
+    <Top><Row0><Sizes><Toolbar-003bec00><key>iaridepm.enu1</key></Toolbar-003bec00></Sizes></Row0><Row1><Sizes/></Row1></Top><Left><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>446</Bottom><Right>258</Right><x>-2</x><y>-2</y><xscreen>200</xscreen><yscreen>200</yscreen><sizeHorzCX>146413</sizeHorzCX><sizeHorzCY>293686</sizeHorzCY><sizeVertCX>190337</sizeVertCX><sizeVertCY>657856</sizeVertCY></Rect></Wnd0></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>189</Bottom><Right>1368</Right><x>-2</x><y>-2</y><xscreen>1370</xscreen><yscreen>191</yscreen><sizeHorzCX>1002928</sizeHorzCX><sizeHorzCY>280470</sizeHorzCY><sizeVertCX>146413</sizeVertCX><sizeVertCY>293686</sizeVertCY></Rect></Wnd1></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+  </Desktop>
+</Workspace>
+
+

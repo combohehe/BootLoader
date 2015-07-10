@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<Project>
+  <Desktop>
+    <Static>
+      <Debug-Log><PreferedWindows><Position>3</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows/></PreferedWindows></Debug-Log>
+      <Build>
+        
+        
+        
+        
+      <ColumnWidth0>20</ColumnWidth0><ColumnWidth1>671</ColumnWidth1><ColumnWidth2>179</ColumnWidth2><ColumnWidth3>44</ColumnWidth3><PreferedWindows><Position>3</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows><Window><Factory>Debug-Log</Factory></Window></Windows></PreferedWindows></Build>
+      <Workspace>
+        <ColumnWidths>
+          
+          
+          
+          
+        <Column0>160</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
+      <PreferedWindows><Position>4</Position><ScreenPosX>3</ScreenPosX><ScreenPosY>134</ScreenPosY><Windows/></PreferedWindows></Workspace>
+      <Disassembly>
+        
+        
+        
+      <PreferedWindows><Position>2</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows/></PreferedWindows><MixedMode>1</MixedMode><CodeCovEnabled>0</CodeCovEnabled><CodeCovShow>0</CodeCovShow></Disassembly>
+    <Memory><PreferedWindows><Position>3</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows/></PreferedWindows><FindDirection>1</FindDirection><FindAsHex>0</FindAsHex></Memory><Watch><Format><struct_types/><watch_formats/></Format><PreferedWindows><Position>2</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows/></PreferedWindows><Column0>100</Column0><Column1>100</Column1><Column2>100</Column2><Column3>100</Column3></Watch><Find-in-Files><ColumnWidth0>470</ColumnWidth0><ColumnWidth1>84</ColumnWidth1><ColumnWidth2>806</ColumnWidth2></Find-in-Files><Register><PreferedWindows><Position>2</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows/></PreferedWindows></Register></Static>
+    <Windows>
+      
+      
+      
+    <Wnd0><Tabs><Tab><Identity>TabID-15970-22888</Identity><TabName>Debug Log</TabName><Factory>Debug-Log</Factory><Session/></Tab><Tab><Identity>TabID-17422-14041</Identity><TabName>Breakpoints</TabName><Factory>Breakpoints</Factory></Tab><Tab><Identity>TabID-10220-31532</Identity><TabName>Find in Files</TabName><Factory>Find-in-Files</Factory><Session/></Tab></Tabs><SelectedTab>0</SelectedTab></Wnd0><Wnd2><Tabs><Tab><Identity>TabID-30948-27850</Identity><TabName>Disassembly</TabName><Factory>Disassembly</Factory><Session/></Tab></Tabs><SelectedTab>0</SelectedTab></Wnd2></Windows>
+    <Editor>
+      
+      
+      
+      
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>C:\SPP-BT001.xcl</Filename><XPos>0</XPos><YPos>151</YPos><SelStart>7688</SelStart><SelEnd>7688</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\Documents and Settings\haoyan\&#x684C;&#x9762;\SPP-BT&#x4Fee;&#x6539;&#x7248;7\Library\cc2430\HAL\source\rfConfig.c</Filename><XPos>0</XPos><YPos>10</YPos><SelStart>482</SelStart><SelEnd>482</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\Documents and Settings\haoyan\&#x684C;&#x9762;\SPP-BT&#x4Fee;&#x6539;&#x7248;7\App_Ex\cc2430\source\rf_test.c</Filename><XPos>0</XPos><YPos>218</YPos><SelStart>6434</SelStart><SelEnd>6434</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\Documents and Settings\haoyan\&#x684C;&#x9762;\SPP-BT&#x4Fee;&#x6539;&#x7248;7\Library\cc2430\CUL\source\spp.c</Filename><XPos>0</XPos><YPos>225</YPos><SelStart>7360</SelStart><SelEnd>7360</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\Documents and Settings\haoyan\&#x684C;&#x9762;\SPP-BT&#x4Fee;&#x6539;&#x7248;7\Library\cc2430\HAL\source\rfSetRadioFrequency.c</Filename><XPos>0</XPos><YPos>3</YPos><SelStart>579</SelStart><SelEnd>579</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\Documents and Settings\haoyan\&#x684C;&#x9762;\SPP-BT&#x4Fee;&#x6539;&#x7248;7\LIBRARY\CC2430\HAL\INCLUDE\hal.h</Filename><XPos>0</XPos><YPos>67</YPos><SelStart>1872</SelStart><SelEnd>1872</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\Documents and Settings\haoyan\&#x684C;&#x9762;\SPP-BT&#x4Fee;&#x6539;&#x7248;7\App_Ex\cc2430\source\app_ex_main.c</Filename><XPos>0</XPos><YPos>30</YPos><SelStart>554</SelStart><SelEnd>554</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\Documents and Settings\haoyan\&#x684C;&#x9762;\SPP-BT&#x4Fee;&#x6539;&#x7248;7\App_Ex\cc2430\IAR_files\RX\List\appEx_cc2430.map</Filename><XPos>0</XPos><YPos>4008</YPos><SelStart>203514</SelStart><SelEnd>203514</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\Documents and Settings\haoyan\&#x684C;&#x9762;\SPP-BT&#x4Fee;&#x6539;&#x7248;7\Library\cc2430\CUL\source\radio.c</Filename><XPos>0</XPos><YPos>11</YPos><SelStart>834</SelStart><SelEnd>834</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\Documents and Settings\haoyan\&#x684C;&#x9762;\SPP-BT&#x4Fee;&#x6539;&#x7248;7\App_Ex\cc2430\IAR_files\RX\Exe\appEx_cc2430.hex</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>649</SelStart><SelEnd>649</SelEnd></Tab><ActiveTab>9</ActiveTab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Positions>
+      
+      
+      
+      
+      
+    <Top><Row0><Sizes><Toolbar-003bec00><key>iaridepm.enu1</key></Toolbar-003bec00></Sizes></Row0><Row1><Sizes><Toolbar-01ad84e0><key>debuggergui.enu1</key></Toolbar-01ad84e0></Sizes></Row1></Top><Left><Row0><Sizes/></Row0></Left><Right><Row0><Sizes><Wnd2><Rect><Top>-2</Top><Left>-2</Left><Bottom>529</Bottom><Right>171</Right><x>-2</x><y>-2</y><xscreen>0</xscreen><yscreen>0</yscreen><sizeHorzCX>0</sizeHorzCX><sizeHorzCY>0</sizeHorzCY><sizeVertCX>157416</sizeVertCX><sizeVertCY>844197</sizeVertCY></Rect></Wnd2></Sizes></Row0></Right><Bottom><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>30</Bottom><Right>1101</Right><x>-2</x><y>-2</y><xscreen>1103</xscreen><yscreen>0</yscreen><sizeHorzCX>1003640</sizeHorzCX><sizeHorzCY>0</sizeHorzCY><sizeVertCX>0</sizeVertCX><sizeVertCY>0</sizeVertCY></Rect></Wnd0></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+  </Desktop>
+</Project>
+
+

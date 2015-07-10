@@ -1,0 +1,214 @@
+/******************************************************************************
+*                                                                             *
+*        **********                                                           *
+*       ************                                                          *
+*      ***        ***                                                         *
+*     ***    ++    ***                                                        *
+*     ***   +  +   ***                      CHIPCON                           *
+*     ***   +                                                                 *
+*     ***   +  +   ***                                                        *
+*     ***    ++    ***                                                        *
+*      ***        ***                                                         *
+*       ************                                                          *
+*        **********                                                           *
+*                                                                             *
+*******************************************************************************
+
+Filename:     rf_test.c
+Target:       cc2430
+Author:       efu
+Revised:      16/12-2005
+Revision:     1.0
+
+Description:
+    This file provides 4 small tests which demonstrates use of the radio.
+
+******************************************************************************/
+
+#include "ioCC2430.h"
+#include "cul.h"
+#include "hal.h"
+#include "RF04EB.h"
+
+
+#define ADDRESS_0 0x01
+#define ADDRESS_1 0x02
+
+#define SEND     0
+#define RECEIVE  1
+
+#define SINGLE      0
+#define CONTINUOUS  1
+#define PING_PONG   2
+#define PER_TEST    3
+#define EXIT        4
+
+#define RECEIVE_TIMEOUT               800
+
+#define PING_PONG_TIMEOUT             1200
+#define PING_PONG_REQUEST             0x80
+#define PING_PONG_RESPONSE            0x40
+
+#define PER_RECEIVE_TIMEOUT          10000
+#define PER_TOTAL_PACKET_NUMBER       1000
+#define PER_TEST_REQUEST              0x20
+
+
+void initRfTest(void);
+void rf_test_main(void);
+void receivePacket(UINT8 *receiveByte);
+void sendPacket(UINT8 sendByte);
+
+
+
+void receiveMode(void);
+void contionuousMode(void);
+
+
+
+
+UINT8 RxTxState;
+UINT8 myAddr;
+UINT8 remoteAddr;
+/******************************************************************************
+* @fn  initRfTest
+*
+* @brief
+*      Initializes components for the RF test application example.
+*
+* Parameters:
+*
+* @param  void
+*
+* @return void
+*
+******************************************************************************/
+void initRfTest(void)
+{
+   UINT32 frequency = 2405000;
+   INIT_GLED();
+   INIT_YLED();
+   radioInit(frequency, myAddr);
+}
+
+
+/******************************************************************************
+* @fn  rf_test_main
+*
+* @brief
+*      Main function.
+*
+* Parameters:
+*
+* @param  void
+*
+* @return void
+*
+******************************************************************************/
+#ifdef COMPLETE_APPLICATION
+void rf_test_main(void){
+#else
+void main(void){
+#endif
+   INT_GLOBAL_ENABLE(INT_ON);
+   if(P1_2)
+   {
+   			myAddr = ADDRESS_0;
+   			remoteAddr = ADDRESS_1;
+   			initRfTest();
+                        receiveMode();
+   }
+   else
+   {
+   			myAddr = ADDRESS_1;
+   			remoteAddr = ADDRESS_0;
+   			initRfTest();
+                        contionuousMode();
+   }
+}
+
+
+
+
+/******************************************************************************
+* @fn  contionuousMode
+*
+* @brief
+*      Function for transferring packets until stopped by user.
+*
+* Parameters:
+*
+* @param  void
+*
+* @return void
+*
+******************************************************************************/
+void contionuousMode(void)
+{
+   BOOL res;
+   BYTE sendBuffer[] = "Hello";
+   while(1)
+   {
+      GLED = LED_OFF;
+      YLED = LED_ON;
+      res = radioSend(sendBuffer, sizeof(sendBuffer), remoteAddr, DO_NOT_ACK );
+      halWait(200);
+      YLED = LED_OFF;
+      halWait(200);
+      if(res == TRUE)
+      {
+         GLED = LED_ON;
+         halWait(200);
+      }
+      else
+      {
+         GLED = LED_OFF;
+         halWait(200);
+      }
+   }
+
+}
+
+
+
+/******************************************************************************
+* @fn  receiveMode
+*
+* @brief
+*      Function for receiving data.
+*
+* Parameters:
+*
+* @param  void
+*
+* @return void
+*
+******************************************************************************/
+void receiveMode(void)
+{
+   BYTE* receiveBuffer;
+   BYTE length;
+   BYTE res;
+   BYTE sender;
+   while(1)
+   {
+      YLED = LED_ON;
+      res = radioReceive(&receiveBuffer, &length, RECEIVE_TIMEOUT, &sender);
+      YLED = LED_OFF;
+
+      if(res == TRUE)
+      {
+         GLED = LED_ON;
+         halWait(200);
+      }
+      else
+      {
+         GLED = LED_OFF;
+         halWait(200);
+      }
+
+      GLED = LED_OFF;
+   }
+}
+
+

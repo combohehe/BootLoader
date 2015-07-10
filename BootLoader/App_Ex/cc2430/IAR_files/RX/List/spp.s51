@@ -1,0 +1,1476 @@
+///////////////////////////////////////////////////////////////////////////////
+//                                                                            /
+// IAR 8051 C/C++ Compiler V7.30B/W32                   03/Jul/2015  20:20:02 /
+// Copyright 2004-2007 IAR Systems. All rights reserved.                      /
+//                                                                            /
+//    Core               =  plain                                             /
+//    Code model         =  near                                              /
+//    Data model         =  large                                             /
+//    Calling convention =  xdata reentrant                                   /
+//    Constant location  =  data                                              /
+//    Dptr setup         =  1,16                                              /
+//    Source file        =  C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä° /
+//                          æ7\Library\cc2430\CUL\source\spp.c                /
+//    Command line       =  "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\Library\cc2430\CUL\source\spp.c" -D           /
+//                          chip=2430 -D COMPLETE_APPLICATION -D RX -lB       /
+//                          "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\App_Ex\cc2430\IAR_files\RX\List\" -o          /
+//                          "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\App_Ex\cc2430\IAR_files\RX\Obj\" -e -z9       /
+//                          --debug --core=plain --dptr=16,1                  /
+//                          --data_model=large --code_model=near              /
+//                          --calling_convention=xdata_reentrant              /
+//                          --place_constants=data --nr_virtual_regs 8 -I     /
+//                          "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\App_Ex\cc2430\IAR_files\..\..\..\LIBRARY\CC24 /
+//                          30\CUL\INCLUDE\" -I "C:\Documents and             /
+//                          Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\App_Ex\cc2430\ /
+//                          IAR_files\..\..\..\LIBRARY\CC2430\HAL\INCLUDE\"   /
+//                          -I "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐ /
+//                          Þ¸Ä°æ7\App_Ex\cc2430\IAR_files\..\..\..\LIBRARY\C /
+//                          C2430\EB\INCLUDE\" -I "C:\Documents and           /
+//                          Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\App_Ex\cc2430\ /
+//                          IAR_files\..\INCLUDE\" -I "C:\IAR                 /
+//                          Systems\Embedded Workbench 4.0 Evaluation         /
+//                          version\8051\INC\" -I "C:\IAR Systems\Embedded    /
+//                          Workbench 4.0 Evaluation version\8051\INC\CLIB\"  /
+//    List file          =  C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä° /
+//                          æ7\App_Ex\cc2430\IAR_files\RX\List\spp.s51        /
+//                                                                            /
+//                                                                            /
+///////////////////////////////////////////////////////////////////////////////
+
+        NAME spp
+
+        RSEG DOVERLAY:DATA:NOROOT(0)
+        RSEG IOVERLAY:IDATA:NOROOT(0)
+        RSEG ISTACK:IDATA:NOROOT(0)
+        RSEG PSTACK:XDATA:NOROOT(0)
+        RSEG XSTACK:XDATA:NOROOT(0)
+
+        EXTERN ?DEALLOC_XSTACK8
+        EXTERN ?FUNC_ENTER_XDATA
+        EXTERN ?FUNC_LEAVE_XDATA
+        EXTERN ?PUSH_XSTACK_I_TWO
+        EXTERN ?S_SHL
+        EXTERN ?V0
+        EXTERN __INIT_XDATA_I
+        EXTERN __INIT_XDATA_Z
+
+        PUBWEAK DMAARM
+        PUBWEAK DMAREQ
+        PUBWEAK IEN2
+        PUBWEAK RFD
+        PUBWEAK RFIF
+        PUBWEAK RFIM
+        PUBWEAK RFST
+        PUBWEAK S1CON
+        PUBWEAK _A_IEN0
+        PUBWEAK _A_IEN1
+        PUBWEAK _A_IRCON
+        PUBWEAK _A_IRCON2
+        PUBWEAK _A_S0CON
+        PUBWEAK _A_TCON
+        PUBLIC rxCallBack
+        PUBLIC sppInit
+        PUBLIC sppReceive
+        PUBLIC sppRxStatus
+        PUBLIC sppSend
+        PUBLIC sppSetAddress
+        PUBLIC sppTxStatus
+
+        EXTERN halRfConfig
+        EXTERN culDmaInit
+        EXTERN culDmaAllocChannel
+        EXTERN culDmaToRadio
+        EXTERN culDmaFromRadio
+        EXTERN halWait
+        EXTERN FeetDog
+
+// C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\Library\cc2430\CUL\source\spp.c
+//    1 /******************************************************************************
+//    2 Filename:     spp.c
+//    3 Target:       cc2430
+//    4 Revised:      16/12-2005
+//    5 Revision:     1.0
+//    6 ******************************************************************************/
+//    7 #include <string.h>
+//    8 #include "cul.h"
+
+        ASEGN SFR_AN:DATA:NOROOT,088H
+// union <unnamed> volatile __sfr _A_TCON
+_A_TCON:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,091H
+// unsigned char volatile __sfr RFIM
+RFIM:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,098H
+// union <unnamed> volatile __sfr _A_S0CON
+_A_S0CON:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,09aH
+// unsigned char volatile __sfr IEN2
+IEN2:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,09bH
+// unsigned char volatile __sfr S1CON
+S1CON:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0a8H
+// union <unnamed> volatile __sfr _A_IEN0
+_A_IEN0:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0b8H
+// union <unnamed> volatile __sfr _A_IEN1
+_A_IEN1:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0c0H
+// union <unnamed> volatile __sfr _A_IRCON
+_A_IRCON:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0d6H
+// unsigned char volatile __sfr DMAARM
+DMAARM:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0d7H
+// unsigned char volatile __sfr DMAREQ
+DMAREQ:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0d9H
+// unsigned char volatile __sfr RFD
+RFD:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0e1H
+// unsigned char volatile __sfr RFST
+RFST:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0e8H
+// union <unnamed> volatile __sfr _A_IRCON2
+_A_IRCON2:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0e9H
+// unsigned char volatile __sfr RFIF
+RFIF:
+        DS 1
+//    9 #include <stdio.h>
+//   10 
+//   11 
+//   12 // protos
+//   13 void rxCallBack(void);
+//   14 //void ackTimeout(void);
+//   15 //BOOL ackReceived(BYTE sourceAddress);
+//   16 //void sendAck(SPP_RX_STRUCT* receivedPacket);
+//   17 //void waitForAck(void);
+//   18 
+//   19 
+
+        RSEG XDATA_Z:XDATA:NOROOT(0)
+//   20 static DMA_DESC* dmaTx;          // pointer to the DMA descriptor for transmit.
+dmaTx:
+        DS 2
+        REQUIRE __INIT_XDATA_Z
+
+        RSEG XDATA_Z:XDATA:NOROOT(0)
+//   21 static DMA_DESC* dmaRx;          // pointer to the DMA descriptor for receive.
+dmaRx:
+        DS 2
+        REQUIRE __INIT_XDATA_Z
+
+        RSEG XDATA_I:XDATA:NOROOT(0)
+        DATA
+//   22 static BYTE dmaNumberTx = 1;     // number indicating which DMA channel is used for transmit.
+dmaNumberTx:
+        DS 1
+        REQUIRE `?<Initializer for dmaNumberTx>`
+        REQUIRE __INIT_XDATA_I
+
+        RSEG XDATA_I:XDATA:NOROOT(0)
+        DATA
+//   23 static BYTE dmaNumberRx = 2;     // number indicating which DMA channel is used for receive.
+dmaNumberRx:
+        DS 1
+        REQUIRE `?<Initializer for dmaNumberRx>`
+        REQUIRE __INIT_XDATA_I
+
+        RSEG XDATA_Z:XDATA:NOROOT(0)
+//   24 static BYTE myAddress;
+myAddress:
+        DS 1
+        REQUIRE __INIT_XDATA_Z
+
+        RSEG XDATA_Z:XDATA:NOROOT(0)
+//   25 volatile BYTE sppRxStatus = 0;
+sppRxStatus:
+        DS 1
+        REQUIRE __INIT_XDATA_Z
+
+        RSEG XDATA_Z:XDATA:NOROOT(0)
+//   26 volatile BYTE  sppTxStatus = 0;
+sppTxStatus:
+        DS 1
+        REQUIRE __INIT_XDATA_Z
+//   27 //static BYTE pAckBuffer[7];
+//   28 //static SPP_TX_STRUCT* pAckData;
+
+        RSEG XDATA_Z:XDATA:NOROOT(0)
+//   29 static volatile UINT8 retransmissionCounter;
+retransmissionCounter:
+        DS 1
+        REQUIRE __INIT_XDATA_Z
+//   30 //static UINT8 ackTimerNumber;
+//   31 //static FUNCTION* rxCallBackFunction;
+//   32 
+//   33 
+//   34 //-----------------------------------------------------------------------------
+//   35 // See cul.h for a description of this function.
+//   36 //-----------------------------------------------------------------------------
+//   37 //ÉèÖÃÓÃ»§Ö¸¶¨µÄ»Øµ÷º¯Êý£¬ÔÚ½ÓÊÕµ½Ò»¸öÕýÈ·µÄÊý¾Ý°üËÀÔËÐÐ
+//   38 //Í¨¹ýÕâ¸öº¯Êý¿ÉÒÔÓÃ³ÌÐòÀ´¸Ä±äÕýÈ·½ÓÊÕÊý¾Ý°üºóµÄ¶¯×÷¡£
+//   39 //callBackFunction ÓÃ»§Ö¸¶¨µÄº¯Êý
+//   40 //rxCallBackFunction Ö¸Ïò FUNCTION µÄÈ«¾Ö±äÁ¿Ö¸Õë±äÁ¿
+//   41 //void sppSetRxCallBackFunction(FUNCTION* callBackFunction)
+//   42 //{
+//   43 //   rxCallBackFunction = callBackFunction;
+//   44 //} // Ends sppSetRxCallBackFunction()
+//   45 
+//   46 
+//   47 //·¢ËÍÓ¦´ð
+//   48 //SPP_RX_STRUCT ¶¨ÒåÔÚ cul.h
+//   49 //SFR(  RFD       ,  0xD9  )   //  RF Data ¶¨ÒåÔÚioCC2430.h
+//   50 // myAddress È«¾Ö±äÁ¿
+//   51 // ACK cul.h ÖÐºê¶¨Òå
+//   52 // ISTXON hal.h ÖÐºê¶¨Òå
+//   53 // srcAddress Ô´µØÖ·
+//   54 /*void sendAck(SPP_RX_STRUCT* receivedPacket)
+//   55 {
+//   56    RFD = SPP_HEADER_AND_FOOTER_LENGTH + SPP_ACK_LENGTH;
+//   57    RFD = receivedPacket->srcAddress;
+//   58    RFD = myAddress;
+//   59    RFD = ACK;
+//   60    RFD = 0;
+//   61    RFIF &= ~IRQ_TXDONE;
+//   62    ISTXON;
+//   63    while(!(RFIF & IRQ_TXDONE));
+//   64 
+//   65    return;
+//   66 }
+//   67 */
+//   68 //------------------------------------------------------------------------------------------------------
+//   69 // void rxCallBack(...)
+//   70 //
+//   71 //  Description:
+//   72 //      This function is called by the interrupt routine when the Rx DMA channel
+//   73 //      finishes the data transfer. The received packet's destination address
+//   74 //      is checked. If not addressed to this node, or if the CRC value is not
+//   75 //      correct, the packet is erased. An ACK is sent if the packet
+//   76 //      tells to. A user defined callback function may is run if set (set
+//   77 //      with setRxCallBackFunction())
+//   78 //ÔÚRx DAM  Í¨µÀÍê³ÉÊý¾Ý´«ÊäºóÓÉÖÐ¶Ï³ÌÐòµ÷ÓÃ¡£¼ì²é½ÓÊÕ°üµôµÄÄ¿µÄµØÖ·£¬Èç¹ûµØÖ·²»ÊÇ
+//   79 //Õâ¸ö½ÚµãµÄ£¬»òCRCÖµÊÇ´íÎóµÄ£¬°ü×°½«±»²Á³ý¡£Èç¹ûÊý¾Ý°ü±»¸æÖª½«·¢ËÍÒ»¸öÓ¦´ð¡£Ò»¸öÓÃ»§¶¨ÒåµÄ»Øµ÷º¯Êý¿ÉÒÔÔËÐÐÈç¹û¶¨ÒåÁËµÄ»°¡£
+//   80 //  Arguments:
+//   81 //      void
+//   82 //
+//   83 //  Return value:
+//   84 //      void
+//   85 //-----------------------------------------------------------------------------
+//   86 //#define  RXFIFOCNT   XREG( 0xDF53 )  /*  Receive FIFO Count ¶¨ÒåÔÚioCC2430.h
+//   87 // ISFLUSHRX Çå RX FIFO ÃüÁîÂË²¨. hal.h ÃüÁîÂË²¨ÖÐ¶¨Òå
+//   88 // GET_DMA_DEST(dmaRx) hal.h ÖÐµÄºê¶¨Òå£¬È¡µÃÒ»¸ö DMA Í¨µÀµÄÄ¿±êµØÖ·
+//   89 // static DMA_DESC* dmaRx Ö¸ÏòÉè±¸ DMA ÃèÊö·ûµÄÖ¸Õë£¬È«¾Ö±äÁ¿.DMA_DESC DMA ÅäÖÃ½á¹¹¡£
+//   90 //
+
+        RSEG NEAR_CODE:CODE:NOROOT(0)
+//   91 void rxCallBack(void)
+rxCallBack:
+//   92 {
+        MOV     A,#-0x9
+        LCALL   ?FUNC_ENTER_XDATA
+        ; Saved register size: 9
+        ; Auto size: 0
+//   93    SPP_RX_STRUCT __xdata* receivedPacket;
+//   94    BYTE res = FALSE;
+//   95 
+//   96    if(RXFIFOCNT > 0)
+        MOV     DPTR,#-0x20ad
+        MOVX    A,@DPTR
+        JZ      ??rxCallBack_0
+//   97    {
+//   98       ISFLUSHRX;
+        MOV     0xe1,#-0x1a
+//   99       ISFLUSHRX;
+        MOV     0xe1,#-0x1a
+//  100    }
+//  101 
+//  102    // Investigating the received packet.
+//  103    // Checking the destination address and that the CRC is OK.
+//  104    // The message is ACK'ed if it tells to.
+//  105    receivedPacket = (SPP_RX_STRUCT __xdata*) GET_DMA_DEST(dmaRx);
+??rxCallBack_0:
+        LCALL   ?Subroutine4
+??CrossCallReturnLabel_10:
+        MOVX    A,@DPTR
+        MOV     R2,A
+        MOV     DPTR,#(dmaRx + 1)
+        LCALL   ??Subroutine5_0
+??CrossCallReturnLabel_12:
+        INC     DPTR
+        MOVX    A,@DPTR
+        MOV     R1,A
+        MOV     A,R2
+        MOV     R0,A
+//  106    receivedPacket->payloadLength = receivedPacket->payloadLength-SPP_HEADER_AND_FOOTER_LENGTH; //¼õÈ¥Í·ºÍÎ²³¤¶È
+        MOV     DPL,R0
+        MOV     DPH,R1
+        MOVX    A,@DPTR
+        ADD     A,#-0x5
+        MOVX    @DPTR,A
+//  107 
+//  108    if((receivedPacket->destAddress == myAddress) /*|| (receivedPacket->destAddress == BROADCAST_ADDRESS)*/) //°üÄ¿µÄµØÊÇ±¾½ÚµãµØÖ·»ò¹ã²¥µØÖ·
+        INC     DPTR
+        MOVX    A,@DPTR
+        MOV     R2,A
+        MOV     DPTR,#myAddress
+        MOVX    A,@DPTR
+        XRL     A,R2
+        JNZ     ??rxCallBack_1
+//  109    {
+//  110       if(receivedPacket->payload[receivedPacket->payloadLength+1] & 0x80)	//CRCÕýÈ·
+        MOV     DPL,R0
+        MOV     DPH,R1
+        MOVX    A,@DPTR
+        MOV     R2,A
+        MOV     A,R0
+        ADD     A,R2
+        MOV     DPL,A
+        MOV     A,R1
+        ADDC    A,#0x0
+        MOV     DPH,A
+        INC     DPTR
+        INC     DPTR
+        INC     DPTR
+        INC     DPTR
+        INC     DPTR
+        MOVX    A,@DPTR
+        MOV     C,0xE0 /* A   */.7
+        JNC     ??rxCallBack_1
+//  111       {
+//  112          //if(receivedPacket->flags == ACK)	//ÊÕµ½ÁËÓ¦´ð°ü
+//  113          //{
+//  114          //   res = ackReceived(receivedPacket->srcAddress);
+//  115          //}
+//  116          //else		//ÊÕµ½ÆÕÍ¨Êý¾Ý°ü
+//  117          //{
+//  118             sppRxStatus = PACKET_RECEIVED;		//ssp½ÓÊÕ×´Ì¬£­ÊÕµ½Êý¾Ý°ü
+        MOV     A,#0x40
+        MOV     DPTR,#sppRxStatus
+        MOVX    @DPTR,A
+//  119             res = TRUE;
+//  120             //if(receivedPacket->flags & DO_ACK)	//ÒªÇóÊÕµ½ºó·¢Ó¦´ð
+//  121             //{
+//  122             //   sendAck(receivedPacket); 		//·¢Ó¦´ð
+//  123             //}
+//  124             sppRxStatus = RX_COMPLETE;			//ssp½ÓÊÕ×´Ì¬£­½ÓÊÕÍê³É
+        MOV     A,#0x10
+        SJMP    ??rxCallBack_2
+//  125             //if(rxCallBackFunction)
+//  126             //{
+//  127             //   rxCallBackFunction();			//µ÷ÓÃÓÃ»§Ö¸¶¨»Øµ÷º¯Êý
+//  128             //}
+//  129          //}
+//  130       }
+//  131    }
+//  132 
+//  133    if(res == FALSE)
+//  134    {
+//  135       ISFLUSHRX;	//ÇåRX FIFO
+??rxCallBack_1:
+        MOV     0xe1,#-0x1a
+//  136       ISFLUSHRX;
+        MOV     0xe1,#-0x1a
+//  137 
+//  138       // rearming DMA channel
+//  139       DMA_ARM_CHANNEL(dmaNumberRx);
+        MOV     ?V0 + 0,#0x1
+        MOV     ?V0 + 1,#0x0
+        MOV     DPTR,#dmaNumberRx
+        MOVX    A,@DPTR
+        MOV     R0,#?V0 + 0
+        LCALL   ?S_SHL
+        MOV     A,?V0 + 0
+        ANL     A,#0x1f
+        MOV     0xd6,A
+//  140     //=============add my codes here --zpf===========//
+//  141       RFIF = 0x00;                        // Clear all interrupt flags
+        LCALL   ?Subroutine6
+//  142       INT_SETFLAG(INUM_RF, INT_CLR);    // Clear MCU interrupt flag
+//  143       //if(sppRxStatus == RX_WAIT)
+//  144       //{
+//  145          sppRxStatus = RX_IN_PROGRESS;
+??CrossCallReturnLabel_15:
+        MOV     A,#-0x80
+        MOV     DPTR,#sppRxStatus
+??rxCallBack_2:
+        MOVX    @DPTR,A
+//  146          //RFIM &= ~IRQ_SFD;
+//  147       //}
+//  148     //=============add my codes here --zpf===========//
+//  149       //RFIM |= IRQ_SFD;
+//  150       //sppRxStatus = RX_WAIT;
+//  151    }
+//  152    return;
+        REQUIRE ?Subroutine9
+        REQUIRE _A_TCON
+        REQUIRE _A_S0CON
+        REQUIRE S1CON
+        REQUIRE _A_IRCON
+        REQUIRE DMAARM
+        REQUIRE RFST
+        REQUIRE _A_IRCON2
+        REQUIRE RFIF
+        ; // Fall through to label ?Subroutine9
+//  153 }   // ends rxCallBack
+
+        RSEG NEAR_CODE:CODE:NOROOT(0)
+?Subroutine9:
+        MOV     R7,#0x2
+        LJMP    ?FUNC_LEAVE_XDATA
+//  154 
+//  155 
+//  156 
+//  157 
+//  158 //-----------------------------------------------------------------------------
+//  159 // void ackTimeout(...)
+//  160 //
+//  161 //  Description:
+//  162 //      This function resends a packet if it is not ACK'ed by the recipient
+//  163 //      within _ACK_TIMEOUT_ m-seconds. The message is resent _ACK_RETRIES_ times.
+//  164 //      If the message remains un-ACK'ed, transmission is aborted and spp TX
+//  165 //      status is set to DEST_UNREACHABLE.
+//  166 //Èç¹ûÃ»ÓÐÊÕµ½½ÓÊÕÆ÷·µ»ØµÄÓ¦´ð£¬½«ÖØÐÂ·¢ËÍÊý¾Ý°ü
+//  167 //  Arguments:
+//  168 //      void
+//  169 //
+//  170 //  Return value:
+//  171 //      void
+//  172 //-----------------------------------------------------------------------------
+//  173 // TIMER4_RUN() ºêº¯ÊýÔÚ hal.h ÖÐ¶¨Òå
+//  174 // #define ACK_RETRIES  3 ÔÚ hal.h ÖÐµÄºê¶¨Òå³£Êý
+//  175 /*void ackTimeout(void){
+//  176    culTimer4AdmClear(ackTimerNumber);
+//  177 
+//  178    if(pAckData != NULL)
+//  179    {
+//  180       if(retransmissionCounter < ACK_RETRIES)	//ÖØ·¢´ÎÊýÐ¡ÓÚ³¢ÊÔ½ÓÊÕÓ¦´ð´ÎÊý
+//  181       {
+//  182          // Resending the message.
+//  183          pAckData->flags |= RETRANSMISSION;		//Êý¾Ý°ü±êÖ¾£­ÖØ·¢
+//  184 
+//  185          TIMER4_RUN(FALSE);						//Í£Ö¹¶¨Ê±Æ÷4
+//  186 
+//  187          sppSend(pAckData);						//·¢ËÍÊý¾Ý°ü
+//  188 
+//  189          T4CNT = 0;								//¶¨Ê±Æ÷4¼ÆÊýÇåÁã
+//  190          TIMER4_RUN(TRUE);						//¶¨Ê±Æ÷4¿ªÊ¼ÔËÐÐ
+//  191 
+//  192          retransmissionCounter++;
+//  193       }
+//  194       else
+//  195       {
+//  196          // The packet has been resent too many times. Assuming that the node is unreacheble.
+//  197          pAckData = 0;
+//  198          retransmissionCounter = 0;
+//  199          sppTxStatus = DEST_UNREACHABLE;		//ssp·¢ËÍ×´Ì¬£­²»ÄÜÍê³É
+//  200          RFIM &= ~IRQ_FIFOP;
+//  201       }
+//  202    }
+//  203    return;
+//  204 } // ends ackTimeout
+//  205 */
+//  206 
+//  207 
+//  208 
+//  209 //-----------------------------------------------------------------------------
+//  210 // See cul.h for a description of this function.
+//  211 // ³õÊ¼»¯¼òµ¥µÄÊý¾Ý°ü×°Ð­ÒéSimple Packet Protocol (SPP)
+//  212 // ´Ó DMA ¹ÜÀíÆ÷ÉêÇëÁ½¸ö DMA Í¨µÀ£¬ÓÃÓÚ·Ö±ð´Ó Rx FIFO ºÍ Tx FIFO ´«ÊäÊý¾Ý¡£¶¨Ê±Æ÷4
+//  213 // ¹ÜÀíÆ÷Í¬Ñù±»ÉèÖÃ£¬Õâ¸öµ¥ÔªÓÃÓÚÔÚÊý¾Ý°ü·¢ËÍºó½ÓÊÕÆ÷ÔÚÒ»¶¨Ê±¼äÄÚÃ»ÓÐ·µ»ØÓ¦´ðÊ±
+//  214 // ²úÉúÖÐ¶Ï¡£ÎÞÏß²¿·ÖÅäÖÃÎª·¢ËÍ£¬¹¤×÷ÔÚÌØ¶¨µÄÆµÂÊ£¬ÔÚ·¢ËÍÊ±×Ô¶¯¼ÆËãºÍ²åÈëºÍ¼ì²éCRCÖµ¡£
+//  215 //-----------------------------------------------------------------------------
+
+        RSEG NEAR_CODE:CODE:NOROOT(0)
+//  216 BOOL sppInit(UINT32 frequency, BYTE address){
+sppInit:
+        MOV     A,#-0xb
+        LCALL   ?FUNC_ENTER_XDATA
+        ; Saved register size: 11
+        ; Auto size: 0
+//  217    BYTE res = 0;
+//  218    BOOL status = TRUE;
+        MOV     R6,#0x1
+//  219 
+//  220    sppSetAddress(address);
+        MOV     A,R1
+        MOV     DPTR,#myAddress
+        MOVX    @DPTR,A
+//  221 
+//  222    // Clearing the states of the spp.
+//  223    sppTxStatus = TX_IDLE;	//ÔÚ cul.h TX ºÍ RX ×´Ì¬±êÖ¾²¿·Öºê¶¨Òå
+        CLR     A
+        MOV     DPTR,#sppTxStatus
+        MOVX    @DPTR,A
+//  224    sppRxStatus = RX_IDLE;	//Í¬ÉÏ
+        MOV     DPTR,#sppRxStatus
+        MOVX    @DPTR,A
+//  225    retransmissionCounter = 0;
+        MOV     DPTR,#retransmissionCounter
+        MOVX    @DPTR,A
+//  226    //ackTimerNumber = 0;
+//  227    //pAckData = 0;
+//  228 
+//  229    // Clearing the RF interrupt flags and enable mask and enabling RF interrupts
+//  230    RFIF = 0;
+        MOV     0xe9,#0x0
+//  231    RFIM = 0;
+        MOV     0x91,#0x0
+//  232    INT_SETFLAG(INUM_RF,INT_CLR);
+        LCALL   ??Subroutine6_0
+//  233    INT_ENABLE(INUM_RF,INT_ON);
+??CrossCallReturnLabel_17:
+        ORL     0x9a,#0x1
+//  234 
+//  235    // Setting the frequency and initialising the radio
+//  236    res = halRfConfig(frequency); //ÔÚrfconfig.c
+//  237    if(res == FALSE){
+        ; Setup parameters for call to function halRfConfig
+        LCALL   halRfConfig
+        MOV     A,R1
+        JNZ     ??sppInit_0
+//  238       status = FALSE;
+        DEC     R6
+//  239    }
+//  240 
+//  241    // Setting the number of bytes to assert the FIFOP flag
+//  242    IOCFG0 = 7;
+??sppInit_0:
+        MOV     A,#0x7
+        MOV     DPTR,#-0x20b1
+        MOVX    @DPTR,A
+//  243 
+//  244    INT_SETFLAG(INUM_RFERR, INT_CLR);
+        CLR     0x88.1
+//  245    INT_ENABLE(INUM_RFERR, INT_ON);
+        SETB    0xa8.0
+//  246 
+//  247    // Flushing both Tx and Rx FiFo. The flush-Rx is issued twice to reset the SFD.
+//  248    // Calibrating the radio and turning on Rx to evaluate the CCA.
+//  249    // SFD ¿ªÊ¼Ö¡¶¨½ç·û
+//  250    SRXON;
+        MOV     0xe1,#-0x3e
+//  251    SFLUSHTX;
+        MOV     0xe1,#-0x39
+//  252    SFLUSHRX;
+        MOV     0xe1,#-0x3a
+//  253    SFLUSHRX;
+        MOV     0xe1,#-0x3a
+//  254    STXCALN;
+        MOV     0xe1,#-0x3f
+//  255    ISSTART;
+        MOV     0xe1,#-0x2
+//  256 
+//  257 
+//  258    // Using the timer 4 administrator to generate interrupt to check if a message is unacked...
+//  259    //culTimer4AdmInit();
+//  260 
+//  261    // Initialising the DMA administrator
+//  262    culDmaInit();
+        ; Setup parameters for call to function culDmaInit
+        LCALL   culDmaInit
+//  263 
+//  264    // Requesting a DMA channel for transmit data. No callback function is used. Instead the TX_DONE
+//  265    // interrupt is used to determine when a transfer is finished. Configuring the DMA channel for
+//  266    // transmit. The data address and length will be set prior to each specific transmission.
+//  267    dmaTx = culDmaAllocChannel(&dmaNumberTx, 0);
+        ; Setup parameters for call to function culDmaAllocChannel
+        MOV     R4,#0x0
+        MOV     R5,#0x0
+        MOV     R2,#(dmaNumberTx & 0xff)
+        MOV     R3,#((dmaNumberTx >> 8) & 0xff)
+        LCALL   culDmaAllocChannel
+        MOV     DPTR,#dmaTx
+        MOV     A,R2
+        MOVX    @DPTR,A
+        INC     DPTR
+        MOV     A,R3
+        MOVX    @DPTR,A
+//  268    if((dmaNumberTx == 0) || (dmaNumberTx > 4)){
+        MOV     DPTR,#dmaNumberTx
+        MOVX    A,@DPTR
+        JZ      ??sppInit_1
+        CLR     C
+        SUBB    A,#0x5
+        JC      ??sppInit_2
+//  269       status = FALSE;
+??sppInit_1:
+        MOV     R6,#0x0
+//  270    }
+//  271 
+//  272    culDmaToRadio(dmaTx, 0, 0, FALSE);
+??sppInit_2:
+        ; Setup parameters for call to function culDmaToRadio
+        MOV     ?V0 + 0,#0x0
+        MOV     ?V0 + 1,#0x0
+        MOV     R0,#?V0 + 0
+        LCALL   ?PUSH_XSTACK_I_TWO
+        MOV     R1,#0x0
+        MOV     R4,#0x0
+        MOV     R5,#0x0
+        MOV     DPTR,#dmaTx
+        MOVX    A,@DPTR
+        MOV     R2,A
+        INC     DPTR
+        MOVX    A,@DPTR
+        MOV     R3,A
+        LCALL   culDmaToRadio
+        MOV     A,#0x2
+        LCALL   ?DEALLOC_XSTACK8
+//  273 
+//  274    // Requesting a DMA channel for receiving data. Giving the address of the callback function.
+//  275    // Configuring the DMA channel for receive. The data address will be set prior to each specific
+//  276    // reception.
+//  277    dmaRx = culDmaAllocChannel(&dmaNumberRx, &rxCallBack);
+        ; Setup parameters for call to function culDmaAllocChannel
+        MOV     R4,#(rxCallBack & 0xff)
+        MOV     R5,#((rxCallBack >> 8) & 0xff)
+        MOV     R2,#(dmaNumberRx & 0xff)
+        MOV     R3,#((dmaNumberRx >> 8) & 0xff)
+        LCALL   culDmaAllocChannel
+        MOV     DPTR,#dmaRx
+        MOV     A,R2
+        MOVX    @DPTR,A
+        INC     DPTR
+        MOV     A,R3
+        MOVX    @DPTR,A
+//  278    if((dmaNumberRx == 0) || (dmaNumberRx > 4)){
+        MOV     DPTR,#dmaNumberRx
+        MOVX    A,@DPTR
+        JZ      ??sppInit_3
+        CLR     C
+        SUBB    A,#0x5
+        JC      ??sppInit_4
+//  279       status = FALSE;
+??sppInit_3:
+        MOV     R6,#0x0
+//  280    }
+//  281    culDmaFromRadio(dmaRx, 0, TRUE);
+??sppInit_4:
+        ; Setup parameters for call to function culDmaFromRadio
+        MOV     R1,#0x1
+        MOV     R4,#0x0
+        MOV     R5,#0x0
+        LCALL   culDmaFromRadio
+//  282 
+//  283    // Making sure that none of the channels are armed.
+//  284    DMA_ABORT_CHANNEL(dmaNumberRx);
+        MOV     ?V0 + 0,#0x1
+        MOVX    A,@DPTR
+        MOV     R0,#?V0 + 0
+        LCALL   ?S_SHL
+        LCALL   ?Subroutine3
+//  285    DMA_ABORT_CHANNEL(dmaNumberTx);
+??CrossCallReturnLabel_6:
+        MOV     ?V0 + 0,#0x1
+        MOV     ?V0 + 1,#0x0
+        MOV     DPTR,#dmaNumberTx
+        MOVX    A,@DPTR
+        MOV     R0,#?V0 + 0
+        LCALL   ?S_SHL
+        LCALL   ?Subroutine3
+//  286    INT_ENABLE(INUM_DMA, INT_ON);
+??CrossCallReturnLabel_7:
+        SETB    0xb8.0
+//  287 
+//  288    DMAIF = 1;
+        SETB    0xc0.0
+//  289    
+//  290    return status;
+        MOV     A,R6
+        MOV     R1,A
+        REQUIRE ?Subroutine10
+        REQUIRE _A_TCON
+        REQUIRE RFIM
+        REQUIRE _A_S0CON
+        REQUIRE IEN2
+        REQUIRE S1CON
+        REQUIRE _A_IEN0
+        REQUIRE _A_IEN1
+        REQUIRE _A_IRCON
+        REQUIRE DMAARM
+        REQUIRE RFST
+        REQUIRE _A_IRCON2
+        REQUIRE RFIF
+        ; // Fall through to label ?Subroutine10
+//  291 } // ends sppInit
+
+        RSEG NEAR_CODE:CODE:NOROOT(0)
+?Subroutine10:
+        MOV     R7,#0x4
+        LJMP    ?FUNC_LEAVE_XDATA
+
+        RSEG NEAR_CODE:CODE:NOROOT(0)
+?Subroutine3:
+        MOV     A,?V0 + 0
+??Subroutine3_0:
+        ANL     A,#0x1f
+        ORL     A,#0x80
+        MOV     0xd6,A
+        RET
+//  292 
+//  293 
+//  294 
+//  295 
+//  296 //-----------------------------------------------------------------------------
+//  297 // See cul.h for a description of this function.
+//  298 //-----------------------------------------------------------------------------
+
+        RSEG NEAR_CODE:CODE:NOROOT(0)
+//  299 void sppSetAddress(BYTE address){
+sppSetAddress:
+        PUSH    DPL
+        PUSH    DPH
+        ; Saved register size: 2
+        ; Auto size: 0
+//  300    myAddress = address;
+        MOV     A,R1
+        MOV     DPTR,#myAddress
+        MOVX    @DPTR,A
+//  301 } // Ends sppSetAddress()
+        POP     DPH
+        POP     DPL
+        RET
+//  302 
+//  303 
+//  304 
+//  305 
+//  306 // Internal function which enables the timeout when waiting for an ACK.
+//  307 //void waitForAck(void)
+//  308 //{
+//  309 //   ackTimerNumber = culTimer4AdmSet(ACK_TIMEOUT, &ackTimeout);
+//  310 //   SET_DMA_DEST(dmaRx,pAckBuffer);
+//  311 //   SET_DMA_LENGTH(dmaRx,7);
+//  312 
+//  313 //}   // Ends waitForAck()
+//  314 
+//  315 
+//  316 
+//  317 
+//  318 //-----------------------------------------------------------------------------
+//  319 // See cul.h for a description of this function.
+//  320 //-----------------------------------------------------------------------------
+
+        RSEG NEAR_CODE:CODE:NOROOT(0)
+//  321 BYTE sppSend(SPP_TX_STRUCT* pPacketPointer){
+sppSend:
+        MOV     A,#-0xb
+        LCALL   ?FUNC_ENTER_XDATA
+        ; Saved register size: 11
+        ; Auto size: 0
+//  322    BYTE res = TRUE;
+        MOV     ?V0 + 0,#0x1
+//  323    
+//  324    // If data is to be transmitted, the DMA is set up.
+//  325    if(pPacketPointer->payloadLength)
+        MOV     DPL,R2
+        MOV     DPH,R3
+        MOVX    A,@DPTR
+        JZ      ??sppSend_0
+//  326    {
+//  327       if (pPacketPointer->payloadLength > SPP_MAX_PAYLOAD_LENGTH)
+        CLR     C
+        SUBB    A,#0x7b
+        JC      ??sppSend_1
+//  328       {
+//  329          res = TOO_LONG;
+        MOV     ?V0 + 0,#0x8
+//  330          sppTxStatus = TX_IDLE;
+        CLR     A
+        MOV     DPTR,#sppTxStatus
+        LJMP    ??sppSend_2
+//  331       }
+//  332       else
+//  333       {
+//  334          // Setting up the DMA
+//  335          DMA_ABORT_CHANNEL(dmaNumberTx);
+??sppSend_1:
+        MOV     ?V0 + 2,#0x1
+        MOV     ?V0 + 3,#0x0
+        MOV     DPTR,#dmaNumberTx
+        MOVX    A,@DPTR
+        MOV     R0,#?V0 + 2
+        LCALL   ?S_SHL
+        MOV     A,?V0 + 2
+        LCALL   ??Subroutine3_0
+//  336          SET_DMA_SOURCE(dmaTx,pPacketPointer->payload);
+??CrossCallReturnLabel_8:
+        MOV     A,R2
+        ADD     A,#0x3
+        MOV     R0,A
+        MOV     A,R3
+        ADDC    A,#0x0
+        MOV     R1,A
+        MOV     DPL,R0
+        MOV     DPH,R1
+        INC     DPTR
+        MOVX    A,@DPTR
+        PUSH    A
+        MOV     DPTR,#dmaTx
+        MOVX    A,@DPTR
+        MOV     R4,A
+        INC     DPTR
+        MOVX    A,@DPTR
+        MOV     DPH,A
+        MOV     DPL,R4
+        POP     A
+        MOVX    @DPTR,A
+        MOV     DPL,R0
+        MOV     DPH,R1
+        MOVX    A,@DPTR
+        PUSH    A
+        MOV     DPTR,#dmaTx
+        LCALL   ?Subroutine5
+??CrossCallReturnLabel_13:
+        POP     A
+        MOVX    @DPTR,A
+//  337          SET_DMA_LENGTH(dmaTx,pPacketPointer->payloadLength);
+        MOV     DPTR,#dmaTx
+        LCALL   ?Subroutine0
+??CrossCallReturnLabel_0:
+        MOV     DPL,R2
+        MOV     DPH,R3
+        MOVX    A,@DPTR
+        PUSH    A
+        MOV     DPTR,#dmaTx
+        LCALL   ?Subroutine1
+??CrossCallReturnLabel_2:
+        POP     A
+        MOVX    @DPTR,A
+//  338       }
+//  339    }
+//  340 
+//  341    // Proceed if the packet length is OK.
+//  342    if (res == TRUE)
+//  343    {
+//  344       // Flipping the sequence bit if the transfer is not a retransmission.
+//  345       if(!(pPacketPointer->flags & RETRANSMISSION))
+??sppSend_0:
+        MOV     A,R2
+        ADD     A,#0x2
+        MOV     R0,A
+        MOV     A,R3
+        ADDC    A,#0x0
+        MOV     R1,A
+        MOV     A,R0
+        MOV     R6,A
+        MOV     A,R1
+        MOV     R7,A
+        MOV     DPL,R6
+        MOV     DPH,R7
+        MOVX    A,@DPTR
+        MOV     C,0xE0 /* A   */.2
+        JC      ??sppSend_3
+//  346       {
+//  347          pPacketPointer->flags ^= SEQUENCE_BIT;
+        XRL     A,#0x80
+        MOVX    @DPTR,A
+//  348       }
+//  349 
+//  350       // Clearing RF interrupt flags and enabling RF interrupts.
+//  351       if(FSMSTATE == 6 && RXFIFOCNT > 0)
+??sppSend_3:
+        MOV     DPTR,#-0x20c7
+        MOVX    A,@DPTR
+        XRL     A,#0x6
+        JNZ     ??sppSend_4
+        MOV     DPTR,#-0x20ad
+        MOVX    A,@DPTR
+        JZ      ??sppSend_4
+//  352       {
+//  353          ISFLUSHRX;
+        MOV     0xe1,#-0x1a
+//  354          ISFLUSHRX;
+        MOV     0xe1,#-0x1a
+//  355       }
+//  356 
+//  357       RFIF &= ~IRQ_TXDONE;
+??sppSend_4:
+        ANL     0xe9,#0xbf
+//  358       RFIM &= ~IRQ_SFD;
+        ANL     0x91,#0xef
+//  359       INT_SETFLAG(INUM_RF, INT_CLR);
+        LCALL   ??Subroutine6_0
+//  360 
+//  361       // Writing the total packet length, addresses and flags to Tx FiFo.
+//  362       // Transferring the payload if any.RFD RF Data
+//  363       RFD = (pPacketPointer->payloadLength + SPP_HEADER_AND_FOOTER_LENGTH); //¼ÓÔØ°ü³¤,Header=3,Footer=2
+??CrossCallReturnLabel_18:
+        MOV     DPL,R2
+        MOV     DPH,R3
+        MOVX    A,@DPTR
+        ADD     A,#0x5
+        MOV     0xd9,A
+//  364       RFD = pPacketPointer->destAddress;		//¼ÓÔØÄ¿±êµØÖ·
+        INC     DPTR
+        MOVX    A,@DPTR
+        MOV     0xd9,A
+//  365       RFD = myAddress;							//²åÈëÔ´µØÖ·£¨TX½á¹¹ÌåÖÐÃ»ÓÐ£©
+        MOV     DPTR,#myAddress
+        MOVX    A,@DPTR
+        MOV     0xd9,A
+//  366       RFD = pPacketPointer->flags;				//±êÖ¾
+        MOV     DPL,R6
+        MOV     DPH,R7
+        MOVX    A,@DPTR
+        MOV     0xd9,A
+//  367       if(pPacketPointer->payloadLength)
+        MOV     DPL,R2
+        MOV     DPH,R3
+        MOVX    A,@DPTR
+        JZ      ??sppSend_5
+//  368       {
+//  369          DMA_ARM_CHANNEL(dmaNumberTx);
+        MOV     ?V0 + 2,#0x1
+        MOV     ?V0 + 3,#0x0
+        MOV     DPTR,#dmaNumberTx
+        MOVX    A,@DPTR
+        MOV     R0,#?V0 + 2
+        LCALL   ?S_SHL
+        MOV     R2,?V0 + 2
+        MOV     A,#0x1f
+        ANL     A,R2
+        MOV     0xd6,A
+//  370          DMA_START_CHANNEL(dmaNumberTx);
+        MOV     0xd7,R2
+//  371       }
+//  372 
+//  373       // If the RSSI value is not valid, enable receiver
+//  374       if(RSSIL == 0x80)
+??sppSend_5:
+        MOV     DPTR,#-0x20f9
+        MOVX    A,@DPTR
+        XRL     A,#0x80
+        JNZ     ??sppSend_6
+//  375       {
+//  376          ISRXON;
+        MOV     0xe1,#-0x1e
+//  377          // Turning on Rx and waiting 320u-sec to make the RSSI value become valid.
+//  378          //temp_count = 3;
+//  379          halWait(1);
+        ; Setup parameters for call to function halWait
+        MOV     R1,#0x1
+        LCALL   halWait
+//  380          //temp_count=0;
+//  381       }
+//  382 
+//  383       //Transmitting
+//  384       ISTXONCCA;
+??sppSend_6:
+        MOV     0xe1,#-0x1c
+//  385       //if(TX_ACTIVE)
+//  386       if(FSMSTATE > 30)
+        MOV     DPTR,#-0x20c7
+        MOVX    A,@DPTR
+        CLR     C
+        SUBB    A,#0x1f
+        JNC     ??sppSend_7
+//  387       {
+//  388          // Asserting the status flag and enabling ACK reception if expected.
+//  389          //sppTxStatus = TX_IN_PROGRESS;
+//  390 
+//  391          //if(pPacketPointer->flags & DO_ACK)
+//  392          //{
+//  393          //   pAckData = pPacketPointer;
+//  394          //   DMA_ABORT_CHANNEL(dmaNumberRx);
+//  395             //waitForAck();
+//  396          //}
+//  397          //else
+//  398          //{
+//  399             //pAckData = NULL;
+//  400          //}
+//  401          //RFIM |= IRQ_TXDONE;
+//  402        //=============add my codes here --zpf===========//
+//  403          while(!(RFIF & IRQ_TXDONE) && !(RFERRIF == 1))  FeetDog();
+//  404          if(RFERRIF == 1)
+//  405          {
+//  406           // If Rx overflow occurs, the Rx FiFo is reset.
+//  407           // The Rx DMA is reset and reception is started over.
+//  408            if(FSMSTATE == 17)
+//  409            {
+//  410               STOP_RADIO();
+//  411               ISFLUSHRX;
+//  412               ISFLUSHRX;
+//  413               DMA_ABORT_CHANNEL(dmaNumberRx);
+//  414               DMA_ARM_CHANNEL(dmaNumberRx);
+//  415               ISRXON;
+//  416            }
+//  417            else if(FSMSTATE == 56)
+//  418            {
+//  419               ISFLUSHTX;
+//  420            }
+//  421            INT_SETFLAG(INUM_RFERR,INT_CLR);
+//  422          }
+//  423          if(RFIF & IRQ_TXDONE)
+//  424          {
+//  425            sppTxStatus = TX_SUCCESSFUL;
+//  426            RFIF = 0x00; 
+//  427          }
+//  428          RFIF = 0x00;                        // Clear all interrupt flags
+//  429          INT_SETFLAG(INUM_RF, INT_CLR);    // Clear MCU interrupt flag
+//  430        //=============add my codes here --zpf===========//
+//  431       }
+//  432       else
+//  433       {
+//  434          ISFLUSHTX;
+        MOV     0xe1,#-0x19
+//  435          res = CHANNEL_BUSY;
+        MOV     ?V0 + 0,#0x4
+//  436          RFIM &= ~IRQ_TXDONE;
+        ANL     0x91,#0xbf
+//  437          // De-flipping the sequence bit.
+//  438          if(!(pPacketPointer->flags & RETRANSMISSION))
+        MOV     DPL,R6
+        MOV     DPH,R7
+        MOVX    A,@DPTR
+        MOV     C,0xE0 /* A   */.2
+        JC      ??sppSend_8
+//  439          {
+//  440             pPacketPointer->flags ^= SEQUENCE_BIT;
+        XRL     A,#0x80
+??sppSend_2:
+        MOVX    @DPTR,A
+//  441          }
+//  442       }
+//  443    }
+//  444    return res;
+??sppSend_8:
+        MOV     R1,?V0 + 0
+        LJMP    ?Subroutine10
+??sppSend_9:
+        ; Setup parameters for call to function FeetDog
+        LCALL   FeetDog
+??sppSend_7:
+        MOV     A,0xe9
+        MOV     C,0xE0 /* A   */.6
+        JC      ??sppSend_10
+        MOV     C,0x88.1
+        JNC     ??sppSend_9
+??sppSend_10:
+        MOV     C,0x88.1
+        JNC     ??sppSend_11
+        MOVX    A,@DPTR
+        XRL     A,#0x11
+        JNZ     ??sppSend_12
+        MOV     0xe1,#-0x1b
+        MOV     0xe1,#-0x1a
+        MOV     0xe1,#-0x1a
+        MOV     ?V0 + 2,#0x1
+        MOV     ?V0 + 3,#0x0
+        MOV     DPTR,#dmaNumberRx
+        MOVX    A,@DPTR
+        MOV     R0,#?V0 + 2
+        LCALL   ?S_SHL
+        MOV     A,?V0 + 2
+        ANL     A,#0x1f
+        MOV     R2,A
+        MOV     A,#-0x80
+        ORL     A,R2
+        MOV     0xd6,A
+        MOV     0xd6,R2
+        MOV     0xe1,#-0x1e
+        SJMP    ??sppSend_13
+??sppSend_12:
+        MOVX    A,@DPTR
+        XRL     A,#0x38
+        JNZ     ??sppSend_13
+        MOV     0xe1,#-0x19
+??sppSend_13:
+        CLR     0x88.1
+??sppSend_11:
+        MOV     A,0xe9
+        MOV     C,0xE0 /* A   */.6
+        JNC     ??sppSend_14
+        MOV     A,#0x40
+        MOV     DPTR,#sppTxStatus
+        MOVX    @DPTR,A
+        MOV     0xe9,#0x0
+??sppSend_14:
+        LCALL   ?Subroutine6
+??CrossCallReturnLabel_16:
+        SJMP    ??sppSend_8
+        REQUIRE _A_TCON
+        REQUIRE RFIM
+        REQUIRE _A_S0CON
+        REQUIRE S1CON
+        REQUIRE _A_IRCON
+        REQUIRE DMAARM
+        REQUIRE DMAREQ
+        REQUIRE RFD
+        REQUIRE RFST
+        REQUIRE _A_IRCON2
+        REQUIRE RFIF
+//  445 } // ends sppSend
+
+        RSEG NEAR_CODE:CODE:NOROOT(0)
+?Subroutine6:
+        MOV     0xe9,#0x0
+??Subroutine6_0:
+        ANL     0x9b,#0xfc
+        MOV     A,0x9b
+        RET
+
+        RSEG NEAR_CODE:CODE:NOROOT(0)
+?Subroutine5:
+        MOVX    A,@DPTR
+        MOV     R0,A
+        INC     DPTR
+??Subroutine5_0:
+        MOVX    A,@DPTR
+        MOV     DPH,A
+        MOV     DPL,R0
+        INC     DPTR
+        RET
+//  446 
+//  447 
+//  448 
+//  449 
+//  450 // Internal function which is called when an ack is received.
+//  451 // If the ACK is from the expected node, the retransmission of the packet is cancelled.
+//  452 // ÊÕµ½Ò»¸öÓ¦´ðÊ±µ÷ÓÃ¡£Èç¹ûÓ¦´ðÊÇÆÚÍûµÄ½Úµã£¬½«È¡ÏûÊý¾Ý°üÖØ·¢
+//  453 // static SPP_TX_STRUCT* pAckData; È«¾Ö±äÁ¿
+//  454 // SPP_TX_STRUCT.½á¹¹ÌåÔÚ cul.h ¶¨Òå
+//  455 /*BOOL ackReceived(BYTE sourceAddress)
+//  456 {
+//  457    BOOL res = FALSE;
+//  458    if(sourceAddress == pAckData->destAddress)
+//  459    {
+//  460       res = TRUE;
+//  461       culTimer4AdmClear(ackTimerNumber);
+//  462       sppTxStatus = TX_SUCCESSFUL;
+//  463       retransmissionCounter = 0;
+//  464       pAckData = 0;
+//  465    }
+//  466 
+//  467    return res;
+//  468 }  //Ends ackReceived()
+//  469 */
+//  470 
+//  471 /*
+//  472 //-----------------------------------------------------------------------------
+//  473 // See cul.h for a description of this function.
+//  474 //-----------------------------------------------------------------------------
+//  475 #pragma vector=RF_VECTOR
+//  476 __interrupt void spp_rf_IRQ(void)
+//  477 {
+//  478    BYTE enabledAndActiveInterrupt;
+//  479 
+//  480    INT_GLOBAL_ENABLE(INT_OFF);
+//  481    enabledAndActiveInterrupt = RFIF;
+//  482    RFIF = 0x00;                        // Clear all interrupt flags
+//  483    INT_SETFLAG(INUM_RF, INT_CLR);    // Clear MCU interrupt flag
+//  484    enabledAndActiveInterrupt &= RFIM;
+//  485 
+//  486    // Start of frame delimiter (SFD)
+//  487    if(enabledAndActiveInterrupt & IRQ_SFD)
+//  488    {
+//  489       if(sppRxStatus == RX_WAIT)
+//  490       {
+//  491          sppRxStatus = RX_IN_PROGRESS;
+//  492          RFIM &= ~IRQ_SFD;
+//  493       }
+//  494    }
+//  495 
+//  496    // Transmission of a packet is finished. Enabling reception of ACK if required.
+//  497    if(enabledAndActiveInterrupt & IRQ_TXDONE)
+//  498    {
+//  499       if(sppTxStatus == TX_IN_PROGRESS)
+//  500       {
+//  501          if(pAckData == NULL)
+//  502          {
+//  503             sppTxStatus = TX_SUCCESSFUL;
+//  504          }
+//  505          else
+//  506          {
+//  507             DMA_ARM_CHANNEL(dmaNumberRx);
+//  508          }
+//  509       }
+//  510 
+//  511       // Clearing the tx done interrupt enable
+//  512       RFIM &= ~IRQ_TXDONE;
+//  513 
+//  514    }
+//  515    INT_GLOBAL_ENABLE(INT_ON);
+//  516 }
+//  517 */
+//  518 
+//  519 
+//  520 
+//  521 
+//  522 //-----------------------------------------------------------------------------
+//  523 // See cul.h for a description of this function.
+//  524 //-----------------------------------------------------------------------------
+
+        RSEG NEAR_CODE:CODE:NOROOT(0)
+//  525 void sppReceive(SPP_RX_STRUCT* pReceiveData){
+sppReceive:
+        MOV     A,#-0x9
+        LCALL   ?FUNC_ENTER_XDATA
+        ; Saved register size: 9
+        ; Auto size: 0
+//  526   
+//  527   //===========add my code here to instead of the dma_IRQ======--//
+//  528       if(RFERRIF == 1)
+        MOV     C,0x88.1
+        JNC     ??sppReceive_0
+//  529         {
+//  530           // If Rx overflow occurs, the Rx FiFo is reset.
+//  531           // The Rx DMA is reset and reception is started over.
+//  532           if(FSMSTATE == 17)
+        MOV     DPTR,#-0x20c7
+        MOVX    A,@DPTR
+        XRL     A,#0x11
+        JNZ     ??sppReceive_1
+//  533           {
+//  534               STOP_RADIO();
+        MOV     0xe1,#-0x1b
+//  535               ISFLUSHRX;
+        MOV     0xe1,#-0x1a
+//  536               ISFLUSHRX;
+        MOV     0xe1,#-0x1a
+//  537               DMA_ABORT_CHANNEL(dmaNumberRx);
+        MOV     ?V0 + 0,#0x1
+        MOV     ?V0 + 1,#0x0
+        MOV     DPTR,#dmaNumberRx
+        MOVX    A,@DPTR
+        MOV     R0,#?V0 + 0
+        LCALL   ?S_SHL
+        MOV     A,?V0 + 0
+        ANL     A,#0x1f
+        MOV     R4,A
+        MOV     A,#-0x80
+        ORL     A,R4
+        MOV     0xd6,A
+//  538               DMA_ARM_CHANNEL(dmaNumberRx);
+        MOV     0xd6,R4
+//  539               ISRXON;
+        MOV     0xe1,#-0x1e
+        SJMP    ??sppReceive_2
+//  540           }
+//  541           else if(FSMSTATE == 56)
+??sppReceive_1:
+        MOVX    A,@DPTR
+        XRL     A,#0x38
+        JNZ     ??sppReceive_2
+//  542           {
+//  543               ISFLUSHTX;
+        MOV     0xe1,#-0x19
+//  544           }
+//  545           INT_SETFLAG(INUM_RFERR,INT_CLR);
+??sppReceive_2:
+        CLR     0x88.1
+//  546         }
+//  547    //===========add my code here to instead of the dma_IRQ======--//
+//  548 
+//  549    sppRxStatus = RX_WAIT;
+??sppReceive_0:
+        MOV     A,#0x20
+        MOV     DPTR,#sppRxStatus
+        LCALL   ?Subroutine2
+//  550 
+//  551    DMA_ABORT_CHANNEL(dmaNumberRx);
+??CrossCallReturnLabel_4:
+        LCALL   ?S_SHL
+        LCALL   ?Subroutine3
+//  552    // Setting the address to where the received data are to be written.
+//  553    SET_DMA_DEST(dmaRx,pReceiveData);
+??CrossCallReturnLabel_9:
+        MOV     DPTR,#dmaRx
+        LCALL   ?Subroutine5
+??CrossCallReturnLabel_14:
+        INC     DPTR
+        MOV     A,R3
+        MOVX    @DPTR,A
+        LCALL   ?Subroutine4
+??CrossCallReturnLabel_11:
+        MOV     A,R2
+        MOVX    @DPTR,A
+//  554    SET_DMA_LENGTH(dmaRx,255);
+        MOV     DPTR,#dmaRx
+        LCALL   ?Subroutine0
+??CrossCallReturnLabel_1:
+        MOV     DPTR,#dmaRx
+        LCALL   ?Subroutine1
+??CrossCallReturnLabel_3:
+        MOV     A,#-0x1
+        LCALL   ?Subroutine2
+//  555 
+//  556    // Arming the DMA channel. The receiver will initate the transfer when a packet is received.
+//  557    DMA_ARM_CHANNEL(dmaNumberRx);
+??CrossCallReturnLabel_5:
+        LCALL   ?S_SHL
+        MOV     A,?V0 + 0
+        ANL     A,#0x1f
+        MOV     0xd6,A
+//  558 	//FSMSTATEÓÐÏÞ×´Ì¬»ú×´Ì¬
+//  559    if(FSMSTATE == 6 && RXFIFOCNT > 0)
+        MOV     DPTR,#-0x20c7
+        MOVX    A,@DPTR
+        XRL     A,#0x6
+        JNZ     ??sppReceive_3
+        MOV     DPTR,#-0x20ad
+        MOVX    A,@DPTR
+        JZ      ??sppReceive_3
+//  560    {
+//  561       ISFLUSHRX;
+        MOV     0xe1,#-0x1a
+//  562       ISFLUSHRX;
+        MOV     0xe1,#-0x1a
+//  563    }
+//  564 
+//  565    // Turning on the receiver
+//  566    ISRXON;
+??sppReceive_3:
+        MOV     0xe1,#-0x1e
+//  567 
+//  568    return;
+        LJMP    ?Subroutine9
+        REQUIRE _A_TCON
+        REQUIRE _A_S0CON
+        REQUIRE S1CON
+        REQUIRE _A_IRCON
+        REQUIRE DMAARM
+        REQUIRE RFST
+        REQUIRE _A_IRCON2
+//  569 }
+
+        RSEG NEAR_CODE:CODE:NOROOT(0)
+?Subroutine4:
+        MOV     DPTR,#dmaRx
+        LCALL   ?Subroutine8
+??CrossCallReturnLabel_21:
+        RET
+
+        RSEG NEAR_CODE:CODE:NOROOT(0)
+?Subroutine8:
+        MOVX    A,@DPTR
+        MOV     R0,A
+        INC     DPTR
+        MOVX    A,@DPTR
+        MOV     DPH,A
+        MOV     DPL,R0
+        INC     DPTR
+        INC     DPTR
+        INC     DPTR
+        RET
+
+        RSEG NEAR_CODE:CODE:NOROOT(0)
+?Subroutine2:
+        MOVX    @DPTR,A
+        MOV     ?V0 + 0,#0x1
+        MOV     ?V0 + 1,#0x0
+        MOV     DPTR,#dmaNumberRx
+        MOVX    A,@DPTR
+        MOV     R0,#?V0 + 0
+        RET
+
+        RSEG NEAR_CODE:CODE:NOROOT(0)
+?Subroutine1:
+        LCALL   ?Subroutine7
+??CrossCallReturnLabel_20:
+        INC     DPTR
+        RET
+
+        RSEG NEAR_CODE:CODE:NOROOT(0)
+?Subroutine0:
+        LCALL   ?Subroutine7
+??CrossCallReturnLabel_19:
+        MOVX    A,@DPTR
+        ANL     A,#0xe0
+        MOVX    @DPTR,A
+        RET
+
+        RSEG NEAR_CODE:CODE:NOROOT(0)
+?Subroutine7:
+        LCALL   ?Subroutine8
+??CrossCallReturnLabel_22:
+        INC     DPTR
+        RET
+
+        RSEG XDATA_ID:CODE:NOROOT(0)
+        DATA
+`?<Initializer for dmaNumberTx>`:
+        DB 1
+
+        RSEG XDATA_ID:CODE:NOROOT(0)
+        DATA
+`?<Initializer for dmaNumberRx>`:
+        DB 2
+
+        END
+//  570 
+//  571 
+//  572 /*
+//  573 //-----------------------------------------------------------------------------
+//  574 // See cul.h for a description of this function.
+//  575 //-----------------------------------------------------------------------------
+//  576 #pragma vector=RFERR_VECTOR
+//  577 __interrupt static void rf_error_IRQ(void)
+//  578 {
+//  579    INT_GLOBAL_ENABLE(INT_OFF);
+//  580 
+//  581    // If Rx overflow occurs, the Rx FiFo is reset.
+//  582    // The Rx DMA is reset and reception is started over.
+//  583    if(FSMSTATE == 17)
+//  584    {
+//  585       STOP_RADIO();
+//  586       ISFLUSHRX;
+//  587       ISFLUSHRX;
+//  588       DMA_ABORT_CHANNEL(dmaNumberRx);
+//  589       DMA_ARM_CHANNEL(dmaNumberRx);
+//  590       ISRXON;
+//  591    }
+//  592    else if(FSMSTATE == 56)
+//  593    {
+//  594       ISFLUSHTX;
+//  595    }
+//  596 
+//  597    INT_SETFLAG(INUM_RFERR,INT_CLR);
+//  598 
+//  599    INT_GLOBAL_ENABLE(INT_ON);
+//  600 }
+//  601 */
+// 
+// 965 bytes in segment NEAR_CODE
+//  14 bytes in segment SFR_AN
+//   2 bytes in segment XDATA_I
+//   2 bytes in segment XDATA_ID
+//   8 bytes in segment XDATA_Z
+// 
+// 967 bytes of CODE  memory
+//   0 bytes of DATA  memory (+ 14 bytes shared)
+//  10 bytes of XDATA memory
+//
+//Errors: none
+//Warnings: none

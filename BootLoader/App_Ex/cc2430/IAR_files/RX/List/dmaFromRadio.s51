@@ -1,0 +1,173 @@
+///////////////////////////////////////////////////////////////////////////////
+//                                                                            /
+// IAR 8051 C/C++ Compiler V7.30B/W32                   03/Jul/2015  20:20:04 /
+// Copyright 2004-2007 IAR Systems. All rights reserved.                      /
+//                                                                            /
+//    Core               =  plain                                             /
+//    Code model         =  near                                              /
+//    Data model         =  large                                             /
+//    Calling convention =  xdata reentrant                                   /
+//    Constant location  =  data                                              /
+//    Dptr setup         =  1,16                                              /
+//    Source file        =  C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä° /
+//                          æ7\Library\cc2430\CUL\source\dmaFromRadio.c       /
+//    Command line       =  "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\Library\cc2430\CUL\source\dmaFromRadio.c" -D  /
+//                          chip=2430 -D COMPLETE_APPLICATION -D RX -lB       /
+//                          "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\App_Ex\cc2430\IAR_files\RX\List\" -o          /
+//                          "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\App_Ex\cc2430\IAR_files\RX\Obj\" -e -z9       /
+//                          --debug --core=plain --dptr=16,1                  /
+//                          --data_model=large --code_model=near              /
+//                          --calling_convention=xdata_reentrant              /
+//                          --place_constants=data --nr_virtual_regs 8 -I     /
+//                          "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\App_Ex\cc2430\IAR_files\..\..\..\LIBRARY\CC24 /
+//                          30\CUL\INCLUDE\" -I "C:\Documents and             /
+//                          Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\App_Ex\cc2430\ /
+//                          IAR_files\..\..\..\LIBRARY\CC2430\HAL\INCLUDE\"   /
+//                          -I "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐ /
+//                          Þ¸Ä°æ7\App_Ex\cc2430\IAR_files\..\..\..\LIBRARY\C /
+//                          C2430\EB\INCLUDE\" -I "C:\Documents and           /
+//                          Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\App_Ex\cc2430\ /
+//                          IAR_files\..\INCLUDE\" -I "C:\IAR                 /
+//                          Systems\Embedded Workbench 4.0 Evaluation         /
+//                          version\8051\INC\" -I "C:\IAR Systems\Embedded    /
+//                          Workbench 4.0 Evaluation version\8051\INC\CLIB\"  /
+//    List file          =  C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä° /
+//                          æ7\App_Ex\cc2430\IAR_files\RX\List\dmaFromRadio.s /
+//                          51                                                /
+//                                                                            /
+//                                                                            /
+///////////////////////////////////////////////////////////////////////////////
+
+        NAME dmaFromRadio
+
+        RSEG DOVERLAY:DATA:NOROOT(0)
+        RSEG IOVERLAY:IDATA:NOROOT(0)
+        RSEG ISTACK:IDATA:NOROOT(0)
+        RSEG PSTACK:XDATA:NOROOT(0)
+        RSEG XSTACK:XDATA:NOROOT(0)
+
+        EXTERN ?FUNC_ENTER_XDATA
+        EXTERN ?FUNC_LEAVE_XDATA
+
+        PUBLIC culDmaFromRadio
+
+// C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\Library\cc2430\CUL\source\dmaFromRadio.c
+//    1 /******************************************************************************
+//    2 Filename:     dmaFromRadio.c
+//    3 Target:       cc2430
+//    4 Revised:      16/12-2005
+//    5 Revision:     1.0
+//    6 ******************************************************************************/
+//    7 
+//    8 #include "cul.h"
+//    9 
+//   10 //-----------------------------------------------------------------------------
+//   11 // See cul.h for a description of this function.
+//   12 //-----------------------------------------------------------------------------
+
+        RSEG NEAR_CODE:CODE:NOROOT(0)
+//   13 void culDmaFromRadio(DMA_DESC* pDmaChannel, BYTE *pDstAddr, BOOL generateInterrupt)
+culDmaFromRadio:
+//   14 {
+        MOV     A,#-0x8
+        LCALL   ?FUNC_ENTER_XDATA
+        ; Saved register size: 8
+        ; Auto size: 0
+//   15    SET_WORD(pDmaChannel->SRCADDRH, pDmaChannel->SRCADDRL,   &X_RFD);   // The start address of the segment
+        MOV     A,#-0x21
+        MOV     DPL,R2
+        MOV     DPH,R3
+        MOVX    @DPTR,A
+        MOV     A,#-0x27
+        INC     DPTR
+        MOVX    @DPTR,A
+//   16    SET_WORD(pDmaChannel->DESTADDRH, pDmaChannel->DESTADDRL, pDstAddr); // Tx FiFo address
+        MOV     A,R5
+        MOV     DPL,R2
+        MOV     DPH,R3
+        INC     DPTR
+        INC     DPTR
+        MOVX    @DPTR,A
+        MOV     A,R4
+        MOV     DPL,R2
+        MOV     DPH,R3
+        INC     DPTR
+        INC     DPTR
+        INC     DPTR
+        MOVX    @DPTR,A
+//   17    SET_WORD(pDmaChannel->LENH, pDmaChannel->LENL, 255);                // Maximum of the Tx FiFo.
+        MOV     A,#-0x1
+        MOV     DPL,R2
+        MOV     DPH,R3
+        INC     DPTR
+        INC     DPTR
+        INC     DPTR
+        INC     DPTR
+        INC     DPTR
+        MOVX    @DPTR,A
+//   18    pDmaChannel->VLEN       = VLEN_1_P_VALOFFIRST;// The first byte indicates transfer length
+        MOV     A,#0x20
+        MOV     DPL,R2
+        MOV     DPH,R3
+        INC     DPTR
+        INC     DPTR
+        INC     DPTR
+        INC     DPTR
+        MOVX    @DPTR,A
+//   19    pDmaChannel->PRIORITY   = PRI_HIGH;
+//   20    pDmaChannel->M8         = M8_USE_7_BITS;
+//   21 
+//   22    pDmaChannel->IRQMASK    = generateInterrupt; // The DMA complete interrupt flag is set at completion.
+//   23    pDmaChannel->DESTINC    = DESTINC_1;         // The destination is constant
+//   24    pDmaChannel->SRCINC     = SRCINC_0;          // The address for data fetch is incremented by 1 byte after each transfer.
+        MOV     A,R1
+        MOV     C,0xE0 /* A   */.0
+        CLR     A
+        MOV     0xE0 /* A   */.0,C
+        RLC     A
+        RLC     A
+        RLC     A
+        ANL     A,#0xf8
+        ANL     A,#0xf
+        ORL     A,#0x16
+        MOV     DPL,R2
+        MOV     DPH,R3
+        INC     DPTR
+        INC     DPTR
+        INC     DPTR
+        INC     DPTR
+        INC     DPTR
+        INC     DPTR
+        INC     DPTR
+        MOVX    @DPTR,A
+//   25    pDmaChannel->TRIG       = DMATRIG_RADIO;     // DMA is started by the radio receiver.
+//   26    pDmaChannel->TMODE      = TMODE_SINGLE;      // One byte is transferred at each DMA trigger.
+//   27    pDmaChannel->WORDSIZE   = WORDSIZE_BYTE;     // Byte transfer.
+        MOV     A,#0x13
+        MOV     DPL,R2
+        MOV     DPH,R3
+        INC     DPTR
+        INC     DPTR
+        INC     DPTR
+        INC     DPTR
+        INC     DPTR
+        INC     DPTR
+        MOVX    @DPTR,A
+//   28 
+//   29    return;
+        MOV     R7,#0x1
+        LJMP    ?FUNC_LEAVE_XDATA
+//   30 }
+
+        END
+// 
+// 101 bytes in segment NEAR_CODE
+// 
+// 101 bytes of CODE memory
+//
+//Errors: none
+//Warnings: none

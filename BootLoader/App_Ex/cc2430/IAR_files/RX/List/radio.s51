@@ -1,0 +1,631 @@
+///////////////////////////////////////////////////////////////////////////////
+//                                                                            /
+// IAR 8051 C/C++ Compiler V7.30B/W32                   03/Jul/2015  20:20:04 /
+// Copyright 2004-2007 IAR Systems. All rights reserved.                      /
+//                                                                            /
+//    Core               =  plain                                             /
+//    Code model         =  near                                              /
+//    Data model         =  large                                             /
+//    Calling convention =  xdata reentrant                                   /
+//    Constant location  =  data                                              /
+//    Dptr setup         =  1,16                                              /
+//    Source file        =  C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä° /
+//                          æ7\Library\cc2430\CUL\source\radio.c              /
+//    Command line       =  "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\Library\cc2430\CUL\source\radio.c" -D         /
+//                          chip=2430 -D COMPLETE_APPLICATION -D RX -lB       /
+//                          "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\App_Ex\cc2430\IAR_files\RX\List\" -o          /
+//                          "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\App_Ex\cc2430\IAR_files\RX\Obj\" -e -z9       /
+//                          --debug --core=plain --dptr=16,1                  /
+//                          --data_model=large --code_model=near              /
+//                          --calling_convention=xdata_reentrant              /
+//                          --place_constants=data --nr_virtual_regs 8 -I     /
+//                          "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä /
+//                          °æ7\App_Ex\cc2430\IAR_files\..\..\..\LIBRARY\CC24 /
+//                          30\CUL\INCLUDE\" -I "C:\Documents and             /
+//                          Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\App_Ex\cc2430\ /
+//                          IAR_files\..\..\..\LIBRARY\CC2430\HAL\INCLUDE\"   /
+//                          -I "C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐ /
+//                          Þ¸Ä°æ7\App_Ex\cc2430\IAR_files\..\..\..\LIBRARY\C /
+//                          C2430\EB\INCLUDE\" -I "C:\Documents and           /
+//                          Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\App_Ex\cc2430\ /
+//                          IAR_files\..\INCLUDE\" -I "C:\IAR                 /
+//                          Systems\Embedded Workbench 4.0 Evaluation         /
+//                          version\8051\INC\" -I "C:\IAR Systems\Embedded    /
+//                          Workbench 4.0 Evaluation version\8051\INC\CLIB\"  /
+//    List file          =  C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä° /
+//                          æ7\App_Ex\cc2430\IAR_files\RX\List\radio.s51      /
+//                                                                            /
+//                                                                            /
+///////////////////////////////////////////////////////////////////////////////
+
+        NAME radio
+
+        RSEG DOVERLAY:DATA:NOROOT(0)
+        RSEG IOVERLAY:IDATA:NOROOT(0)
+        RSEG ISTACK:IDATA:NOROOT(0)
+        RSEG PSTACK:XDATA:NOROOT(0)
+        RSEG XSTACK:XDATA:NOROOT(0)
+
+        EXTERN ?ALLOC_XSTACK8
+        EXTERN ?CALL_IND
+        EXTERN ?DEALLOC_XSTACK8
+        EXTERN ?FUNC_ENTER_XDATA
+        EXTERN ?FUNC_LEAVE_XDATA
+        EXTERN ?V0
+        EXTERN ?XSP
+        EXTERN ?XSTACK_DISP0_8
+
+        PUBWEAK DMAIRQ
+        PUBWEAK RFST
+        PUBWEAK _A_IRCON
+        PUBLIC radioInit
+        PUBLIC radioReceive
+        PUBLIC radioSend
+        PUBLIC rxData
+        PUBLIC txData
+
+        EXTERN sppInit
+        EXTERN FeetDog
+        EXTERN sppSend
+        EXTERN halWait
+        EXTERN sppReceive
+        EXTERN dmaTable
+        EXTERN sppRxStatus
+
+// C:\Documents and Settings\haoyan\×ÀÃæ\SPP-BTÐÞ¸Ä°æ7\Library\cc2430\CUL\source\radio.c
+//    1 /******************************************************************************
+//    2 Filename:     radio.c
+//    3 Target:       cc2430
+//    4 Revised:      16/12-2005
+//    5 Revision:     1.0
+//    6 ******************************************************************************/
+//    7 
+//    8 #include "cul.h"
+
+        ASEGN SFR_AN:DATA:NOROOT,0c0H
+// union <unnamed> volatile __sfr _A_IRCON
+_A_IRCON:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0d1H
+// unsigned char volatile __sfr DMAIRQ
+DMAIRQ:
+        DS 1
+
+        ASEGN SFR_AN:DATA:NOROOT,0e1H
+// unsigned char volatile __sfr RFST
+RFST:
+        DS 1
+//    9 
+//   10 //UINT8 temp_count =0;
+//   11 
+//   12 extern volatile BYTE sppRxStatus;
+//   13 extern volatile BYTE sppTxStatus;
+
+        RSEG PM0_XDATA:XDATA:REORDER:NOROOT(0)
+//   14 __no_init SPP_RX_STRUCT rxData @ "PM0_XDATA";
+rxData:
+        DS 128
+
+        RSEG PM0_XDATA:XDATA:REORDER:NOROOT(0)
+//   15 __no_init SPP_TX_STRUCT txData @ "PM0_XDATA";
+txData:
+        DS 5
+//   16 
+//   17 extern DMA_TABLE_ENTRY dmaTable[DMA_ADM_NUMBER_OF_CHANNELS];//add by zpf.
+//   18 //-----------------------------------------------------------------------------
+//   19 // See cul.h for a description of this function.
+//   20 //-----------------------------------------------------------------------------
+
+        RSEG NEAR_CODE:CODE:NOROOT(0)
+//   21 void radioInit(UINT32 frequency, BYTE localAddress)
+radioInit:
+//   22 {
+        MOV     A,#-0xb
+        LCALL   ?FUNC_ENTER_XDATA
+        ; Saved register size: 11
+        ; Auto size: 0
+//   23    sppInit(frequency,localAddress);
+        ; Setup parameters for call to function sppInit
+        LCALL   sppInit
+//   24 
+//   25    return;
+        MOV     R7,#0x4
+        LJMP    ?FUNC_LEAVE_XDATA
+//   26 }
+//   27 
+//   28 
+//   29 //-----------------------------------------------------------------------------
+//   30 // See cul.h for a description of this function.
+//   31 //-----------------------------------------------------------------------------
+
+        RSEG NEAR_CODE:CODE:NOROOT(0)
+//   32 BOOL radioSend(BYTE* transmitData, WORD dataLength, BYTE remoteAddress, BYTE doAck)
+radioSend:
+//   33 {
+        MOV     A,#-0xd
+        LCALL   ?FUNC_ENTER_XDATA
+        ; Saved register size: 13
+        ; Auto size: 0
+        MOV     ?V0 + 2,R2
+        MOV     ?V0 + 3,R3
+        MOV     A,R4
+        MOV     R6,A
+        MOV     A,R5
+        MOV     R7,A
+        MOV     A,#0xd
+        LCALL   ?XSTACK_DISP0_8
+        MOVX    A,@DPTR
+        MOV     R2,A
+//   34    WORD sent = 0;
+        MOV     ?V0 + 0,#0x0
+        MOV     ?V0 + 1,#0x0
+//   35    BOOL status = TRUE;
+        MOV     ?V0 + 5,#0x1
+//   36    WORD remaining;
+//   37    BYTE retries;
+//   38    BYTE res;
+//   39 /*
+//   40 typedef struct{
+//   41     BYTE payloadLength;
+//   42     BYTE destAddress;
+//   43     BYTE flags;
+//   44     BYTE *payload;
+//   45 }SPP_TX_STRUCT;
+//   46 
+//   47 typedef struct{
+//   48     BYTE payloadLength;
+//   49     BYTE destAddress;
+//   50     BYTE srcAddress;
+//   51     BYTE flags;
+//   52     BYTE payload[SPP_MAX_PAYLOAD_LENGTH + SPP_FOOTER_LENGTH];
+//   53 }SPP_RX_STRUCT;
+//   54 */
+//   55 
+//   56    txData.destAddress = remoteAddress;
+        MOV     A,R1
+        MOV     DPTR,#(txData + 1)
+        MOVX    @DPTR,A
+//   57    txData.flags = doAck;
+        MOV     A,R2
+        MOV     DPTR,#(txData + 2)
+        MOVX    @DPTR,A
+        SJMP    ??radioSend_0
+//   58 
+//   59 
+//   60    while((sent < dataLength) && (status == TRUE))
+//   61    {
+//   62       FeetDog();
+//   63       retries = ACK_RETRIES;  	//ÖØÊÔ4´Î
+//   64       txData.payload = transmitData + sent;
+//   65       remaining = dataLength-sent;
+//   66 
+//   67 
+//   68       if(remaining > SPP_MAX_PAYLOAD_LENGTH)//122
+//   69       {
+//   70          txData.payloadLength = SPP_MAX_PAYLOAD_LENGTH;
+//   71          sent += SPP_MAX_PAYLOAD_LENGTH;
+//   72       }
+//   73       else
+//   74       {
+//   75          txData.payloadLength = dataLength;
+??radioSend_1:
+        MOV     A,R6
+        MOV     DPTR,#txData
+        MOVX    @DPTR,A
+//   76          sent += dataLength;
+        MOV     A,?V0 + 0
+        ADD     A,R6
+        MOV     ?V0 + 0,A
+        MOV     A,?V0 + 1
+        ADDC    A,R7
+??radioSend_2:
+        MOV     ?V0 + 1,A
+//   77       }
+//   78 
+//   79       while(retries)
+//   80       {
+//   81          FeetDog();
+??radioSend_3:
+        ; Setup parameters for call to function FeetDog
+        LCALL   FeetDog
+//   82          res = sppSend(&txData);
+//   83          if(res == CHANNEL_BUSY)
+        ; Setup parameters for call to function sppSend
+        MOV     R2,#(txData & 0xff)
+        MOV     R3,#((txData >> 8) & 0xff)
+        LCALL   sppSend
+        MOV     A,R1
+        XRL     A,#0x4
+        JNZ     ??radioSend_0
+//   84          {
+//   85             //temp_count = 1;
+//   86             halWait(10);
+        ; Setup parameters for call to function halWait
+        MOV     R1,#0xa
+        LCALL   halWait
+//   87             //temp_count=0;
+//   88             retries--;
+//   89             if(retries == 0)
+        DEC     ?V0 + 4
+        MOV     A,?V0 + 4
+        JNZ     ??radioSend_3
+//   90             {
+//   91                status = FALSE;
+        MOV     ?V0 + 5,#0x0
+//   92             }
+//   93          }
+//   94          else
+//   95          {
+//   96             retries = 0;
+//   97          }
+//   98       }
+??radioSend_0:
+        CLR     C
+        MOV     A,?V0 + 0
+        SUBB    A,R6
+        MOV     A,?V0 + 1
+        SUBB    A,R7
+        JNC     ??radioSend_4
+        MOV     A,#0x1
+        XRL     A,?V0 + 5
+        JNZ     ??radioSend_4
+        ; Setup parameters for call to function FeetDog
+        LCALL   FeetDog
+        MOV     ?V0 + 4,#0x4
+        MOV     A,?V0 + 2
+        ADD     A,?V0 + 0
+        MOV     R0,A
+        MOV     A,?V0 + 3
+        ADDC    A,?V0 + 1
+        MOV     R1,A
+        MOV     DPTR,#(txData + 3)
+        MOV     A,R0
+        MOVX    @DPTR,A
+        INC     DPTR
+        MOV     A,R1
+        MOVX    @DPTR,A
+        MOV     A,R6
+        CLR     C
+        SUBB    A,?V0 + 0
+        MOV     R0,A
+        MOV     A,R7
+        SUBB    A,?V0 + 1
+        MOV     R1,A
+        CLR     C
+        MOV     A,R0
+        SUBB    A,#0x7b
+        MOV     A,R1
+        SUBB    A,#0x0
+        JC      ??radioSend_1
+        MOV     A,#0x7a
+        MOV     DPTR,#txData
+        MOVX    @DPTR,A
+        MOV     A,?V0 + 0
+        ADD     A,#0x7a
+        MOV     ?V0 + 0,A
+        MOV     A,?V0 + 1
+        ADDC    A,#0x0
+        SJMP    ??radioSend_2
+//   99 
+//  100       //while(sppTxStatus == TX_IN_PROGRESS) FeetDog();
+//  101 
+//  102       //if(sppTxStatus == DEST_UNREACHABLE)
+//  103       //{
+//  104       //   status = FALSE;
+//  105       //}
+//  106    }
+//  107 
+//  108    return status;
+??radioSend_4:
+        MOV     R1,?V0 + 5
+        MOV     R7,#0x6
+        LJMP    ?FUNC_LEAVE_XDATA
+//  109 }
+//  110 
+//  111 
+//  112 
+//  113 
+//  114 
+//  115 //-----------------------------------------------------------------------------
+//  116 // See cul.h for a description of this function.
+//  117 //-----------------------------------------------------------------------------
+
+        RSEG NEAR_CODE:CODE:NOROOT(0)
+//  118 BOOL radioReceive(BYTE** receiveData, BYTE* length, WORD timeout, BYTE* sender)
+radioReceive:
+//  119 {
+        MOV     A,#-0xf
+        LCALL   ?FUNC_ENTER_XDATA
+        ; Saved register size: 15
+        ; Auto size: 2
+        MOV     A,#-0x2
+        LCALL   ?ALLOC_XSTACK8
+        MOV     DPL,?XSP + 0
+        MOV     DPH,?XSP + 1
+        MOV     A,R2
+        MOVX    @DPTR,A
+        INC     DPTR
+        MOV     A,R3
+        MOVX    @DPTR,A
+        MOV     ?V0 + 6,R4
+        MOV     ?V0 + 7,R5
+        MOV     A,#0x11
+        LCALL   ?XSTACK_DISP0_8
+        MOVX    A,@DPTR
+        MOV     R6,A
+        INC     DPTR
+        MOVX    A,@DPTR
+        MOV     R7,A
+        MOV     A,#0x13
+        LCALL   ?XSTACK_DISP0_8
+        MOVX    A,@DPTR
+        MOV     ?V0 + 0,A
+        INC     DPTR
+        MOVX    A,@DPTR
+        MOV     ?V0 + 1,A
+//  120    BOOL status = TRUE;
+        MOV     ?V0 + 2,#0x1
+//  121    BOOL continueWaiting = TRUE;
+        MOV     ?V0 + 3,#0x1
+//  122    BOOL useTimeout = FALSE;
+        MOV     ?V0 + 4,#0x0
+//  123 
+//  124    if(timeout)
+        MOV     A,R6
+        JNZ     ??radioReceive_0
+        MOV     A,R7
+??radioReceive_0:
+        JZ      ??radioReceive_1
+//  125    {
+//  126       useTimeout = TRUE;
+        MOV     ?V0 + 4,#0x1
+//  127    }
+//  128    
+//  129    sppReceive(&rxData);
+??radioReceive_1:
+        ; Setup parameters for call to function sppReceive
+        MOV     R2,#(rxData & 0xff)
+        MOV     R3,#((rxData >> 8) & 0xff)
+        LCALL   sppReceive
+        LJMP    ??radioReceive_2
+//  130 
+//  131    while((sppRxStatus != RX_COMPLETE) && (continueWaiting))
+//  132    {
+//  133       FeetDog();
+??radioReceive_3:
+        ; Setup parameters for call to function FeetDog
+        LCALL   FeetDog
+//  134      //===========add my code here to instead of the dma_IRQ======--//   
+//  135       if(DMAIF == 1)
+        MOV     C,0xc0.0
+        JNC     ??radioReceive_4
+//  136       {
+//  137         DMAIF = 0;
+        CLR     0xc0.0
+//  138 
+//  139         if(DMAIRQ & DMA_CHANNEL_0){
+        MOV     A,0xd1
+        MOV     C,0xE0 /* A   */.0
+        JNC     ??radioReceive_5
+//  140       // Clearing interrupt flag
+//  141           DMAIRQ &= ~DMA_CHANNEL_0;
+        ANL     0xd1,#0xfe
+//  142       // Calling the callback function.
+//  143         if(dmaTable[0].callBackFunction){
+        MOV     DPTR,#(dmaTable + 1)
+        LCALL   ?Subroutine0
+??CrossCallReturnLabel_0:
+        JNZ     ??radioReceive_6
+        MOV     A,DPH
+??radioReceive_6:
+        JZ      ??radioReceive_5
+//  144           dmaTable[0].callBackFunction();
+        ; Setup parameters for indirect call
+        LCALL   ?CALL_IND
+//  145           }
+//  146         }
+//  147         if(DMAIRQ & DMA_CHANNEL_1){ 
+??radioReceive_5:
+        MOV     A,0xd1
+        MOV     C,0xE0 /* A   */.1
+        JNC     ??radioReceive_7
+//  148       // Clearing interrupt flag
+//  149           DMAIRQ &= ~DMA_CHANNEL_1;
+        ANL     0xd1,#0xfd
+//  150       // Calling the callback function.
+//  151         if(dmaTable[1].callBackFunction){
+        MOV     DPTR,#(dmaTable + 4)
+        LCALL   ?Subroutine0
+??CrossCallReturnLabel_1:
+        JNZ     ??radioReceive_8
+        MOV     A,DPH
+??radioReceive_8:
+        JZ      ??radioReceive_7
+//  152           dmaTable[1].callBackFunction();
+        ; Setup parameters for indirect call
+        LCALL   ?CALL_IND
+//  153           }
+//  154         }
+//  155         if(DMAIRQ & DMA_CHANNEL_2){
+??radioReceive_7:
+        MOV     A,0xd1
+        MOV     C,0xE0 /* A   */.2
+        JNC     ??radioReceive_9
+//  156       // Clearing interrupt flag
+//  157           DMAIRQ &= ~DMA_CHANNEL_2;
+        ANL     0xd1,#0xfb
+//  158       // Calling the callback function.
+//  159         if(dmaTable[2].callBackFunction){
+        MOV     DPTR,#(dmaTable + 7)
+        LCALL   ?Subroutine0
+??CrossCallReturnLabel_2:
+        JNZ     ??radioReceive_10
+        MOV     A,DPH
+??radioReceive_10:
+        JZ      ??radioReceive_9
+//  160           dmaTable[2].callBackFunction();
+        ; Setup parameters for indirect call
+        LCALL   ?CALL_IND
+//  161           }
+//  162         }
+//  163         if(DMAIRQ & DMA_CHANNEL_3){
+??radioReceive_9:
+        MOV     A,0xd1
+        MOV     C,0xE0 /* A   */.3
+        JNC     ??radioReceive_11
+//  164       // Clearing interrupt flag
+//  165           DMAIRQ &= ~DMA_CHANNEL_3;
+        ANL     0xd1,#0xf7
+//  166       // Calling the callback function.
+//  167         if(dmaTable[3].callBackFunction){
+        MOV     DPTR,#(dmaTable + 10)
+        LCALL   ?Subroutine0
+??CrossCallReturnLabel_3:
+        JNZ     ??radioReceive_12
+        MOV     A,DPH
+??radioReceive_12:
+        JZ      ??radioReceive_11
+//  168           dmaTable[3].callBackFunction();
+        ; Setup parameters for indirect call
+        LCALL   ?CALL_IND
+//  169           }
+//  170         }
+//  171         if(DMAIRQ & DMA_CHANNEL_4){
+??radioReceive_11:
+        MOV     A,0xd1
+        MOV     C,0xE0 /* A   */.4
+        JNC     ??radioReceive_4
+//  172       // Clearing interrupt flag
+//  173           DMAIRQ &= ~DMA_CHANNEL_4;
+        ANL     0xd1,#0xef
+//  174       // Calling the callback function.
+//  175         if(dmaTable[4].callBackFunction){
+        MOV     DPTR,#(dmaTable + 13)
+        LCALL   ?Subroutine0
+??CrossCallReturnLabel_4:
+        JNZ     ??radioReceive_13
+        MOV     A,DPH
+??radioReceive_13:
+        JZ      ??radioReceive_4
+//  176           dmaTable[4].callBackFunction();
+        ; Setup parameters for indirect call
+        LCALL   ?CALL_IND
+//  177           }
+//  178         } 
+//  179       }
+//  180      //===========add my code here to instead of the dma_IRQ======--//
+//  181       if(useTimeout)
+??radioReceive_4:
+        MOV     A,?V0 + 4
+        JZ      ??radioReceive_2
+//  182       {
+//  183          halWait(0x02);
+        ; Setup parameters for call to function halWait
+        MOV     R1,#0x2
+        LCALL   halWait
+//  184          timeout--;
+//  185          if(timeout == 0)
+        MOV     A,R6
+        ADD     A,#-0x1
+        DEC     R6
+        MOV     A,R7
+        ADDC    A,#-0x1
+        MOV     R7,A
+        MOV     A,R6
+        JNZ     ??radioReceive_14
+        MOV     A,R7
+??radioReceive_14:
+        JNZ     ??radioReceive_2
+//  186          {
+//  187             continueWaiting = FALSE;
+        MOV     ?V0 + 3,#0x0
+//  188             status = FALSE;
+        MOV     ?V0 + 2,#0x0
+//  189             STOP_RADIO();
+        MOV     0xe1,#-0x1b
+//  190          }
+//  191       }
+//  192    }
+??radioReceive_2:
+        MOV     DPTR,#sppRxStatus
+        MOVX    A,@DPTR
+        XRL     A,#0x10
+        JZ      ??radioReceive_15
+        MOV     A,?V0 + 3
+        JZ      $+5
+        LJMP    ??radioReceive_3
+//  193 
+//  194    if(status == TRUE)
+??radioReceive_15:
+        MOV     A,#0x1
+        XRL     A,?V0 + 2
+        JNZ     ??radioReceive_16
+//  195    {
+//  196       *receiveData = rxData.payload;
+        MOV     DPL,?XSP + 0
+        MOV     DPH,?XSP + 1
+        MOVX    A,@DPTR
+        MOV     R0,A
+        INC     DPTR
+        MOVX    A,@DPTR
+        MOV     DPH,A
+        MOV     DPL,R0
+        MOV     A,#((rxData + 4) & 0xff)
+        MOVX    @DPTR,A
+        INC     DPTR
+        MOV     A,#(((rxData + 4) >> 8) & 0xff)
+        MOVX    @DPTR,A
+//  197       *length = rxData.payloadLength;
+        MOV     DPTR,#rxData
+        MOVX    A,@DPTR
+        MOV     DPL,?V0 + 6
+        MOV     DPH,?V0 + 7
+        MOVX    @DPTR,A
+//  198       *sender = rxData.srcAddress;
+        MOV     DPTR,#(rxData + 2)
+        MOVX    A,@DPTR
+        MOV     DPL,?V0 + 0
+        MOV     DPH,?V0 + 1
+        MOVX    @DPTR,A
+//  199    }
+//  200 
+//  201    return status;
+??radioReceive_16:
+        MOV     R1,?V0 + 2
+        MOV     A,#0x2
+        LCALL   ?DEALLOC_XSTACK8
+        MOV     R7,#0x8
+        LJMP    ?FUNC_LEAVE_XDATA
+        REQUIRE _A_IRCON
+        REQUIRE DMAIRQ
+        REQUIRE RFST
+//  202 }
+
+        RSEG NEAR_CODE:CODE:NOROOT(0)
+?Subroutine0:
+        MOVX    A,@DPTR
+        MOV     R0,A
+        INC     DPTR
+        MOVX    A,@DPTR
+        MOV     R1,A
+        MOV     DPL,R0
+        MOV     DPH,R1
+        MOV     A,DPL
+        RET
+
+        END
+// 
+// 504 bytes in segment NEAR_CODE
+// 133 bytes in segment PM0_XDATA
+//   3 bytes in segment SFR_AN
+// 
+// 504 bytes of CODE  memory
+//   0 bytes of DATA  memory (+ 3 bytes shared)
+// 133 bytes of XDATA memory
+//
+//Errors: none
+//Warnings: none

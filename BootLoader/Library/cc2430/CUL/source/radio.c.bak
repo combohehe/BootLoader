@@ -1,0 +1,166 @@
+/******************************************************************************
+*                                                                             *
+*        **********                                                           *
+*       ************                                                          *
+*      ***        ***                                                         *
+*     ***    ++    ***                                                        *
+*     ***   +  +   ***                      CHIPCON                           *
+*     ***   +                                                                 *
+*     ***   +  +   ***                                                        *
+*     ***    ++    ***                                                        *
+*      ***        ***                                                         *
+*       ************                                                          *
+*        **********                                                           *
+*                                                                             *
+*******************************************************************************
+
+Filename:     radio.c
+Target:       cc2430
+Author:       EFU
+Revised:      16/12-2005
+Revision:     1.0
+******************************************************************************/
+
+#include "cul.h"
+
+extern volatile BYTE sppRxStatus;
+extern volatile BYTE sppTxStatus;
+__no_init SPP_RX_STRUCT rxData @ "PM0_XDATA";
+__no_init SPP_TX_STRUCT txData @ "PM0_XDATA";
+
+
+//-----------------------------------------------------------------------------
+// See cul.h for a description of this function.
+//-----------------------------------------------------------------------------
+void radioInit(UINT32 frequency, BYTE localAddress)
+{
+   sppInit(frequency,localAddress);
+
+   return;
+}
+
+
+//-----------------------------------------------------------------------------
+// See cul.h for a description of this function.
+//-----------------------------------------------------------------------------
+BOOL radioSend(BYTE* transmitData, WORD dataLength, BYTE remoteAddress, BYTE doAck)
+{
+   WORD sent = 0;
+   BOOL status = TRUE;
+   WORD remaining;
+   BYTE retries;
+   BYTE res;
+/*
+typedef struct{
+    BYTE payloadLength;
+    BYTE destAddress;
+    BYTE flags;
+    BYTE *payload;
+}SPP_TX_STRUCT;
+
+typedef struct{
+    BYTE payloadLength;
+    BYTE destAddress;
+    BYTE srcAddress;
+    BYTE flags;
+    BYTE payload[SPP_MAX_PAYLOAD_LENGTH + SPP_FOOTER_LENGTH];
+}SPP_RX_STRUCT;
+*/
+
+   txData.destAddress = remoteAddress;
+   txData.flags = doAck;
+
+
+   while((sent < dataLength) && (status == TRUE))
+   {
+      retries = ACK_RETRIES;  	//ÖØÊÔ3´Î
+      txData.payload = transmitData + sent;
+      remaining = dataLength-sent;
+
+
+      if(remaining > SPP_MAX_PAYLOAD_LENGTH)
+      {
+         txData.payloadLength = SPP_MAX_PAYLOAD_LENGTH;
+         sent += SPP_MAX_PAYLOAD_LENGTH;
+      }
+      else
+      {
+         txData.payloadLength = dataLength;
+         sent += dataLength;
+      }
+
+      while(retries)
+      {
+         res = sppSend(&txData);
+         if(res == CHANNEL_BUSY)
+         {
+            halWait(10);
+            retries--;
+            if(retries == 0)
+            {
+               status = FALSE;
+            }
+         }
+         else
+         {
+            retries = 0;
+         }
+      }
+
+      while(sppTxStatus == TX_IN_PROGRESS);
+
+      if(sppTxStatus == DEST_UNREACHABLE)
+      {
+         status = FALSE;
+      }
+   }
+
+   return status;
+}
+
+
+
+
+
+//-----------------------------------------------------------------------------
+// See cul.h for a description of this function.
+//-----------------------------------------------------------------------------
+BOOL radioReceive(BYTE** receiveData, BYTE* length, WORD timeout, BYTE* sender)
+{
+   BOOL status = TRUE;
+   BOOL continueWaiting = TRUE;
+   BOOL useTimeout = FALSE;
+
+   if(timeout)
+   {
+      useTimeout = TRUE;
+   }
+
+
+
+   sppReceive(&rxData);
+
+   while((sppRxStatus != RX_COMPLETE) && (continueWaiting))
+   {
+      if(useTimeout)
+      {
+         halWait(0x01);
+         timeout--;
+         if(timeout == 0)
+         {
+            continueWaiting = FALSE;
+            status = FALSE;
+            STOP_RADIO();
+         }
+      }
+   }
+
+   if(status == TRUE)
+   {
+      *receiveData = rxData.payload;
+      *length = rxData.payloadLength;
+      *sender = rxData.srcAddress;
+   }
+
+   return status;
+}
